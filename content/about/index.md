@@ -4,6 +4,9 @@ description: "Dinh Tuan Kiet - Offensive Security Engineer | Security Researcher
 date: 2026-09-13
 showAuthor: true
 showTableOfContents: true
+showDate: false
+showWordCount: false
+showReadingTime: false
 ---
 
 ### Offensive Security Engineer | Security Researcher | AI Researcher
