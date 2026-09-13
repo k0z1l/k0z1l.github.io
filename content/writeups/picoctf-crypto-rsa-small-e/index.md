@@ -4,6 +4,7 @@ date: 2026-04-10
 tags: ["CTF", "Crypto", "picoCTF", "RSA", "Math"]
 categories: ["Cryptography", "CTF Writeups"]
 description: "Khai thác thuật toán mã hóa RSA khi số mũ công khai e rất nhỏ (e = 3) mà không cần phân tích thừa số nguyên tố n."
+showAuthor: false
 showTableOfContents: true
 ---
 
