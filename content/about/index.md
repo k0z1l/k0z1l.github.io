@@ -1,79 +1,94 @@
 ---
 title: "About Me"
-description: "Giới thiệu bản thân, định hướng nghiên cứu và kỹ năng chuyên môn trong lĩnh vực An toàn thông tin."
+description: "Đinh Tuấn Kiệt - Intern Penetration Tester | Sinh viên ngành An toàn thông tin tại HUIT (GPA 3.59/4.0)"
 date: 2026-09-13
 showTableOfContents: true
 ---
 
-## 👨‍💻 Giới thiệu
+# Đinh Tuấn Kiệt
+**Intern Penetration Tester | Offensive Security Enthusiast**
 
-Xin chào! Mình là **Tuấn Kiệt** (thường dùng handle `tu4nk13t` trong các giải CTF). Mình là sinh viên năm cuối chuyên ngành **An toàn thông tin / Cybersecurity**.
+📍 Dương Đức Hiền, Tây Thạnh, Tân Phú, TP. Hồ Chí Minh  
+📧 [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com) | 📞 0866384257  
+🌐 GitHub: [github.com/TuKi-dtk12](https://github.com/TuKi-dtk12)  
 
-Trang web này được xây dựng như một **Portfolio kỹ thuật** và là nơi mình ghi chép, chia sẻ các bài **Write-up giải đấu CTF**, phân tích lỗ hổng bảo mật (Vulnerability Research) cũng như những kinh nghiệm thực chiến trong quá trình học tập và làm việc.
-
----
-
-## 🎯 Định hướng & Lĩnh vực quan tâm
-
-- **Offensive Security / Red Teaming**: Penetration Testing (Web & API, Network), Privilege Escalation.
-- **Binary Exploitation (Pwn) & Reverse Engineering**: Phân tích mã độc cơ bản, khai thác lỗi bộ nhớ (Buffer Overflow, ROP Chain, Format String...).
-- **Security Research**: Nghiên cứu các lỗ hổng mới (1-day, N-day analysis) và phát triển PoC / exploit script.
+> [!TIP]
+> 📄 **Tải bản CV PDF chính thức**: [Download CV (Intern_Pentester_Dinh_Tuan_Kiet.pdf)](/cv/Intern_Pentester_Dinh_Tuan_Kiet.pdf)
 
 ---
 
-## 🛠️ Kỹ năng & Công cụ (Arsenal)
+## 🎯 Giới thiệu tóm tắt (Summary)
 
-### 1. Web Application Security
-- **Công cụ**: Burp Suite (Extensions, Intruder, Match & Replace), OWASP ZAP, Caido, Postman, SQLMap, FFUF, Gobuster.
-- **Lỗ hổng trọng tâm**: SQL Injection, SSRF, IDOR, XSS, CSRF, Insecure Deserialization, JWT Attacks, OAuth2 misconfigurations.
-
-### 2. Binary Exploitation & Reverse Engineering
-- **Disassemblers & Debuggers**: Ghidra, GDB (`pwndbg` / `gef`), IDA Free, x64dbg.
-- **Exploit Tools**: `pwntools` (Python), ROPgadget, checksec.
-
-### 3. Network & System
-- **Recon & Sniffing**: Nmap, Wireshark, tcpdump, Masscan.
-- **Hệ điều hành & Môi trường**: Kali Linux, Arch Linux, Ubuntu Server, Docker, Windows Active Directory lab.
-
-### 4. Lập trình & Scripting
-- **Ngôn ngữ**: Python (tự động hóa exploit & tooling), Bash script, C/C++ (hiểu sâu memory layout), Golang, JavaScript.
+Mình là sinh viên chuyên ngành **An toàn thông tin** (Information Security) với nền tảng vững chắc về mạng máy tính (Networking) và lập trình hệ thống (Systems Programming). Có niềm đam mê sâu sắc với **Offensive Security**, thích nghiên cứu các attack vectors hiện đại và kỹ năng khai thác thủ công (manual exploitation) nhằm đánh giá và tăng cường bảo mật cho các ứng dụng web và hệ thống doanh nghiệp.
 
 ---
 
-## 🏆 Hoạt động CTF & Nền tảng thực hành
+## 🎓 Học vấn (Education)
 
-- **Các giải CTF tham gia**:
-  - Sinh viên với An toàn thông tin (SVATTT / ASC)
-  - picoCTF, NahamCon CTF, KCSC CTF, WolvCTF, BuckeyeCTF...
-- **Nền tảng thực hành**:
-  - **Hack The Box**: Active player (Rank: Hacker / Pro Hacker)
-  - **TryHackMe**: Top 5% / 10%
-  - **PortSwigger Web Security Academy**: Practitioner / In-depth Labs
-
----
-
-## 📜 Học vấn & Chứng chỉ
-
-- **Học vấn**: Cử nhân An toàn thông tin (Graduating: 2026)
-- **Chứng chỉ & Khóa học**:
-  - CompTIA Security+ / eJPT (eLearnSecurity Junior Penetration Tester) *(Hoặc chứng chỉ mục tiêu bạn đang ôn luyện)*
-  - PortSwigger Certified Web Security Practitioner *(Mục tiêu)*
+### **Trường Đại học Công Thương TP. Hồ Chí Minh (HUIT)** *(2023 - 2027)*
+- **Chuyên ngành**: An toàn thông tin (Information Security)
+- **Điểm trung bình tích lũy (GPA)**: **3.59 / 4.0**
+- **Học bổng & Khen thưởng**:
+  - 🏅 **Học bổng Xuất sắc** (Outstanding Academic Scholarship - 2026)
+  - 🏅 **Học bổng Khuyến khích học tập** (Merit Academic Scholarship - 2024)
 
 ---
 
-## 🔐 Liên hệ & Khóa PGP
+## 🏆 Giải thưởng (Awards)
 
-Nếu bạn muốn trao đổi về bảo mật, giao lưu CTF hoặc cơ hội nghề nghiệp, vui lòng liên hệ qua:
+- **Giải Khuyến khích (Honorable Mention)** | *Cuộc thi Tìm kiếm Tài năng An toàn Thông tin mở rộng* - Đại học Thủ Dầu Một (Tháng 04/2026).
 
-- **Email**: `tuankiet.cyber@gmail.com`
-- **GitHub**: [github.com/tu4nk13t](https://github.com/tu4nk13t)
-- **LinkedIn**: [linkedin.com/in/tu4nk13t](https://linkedin.com/in/tu4nk13t)
+---
 
-```text
------BEGIN PGP PUBLIC KEY BLOCK-----
-Version: OpenPGP.js v4.10.10
-Comment: tu4nk13t Security Key
+## 🛠️ Kỹ năng chuyên môn (Key Skills)
 
-mQENBF+... (Bạn có thể dán public key GPG của bạn vào đây)
------END PGP PUBLIC KEY BLOCK-----
-```
+* **Programming & Scripting**: Python (tự động hóa script exploit & research), PHP, JavaScript (Web Security).
+* **Security Tools**: Burp Suite (Manual testing, Intruder, Match/Replace), Nmap, Wireshark, Nessus, SQLmap, Metasploit, v.v.
+* **Networking & Protocols**: TCP/IP, Mô hình OSI, DNS, DHCP, HTTP/S, Packet Analysis.
+* **Phương pháp luận**: OWASP Top 10 (SQLi, XSS, CSRF, File Upload, Command Injection, IDOR, SSRF), White-box Code Review, Manual Web Penetration Testing.
+
+---
+
+## 🔬 Nghiên cứu & Dự án nổi bật (Projects)
+
+### 1. Causal-TGE: Lightweight Counterfactual Attack Reconstruction
+*Thời gian: 06/2026 - 07/2026 | Tình trạng: Under Review*
+- **System-level Telemetry**: Xây dựng mô hình temporal provenance graph ở quy mô enterprise từ host telemetry (quá trình thực thi process, socket connections, file I/O) nhằm phát hiện các chiến dịch APT tinh vi.
+- **Attack Reconstruction**: Thiết kế engine tái hiện phản thực nghiệm (counterfactual reconstruction engine) để cô lập và xếp hạng các điểm kích hoạt nhân quả trọng yếu (causal triggers) trong chuỗi tấn công phức tạp.
+- **Systems Engineering**: Tối ưu hóa framework phát hiện siêu nhẹ (~46 KB footprint, độ trễ sub-millisecond) dành riêng cho các môi trường endpoint bị giới hạn tài nguyên nghiêm ngặt.
+
+### 2. Tuki Fresh Flower - Secure E-commerce Platform
+*Thời gian: 04/2026 - 05/2026*
+- **Kiến trúc an toàn**: Xây dựng backend Laravel MVC tích hợp các API thanh toán và AI (VietQR, Gemini), áp dụng Database Transactions đảm bảo toàn vẹn dữ liệu giao dịch thanh toán tuyệt đối.
+- **Vulnerability Mitigation**: Gia cố ứng dụng trước các nguy cơ OWASP thông qua Middleware RBAC, cấu hình strict PDO chống SQL Injection, và pipeline upload file an toàn (MIME validation, đổi tên bằng UUID ngẫu nhiên) nhằm triệt tiêu hoàn toàn nguy cơ Web Shell và Path Traversal.
+
+### 3. VocabMaster - Local AI English Learning Platform
+*Thời gian: 02/2026 - 03/2026*
+- Xây dựng backend Django phục vụ quản lý từ vựng và câu hỏi trắc nghiệm tương tác.
+- Tích hợp local Ollama API phục vụ kiểm tra ngữ pháp và sinh từ vựng bằng AI offline.
+- Fine-tune mô hình mã nguồn mở **Qwen2.5-3B** bằng kỹ thuật LoRA & Unsloth trên bộ dữ liệu tùy chỉnh 10.000 mẫu để chuẩn hóa output theo định dạng JSON nghiêm ngặt.
+
+### 4. Vulnerable Web Application - Educational CTF Challenge Platform
+*Thời gian: 12/2025 - 01/2026*
+- **Phát triển**: Xây dựng nền tảng CTF bằng PHP/MySQL kèm dashboard phân quyền RBAC và hệ thống chấm điểm tự động, mô phỏng thực tế 5 lỗ hổng nghiêm trọng trong OWASP Top 10 (SQLi, XSS, Unrestricted File Upload, CSRF, OS Command Injection).
+- **Security Testing**: Trực tiếp thực hiện đánh giá mã nguồn (white-box code review) và thực hiện manual penetration testing bằng Burp Suite để xác thực và khai thác lỗ hổng.
+
+---
+
+## 🚩 Thực hành Pentest & Giải đấu CTF (CTF Practice)
+
+*Thời gian: 07/2025 - Hiện tại*
+- **PortSwigger Web Security Academy**: Hoàn thành **100+ labs** thực hành chuyên sâu (SQLi, SSRF, XSS, CSRF, Authentication vulnerabilities, Business logic flaws).
+- **Nền tảng thực hành**: Tích cực rèn luyện kỹ năng thực chiến trên **TryHackMe**, **Root-Me**, **picoCTF**.
+- **Manual Testing**: Trực tiếp khai thác thủ công và đề xuất phương án vá lỗi cho các lỗ hổng theo chuẩn OWASP Top 10.
+- **Technical Write-ups**: Đã xuất bản nhiều bài viết writeup kỹ thuật chi tiết trên HackMD và trên trang blog này.
+
+---
+
+## 📬 Liên hệ
+
+Bạn có thể liên hệ với mình qua các kênh:
+
+- **Email**: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)
+- **Điện thoại**: 0866384257
+- **GitHub**: [github.com/TuKi-dtk12](https://github.com/TuKi-dtk12)
