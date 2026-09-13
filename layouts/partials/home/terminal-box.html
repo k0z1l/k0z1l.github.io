@@ -1,64 +1,139 @@
 <div class="w-full max-w-3xl mx-auto my-8 font-mono text-xs sm:text-sm select-text">
   <!-- Kali Linux Terminal Window -->
-  <div class="rounded-xl overflow-hidden shadow-2xl border border-[#30363d] bg-[#111217] transition-all duration-300 hover:border-[#5577ff]/60">
+  <div class="rounded-[10px] overflow-hidden shadow-2xl border border-[#262936] bg-[#0f111a] transition-all duration-300 hover:border-[#3b82f6]/50">
     
-    <!-- Titlebar -->
-    <div class="flex items-center px-4 py-3 bg-[#181a20] border-b border-[#262930] select-none">
-      <!-- 3 Navigation Buttons -->
+    <!-- Header Bar -->
+    <div class="flex items-center px-4 py-2.5 bg-[#16161e] border-b border-[#21232d] select-none">
+      <!-- 3 Window Control Buttons -->
       <div class="flex items-center space-x-2">
         <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
         <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
         <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
       </div>
       <!-- Center Title -->
-      <div class="flex-1 text-center text-xs font-semibold text-[#8b949e] tracking-wide">
-        khv1ch4rs@cyber-box:~ (zsh)
+      <div class="flex-1 text-center text-xs font-semibold text-[#94a3b8] tracking-wide">
+        khv1ch4rs@cybersec:~ (zsh)
       </div>
       <div class="w-12"></div>
     </div>
 
-    <!-- Terminal Content Area -->
-    <div class="p-4 sm:p-6 text-left leading-relaxed overflow-x-auto bf-scrollbar">
+    <!-- Terminal Body -->
+    <div class="p-4 sm:p-6 text-left leading-relaxed overflow-x-auto bf-scrollbar font-mono">
       
-      <!-- Kali Zsh Prompt 1 (Command) -->
+      <!-- Prompt 1 -->
       <div class="leading-snug">
-        <span class="text-[#5577ff]">┌──(</span><span class="text-[#00d4ff] font-bold">khv1ch4rs㉿cyber-box</span><span class="text-[#5577ff]">)-[</span><span class="text-[#f0f6fc] font-semibold">~</span><span class="text-[#5577ff]">]</span>
-      </div>
-      <div class="leading-snug mt-0.5">
-        <span class="text-[#5577ff]">└─</span><span class="text-[#5577ff] font-bold">$</span> <span class="text-white font-medium">cat motd.txt</span>
-      </div>
-
-      <!-- motd.txt Output: ASCII Art Banner -->
-      <pre class="mt-3 mb-4 text-[#2979ff] dark:text-[#5577ff] font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all">
-    __    __          ___      __    __ __                  
-   / /__ / /_ _   __ &lt;  /_____/ /_  / // /____ _ _____ ____ 
-  / //_// __ \ | / / / // ___// __ \/ // // __ `// ___// ___/
- / ,&lt;  / / / / |/ / / // /__ / / / /__  // /_/ // /   (__  ) 
-/_/|_|/_/ /_/|___/ /_/ \___//_/ /_/  /_/ \__,_//_/   /____/  
-      </pre>
-
-      <!-- Welcome Info Block -->
-      <div class="space-y-1 text-xs sm:text-sm">
-        <div>
-          <span class="text-[#00d4ff] font-bold">[+]</span> <span class="text-[#8b949e]">Author :</span> <span class="text-[#f0f6fc] font-semibold">khv1ch4rs</span>
-        </div>
-        <div>
-          <span class="text-[#00d4ff] font-bold">[+]</span> <span class="text-[#8b949e]">Focus  :</span> <span class="text-[#f0f6fc] font-semibold">Security Research &amp; Web Exploitation</span>
-        </div>
-        <div>
-          <span class="text-[#ffbd2e] font-bold">[*]</span> <span class="text-[#8b949e]">Notice :</span> <span class="text-[#7ee787] font-semibold">Grab a cup of coffee and enjoy the reads.</span>
-        </div>
-      </div>
-
-      <!-- Kali Zsh Prompt 2 (Waiting for input with blinking cursor) -->
-      <div class="mt-4 leading-snug">
-        <span class="text-[#5577ff]">┌──(</span><span class="text-[#00d4ff] font-bold">khv1ch4rs㉿cyber-box</span><span class="text-[#5577ff]">)-[</span><span class="text-[#f0f6fc] font-semibold">~</span><span class="text-[#5577ff]">]</span>
+        <span class="text-[#3b82f6]">┌──(</span><span class="text-[#38bdf8] font-bold">khv1ch4rs㉿cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
       </div>
       <div class="leading-snug mt-0.5 flex items-center">
-        <span class="text-[#5577ff]">└─</span><span class="text-[#5577ff] font-bold me-2">$</span>
-        <span class="inline-block w-2.5 h-4 bg-[#f0f6fc] animate-pulse"></span>
+        <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
+        <span id="cmd-typing" class="text-white font-medium"></span>
+        <span id="cmd-cursor" class="inline-block w-2.5 h-4 bg-[#cbd5e1] animate-pulse ms-0.5"></span>
       </div>
+
+      <!-- motd.txt Output Area -->
+      <div id="motd-output" class="hidden opacity-0 transition-opacity duration-500 ease-out">
+        <!-- ASCII Art Banner -->
+        <pre class="my-3 text-[#3b82f6] dark:text-[#38bdf8] font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all">
+  _     _           _      _     _  _            
+ | |   | |         / |    | |   | || |           
+ | | __| |____   __ | | ___| |__ | || |_ _ __ ___ 
+ | |/ /| '_ \ \ / / | |/ __| '_ \| || __| '__/ __|
+ |   &lt; | | | \ V /  | | (__| | | | || |_| |  \__ \
+ |_|\_\|_| |_|\_/   |_|\___|_| |_|_| \__|_|  |___/
+        </pre>
+
+        <!-- Information Block -->
+        <div class="space-y-1 text-xs sm:text-sm mt-2">
+          <div>
+            <span class="text-[#38bdf8] font-bold">[+]</span> <span class="text-[#94a3b8]">Author :</span> <span class="text-[#f8fafc] font-semibold">khv1ch4rs</span>
+          </div>
+          <div>
+            <span class="text-[#38bdf8] font-bold">[+]</span> <span class="text-[#94a3b8]">Focus  :</span> <span class="text-[#f8fafc] font-semibold">Security Research &amp; Web Exploitation</span>
+          </div>
+          <div>
+            <span class="text-[#4ade80] font-bold">[*]</span> <span class="text-[#94a3b8]">Notice :</span> <span class="text-[#4ade80] font-semibold">Grab a cup of coffee and enjoy the reads.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prompt 2 (Final waiting prompt) -->
+      <div id="prompt-final" class="hidden opacity-0 transition-opacity duration-300 ease-out mt-4">
+        <div class="leading-snug">
+          <span class="text-[#3b82f6]">┌──(</span><span class="text-[#38bdf8] font-bold">khv1ch4rs㉿cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
+        </div>
+        <div class="leading-snug mt-0.5 flex items-center">
+          <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
+          <span class="inline-block w-2.5 h-4 bg-[#cbd5e1] animate-pulse"></span>
+        </div>
+      </div>
+
+      <!-- Fallback for browsers without JS -->
+      <noscript>
+        <pre class="my-3 text-[#3b82f6] font-mono text-xs font-bold leading-tight">
+  _     _           _      _     _  _            
+ | |   | |         / |    | |   | || |           
+ | | __| |____   __ | | ___| |__ | || |_ _ __ ___ 
+ | |/ /| '_ \ \ / / | |/ __| '_ \| || __| '__/ __|
+ |   &lt; | | | \ V /  | | (__| | | | || |_| |  \__ \
+ |_|\_\|_| |_|\_/   |_|\___|_| |_|_| \__|_|  |___/
+        </pre>
+        <div class="space-y-1 text-xs">
+          <div><span class="text-[#38bdf8] font-bold">[+]</span> Author : khv1ch4rs</div>
+          <div><span class="text-[#38bdf8] font-bold">[+]</span> Focus  : Security Research &amp; Web Exploitation</div>
+          <div><span class="text-[#4ade80] font-bold">[*]</span> Notice : Grab a cup of coffee and enjoy the reads.</div>
+        </div>
+      </noscript>
 
     </div>
   </div>
 </div>
+
+<script>
+  (function () {
+    const cmdText = "cat motd.txt";
+    const typingElem = document.getElementById("cmd-typing");
+    const cursorElem = document.getElementById("cmd-cursor");
+    const motdElem = document.getElementById("motd-output");
+    const finalPromptElem = document.getElementById("prompt-final");
+
+    if (!typingElem || !cursorElem || !motdElem || !finalPromptElem) return;
+
+    let index = 0;
+
+    function typeCharacter() {
+      if (index < cmdText.length) {
+        typingElem.textContent += cmdText.charAt(index);
+        index++;
+        // Tốc độ gõ tự nhiên từ 60ms đến 80ms
+        const delay = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
+        setTimeout(typeCharacter, delay);
+      } else {
+        // Gõ xong lệnh, ẩn con trỏ của dòng lệnh
+        cursorElem.classList.add("hidden");
+
+        // Ngắt khoảng 300ms rồi hiển thị motd.txt
+        setTimeout(function () {
+          motdElem.classList.remove("hidden");
+          // Kích hoạt transition opacity
+          requestAnimationFrame(function () {
+            motdElem.classList.remove("opacity-0");
+            motdElem.classList.add("opacity-100");
+          });
+
+          // Hiển thị prompt chờ tiếp theo
+          setTimeout(function () {
+            finalPromptElem.classList.remove("hidden");
+            requestAnimationFrame(function () {
+              finalPromptElem.classList.remove("opacity-0");
+              finalPromptElem.classList.add("opacity-100");
+            });
+          }, 300);
+
+        }, 300);
+      }
+    }
+
+    // Bắt đầu gõ sau khi tải trang một chút (250ms)
+    setTimeout(typeCharacter, 250);
+  })();
+</script>
