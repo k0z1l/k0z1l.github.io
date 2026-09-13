@@ -21,19 +21,18 @@ Telegram: [t.me/tu4nki3t](https://t.me/tu4nki3t)
 
 ## Education
 
-### Ho Chi Minh City University of Industry and Trade (HUIT) *(2023 - 2027)*
+### Ho Chi Minh City University of Industry and Trade (2023 - 2027)
 
 * **Major**: Information Security  
 * **Current GPA**: **3.59 / 4.0**  
-* **Scholarships & Honors**:
-  * **Outstanding Academic Scholarship** (2026)
-  * **Merit Academic Scholarship** (2024)
 
 ---
 
 ## Awards & Honors
 
 * **Honorable Mention** | *Expanded Information Security Talent Search Competition* — Thu Dau Mot University *(Apr 2026)*
+* **Outstanding Academic Scholarship** (2026)
+* **Merit Academic Scholarship** (2024)
 
 ---
 
