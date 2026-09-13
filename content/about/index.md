@@ -1,12 +1,12 @@
 ---
 title: "About Me"
-description: "Offensive Security Engineer - Security Researcher"
+description: "Dinh Tuan Kiet - Offensive Security Engineer | Security Researcher | AI Researcher"
 date: 2026-09-13
 showAuthor: true
 showTableOfContents: true
 ---
 
-# Offensive Security Engineer - Security Researcher
+### Offensive Security Engineer | Security Researcher | AI Researcher
 
 Duong Duc Hien, Tay Thanh, Tan Phu, Ho Chi Minh City  
 Email: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
@@ -78,21 +78,10 @@ Facebook: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)
 
 ---
 
-## Web Application Penetration Testing & CTF Practice
-
+### 5. Web Application Penetration Testing & CTF Practice
 *Jul 2025 – Present*
 
 * **PortSwigger Web Security Academy**: Completed **100+ labs** with in-depth exploitation on SQLi, XSS, SSRF, CSRF, File Upload, and business logic flaws.
 * **Hands-on Platforms**: Actively sharpening skills on **TryHackMe**, **Root-Me**, and **picoCTF**.
 * **Manual Testing**: Conducted hands-on manual testing to exploit and mitigate OWASP Top 10 vulnerabilities.
 * **Write-ups**: Published detailed technical write-ups on vulnerability exploitations on HackMD and this blog.
-
----
-
-## Contact
-
-Feel free to connect or reach out regarding penetration testing, security research, or CTFs:
-
-* **Email**: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
-* **GitHub**: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
-* **Facebook**: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)
