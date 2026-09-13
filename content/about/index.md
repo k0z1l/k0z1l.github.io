@@ -25,7 +25,7 @@ Telegram: [t.me/tu4nki3t](https://t.me/tu4nki3t)
 
 * **Major**: Information Security  
 * **Current GPA**: **3.59 / 4.0**  
-* **Scholarships & Honors**:
+* **Scholarships**:
   * **Outstanding Academic Scholarship** (2026)
   * **Merit Academic Scholarship** (2024)
 
