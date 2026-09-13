@@ -1,5 +1,5 @@
 {{ $disableImageOptimization := .Site.Params.disableImageOptimization | default false }}
-<div class="flex author">
+<div class="flex author w-full">
   {{ with .Site.Params.Author.image }}
     {{ $authorImage := "" }}
     {{ if or (strings.HasPrefix . "http:") (strings.HasPrefix . "https:") }}
@@ -16,7 +16,7 @@
         {{ $squareImage = $authorImage.Crop (printf "%dx%d Center" $shortSide $shortSide ) }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4"
+        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0"
         width="96"
         height="96"
         alt="{{ $.Site.Params.Author.name | default "Author" }}"
@@ -32,7 +32,7 @@
         {{ $squareImage = $authorImage.Crop (printf "%dx%d Center" $shortSide $shortSide ) }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4"
+        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0"
         width="96"
         height="96"
         alt="{{ $.Site.Params.Author.name | default "Author" }}"
@@ -40,14 +40,14 @@
         data-zoom-src="{{ $squareImage.RelPermalink }}">
     {{ end }}
   {{ end }}
-  <div class="place-self-center">
+  <div class="place-self-center flex-1 min-w-0">
     {{ with .Site.Params.Author.name | markdownify }}
       <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
         {{ . }}
       </div>
     {{ end }}
     {{ with .Site.Params.Author.bio | markdownify }}
-      <div class="text-sm text-neutral-700 dark:text-neutral-400 mt-1">{{ . }}</div>
+      <div class="text-sm text-neutral-700 dark:text-neutral-400 mt-1 max-w-none">{{ . }}</div>
     {{ end }}
   </div>
 </div>
