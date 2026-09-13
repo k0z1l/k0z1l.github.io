@@ -5,7 +5,7 @@
   weight = 10
 
 [[main]]
-  name = "CTF Writeups"
+  name = "Writeups"
   pageRef = "writeups"
   weight = 20
 
@@ -15,12 +15,7 @@
   weight = 30
 
 [[main]]
-  name = "Tags"
-  pageRef = "tags"
-  weight = 40
-
-[[main]]
   name = "About Me"
   pageRef = "about"
-  weight = 50
+  weight = 40
 
