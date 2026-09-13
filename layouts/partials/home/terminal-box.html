@@ -12,22 +12,18 @@
   <!-- macOS / iTerm2 Styled Terminal Window -->
   <div class="rounded-xl overflow-hidden shadow-2xl shadow-black/60 border border-[#383838] bg-[#0c1017] transition-all duration-300 hover:border-[#4ade80]/40">
     
-    <!-- macOS Terminal Header Bar -->
-    <div class="relative flex items-center justify-center px-4 py-2.5 bg-[#2d2d2d] border-b border-[#1e1e1e] select-none">
-      <!-- 3 Mac Window Control Buttons (Close, Minimize, Maximize) -->
-      <div class="absolute left-4 flex items-center space-x-2">
-        <span class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] inline-block shadow-sm cursor-pointer hover:brightness-110 transition-all"></span>
-        <span class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] inline-block shadow-sm cursor-pointer hover:brightness-110 transition-all"></span>
-        <span class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] inline-block shadow-sm cursor-pointer hover:brightness-110 transition-all"></span>
+    <!-- macOS Terminal Header Bar (Fixed Height 38px, Pure Text Centered, No Folder Icon) -->
+    <div style="height: 38px; min-height: 38px; background-color: #2d2d2d; border-bottom: 1px solid #1e1e1e;" class="relative flex items-center px-4 select-none">
+      <!-- 3 Mac Window Control Buttons (Red, Yellow, Green - 12px diameter) -->
+      <div style="display: flex; align-items: center; gap: 8px;" class="z-10">
+        <span style="width: 12px; height: 12px; min-width: 12px; min-height: 12px; background-color: #ff5f56; border: 1px solid #e0443e; border-radius: 50%; display: inline-block;"></span>
+        <span style="width: 12px; height: 12px; min-width: 12px; min-height: 12px; background-color: #ffbd2e; border: 1px solid #dea123; border-radius: 50%; display: inline-block;"></span>
+        <span style="width: 12px; height: 12px; min-width: 12px; min-height: 12px; background-color: #27c93f; border: 1px solid #1aab29; border-radius: 50%; display: inline-block;"></span>
       </div>
 
-      <!-- Center Title: Folder Icon + Host & Shell -->
-      <div class="flex items-center space-x-1.5 text-xs font-medium text-[#d4d4d8] tracking-wide max-w-[65%] sm:max-w-none truncate font-sans">
-        <!-- macOS Folder Icon SVG -->
-        <svg class="w-3.5 h-3.5 text-[#38bdf8] shrink-0 inline-block" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M2 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-        </svg>
-        <span class="truncate">khv1ch4rs@cybersec: ~ (zsh)</span>
+      <!-- Pure Text Centered Title (13px, #a0a0a0) -->
+      <div style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; color: #a0a0a0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; pointer-events: none;" class="whitespace-nowrap font-normal tracking-wide text-center">
+        khv1ch4rs@cybersec: ~ (zsh)
       </div>
     </div>
 
