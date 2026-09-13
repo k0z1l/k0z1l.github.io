@@ -50,6 +50,12 @@ header {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
+/* Mở rộng box header của About Me / Single page sang bên phải */
+header#single_header {
+  max-width: 820px !important;
+  width: 100% !important;
+}
+
 /* Footer styling: Khác màu body, bo góc, viền tinh tế */
 footer#site-footer {
   background-color: #0c2016 !important;
