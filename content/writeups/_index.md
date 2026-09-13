@@ -1,6 +1,7 @@
 ---
 title: "CTF Writeups"
 description: "Tổng hợp các bài giải chi tiết các thử thách CTF (Web, Pwn, Reverse, Crypto, Forensics) từ các giải đấu trong nước và quốc tế."
+showAuthor: false
 showTableOfContents: false
 ---
 

@@ -2,7 +2,7 @@
 title: "About Me"
 description: "Đinh Tuấn Kiệt - Intern Penetration Tester | Offensive Security Enthusiast"
 date: 2026-09-13
-showAuthor: false
+showAuthor: true
 showTableOfContents: true
 ---
 
