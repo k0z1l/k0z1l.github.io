@@ -1,94 +1,104 @@
 ---
 title: "About Me"
-description: "Đinh Tuấn Kiệt - Intern Penetration Tester | Sinh viên ngành An toàn thông tin tại HUIT (GPA 3.59/4.0)"
+description: "Đinh Tuấn Kiệt - Intern Penetration Tester | Offensive Security Enthusiast"
 date: 2026-09-13
 showTableOfContents: true
 ---
 
 # Đinh Tuấn Kiệt
-**Intern Penetration Tester | Offensive Security Enthusiast**
+### Intern Penetration Tester
 
-📍 Dương Đức Hiền, Tây Thạnh, Tân Phú, TP. Hồ Chí Minh  
-📧 [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com) | 📞 0866384257  
+📍 Duong Duc Hien, Tay Thanh, Tan Phu, Ho Chi Minh City  
+📧 [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
 🌐 GitHub: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
-
-> [!TIP]
-> 📄 **Tải bản CV PDF chính thức**: [Download CV (Intern_Pentester_Dinh_Tuan_Kiet.pdf)](/cv/Intern_Pentester_Dinh_Tuan_Kiet.pdf)
+🌐 Facebook: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)
 
 ---
 
-## 🎯 Giới thiệu tóm tắt (Summary)
+## 🎯 Summary
 
-Mình là sinh viên chuyên ngành **An toàn thông tin** (Information Security) với nền tảng vững chắc về mạng máy tính (Networking) và lập trình hệ thống (Systems Programming). Có niềm đam mê sâu sắc với **Offensive Security**, thích nghiên cứu các attack vectors hiện đại và kỹ năng khai thác thủ công (manual exploitation) nhằm đánh giá và tăng cường bảo mật cho các ứng dụng web và hệ thống doanh nghiệp.
-
----
-
-## 🎓 Học vấn (Education)
-
-### **Trường Đại học Công Thương TP. Hồ Chí Minh (HUIT)** *(2023 - 2027)*
-- **Chuyên ngành**: An toàn thông tin (Information Security)
-- **Điểm trung bình tích lũy (GPA)**: **3.59 / 4.0**
-- **Học bổng & Khen thưởng**:
-  - 🏅 **Học bổng Xuất sắc** (Outstanding Academic Scholarship - 2026)
-  - 🏅 **Học bổng Khuyến khích học tập** (Merit Academic Scholarship - 2024)
+Offensive Security enthusiast and Information Security student with a solid background in networking and systems programming. Adept at researching modern attack vectors. Seeking a Penetration Testing Internship to leverage manual exploitation skills in securing enterprise web applications and systems.
 
 ---
 
-## 🏆 Giải thưởng (Awards)
+## 🎓 Education
 
-- **Giải Khuyến khích (Honorable Mention)** | *Cuộc thi Tìm kiếm Tài năng An toàn Thông tin mở rộng* - Đại học Thủ Dầu Một (Tháng 04/2026).
+### **Ho Chi Minh City University of Industry and Trade (HUIT)** *(2023 - 2027)*
 
----
-
-## 🛠️ Kỹ năng chuyên môn (Key Skills)
-
-* **Programming & Scripting**: Python (tự động hóa script exploit & research), PHP, JavaScript (Web Security).
-* **Security Tools**: Burp Suite (Manual testing, Intruder, Match/Replace), Nmap, Wireshark, Nessus, SQLmap, Metasploit, v.v.
-* **Networking & Protocols**: TCP/IP, Mô hình OSI, DNS, DHCP, HTTP/S, Packet Analysis.
-* **Phương pháp luận**: OWASP Top 10 (SQLi, XSS, CSRF, File Upload, Command Injection, IDOR, SSRF), White-box Code Review, Manual Web Penetration Testing.
+* **Major**: Information Security  
+* **Current GPA**: **3.59 / 4.0**  
+* **Scholarships & Honors**:
+  * 🏅 **Outstanding Academic Scholarship** (2026)
+  * 🏅 **Merit Academic Scholarship** (2024)
 
 ---
 
-## 🔬 Nghiên cứu & Dự án nổi bật (Projects)
+## 🏆 Awards & Honors
+
+* **Honorable Mention** | *Expanded Information Security Talent Search Competition* — Thu Dau Mot University *(Apr 2026)*
+
+---
+
+## 🛠️ Key Skills
+
+* **Programming & Scripting**: Python, PHP, JavaScript  
+* **Security & Pentesting Tools**: Burp Suite, Nmap, Wireshark, Nessus, SQLmap, Metasploit, etc.  
+* **Networking & Protocols**: TCP/IP, OSI Model, DNS, DHCP, HTTP/S  
+* **Core Competencies**: OWASP Top 10, Manual Web Exploitation, Source Code Review, Vulnerability Mitigation
+
+---
+
+## 🔬 Featured Projects & Research
 
 ### 1. Causal-TGE: Lightweight Counterfactual Attack Reconstruction
-*Thời gian: 06/2026 - 07/2026 | Tình trạng: Under Review*
-- **System-level Telemetry**: Xây dựng mô hình temporal provenance graph ở quy mô enterprise từ host telemetry (quá trình thực thi process, socket connections, file I/O) nhằm phát hiện các chiến dịch APT tinh vi.
-- **Attack Reconstruction**: Thiết kế engine tái hiện phản thực nghiệm (counterfactual reconstruction engine) để cô lập và xếp hạng các điểm kích hoạt nhân quả trọng yếu (causal triggers) trong chuỗi tấn công phức tạp.
-- **Systems Engineering**: Tối ưu hóa framework phát hiện siêu nhẹ (~46 KB footprint, độ trễ sub-millisecond) dành riêng cho các môi trường endpoint bị giới hạn tài nguyên nghiêm ngặt.
+*Under Review | Jun 2026 – Jul 2026*
 
-### 2. Tuki Fresh Flower - Secure E-commerce Platform
-*Thời gian: 04/2026 - 05/2026*
-- **Kiến trúc an toàn**: Xây dựng backend Laravel MVC tích hợp các API thanh toán và AI (VietQR, Gemini), áp dụng Database Transactions đảm bảo toàn vẹn dữ liệu giao dịch thanh toán tuyệt đối.
-- **Vulnerability Mitigation**: Gia cố ứng dụng trước các nguy cơ OWASP thông qua Middleware RBAC, cấu hình strict PDO chống SQL Injection, và pipeline upload file an toàn (MIME validation, đổi tên bằng UUID ngẫu nhiên) nhằm triệt tiêu hoàn toàn nguy cơ Web Shell và Path Traversal.
-
-### 3. VocabMaster - Local AI English Learning Platform
-*Thời gian: 02/2026 - 03/2026*
-- Xây dựng backend Django phục vụ quản lý từ vựng và câu hỏi trắc nghiệm tương tác.
-- Tích hợp local Ollama API phục vụ kiểm tra ngữ pháp và sinh từ vựng bằng AI offline.
-- Fine-tune mô hình mã nguồn mở **Qwen2.5-3B** bằng kỹ thuật LoRA & Unsloth trên bộ dữ liệu tùy chỉnh 10.000 mẫu để chuẩn hóa output theo định dạng JSON nghiêm ngặt.
-
-### 4. Vulnerable Web Application - Educational CTF Challenge Platform
-*Thời gian: 12/2025 - 01/2026*
-- **Phát triển**: Xây dựng nền tảng CTF bằng PHP/MySQL kèm dashboard phân quyền RBAC và hệ thống chấm điểm tự động, mô phỏng thực tế 5 lỗ hổng nghiêm trọng trong OWASP Top 10 (SQLi, XSS, Unrestricted File Upload, CSRF, OS Command Injection).
-- **Security Testing**: Trực tiếp thực hiện đánh giá mã nguồn (white-box code review) và thực hiện manual penetration testing bằng Burp Suite để xác thực và khai thác lỗ hổng.
+* **System-level Telemetry**: Modeled enterprise-level temporal provenance graphs from host telemetry (process executions, socket connections, file I/O) to detect stealthy APT campaigns.
+* **Attack Reconstruction**: Engineered a counterfactual reconstruction engine to isolate and rank critical causal triggers within complex attack kill chains.
+* **Systems Engineering**: Optimized a lightweight detection framework (~46 KB footprint, sub-millisecond latency) designed for strict resource-constrained endpoint environments.
 
 ---
 
-## 🚩 Thực hành Pentest & Giải đấu CTF (CTF Practice)
+### 2. Tuki Fresh Flower — Secure E-commerce Platform
+*Apr 2026 – May 2026*
 
-*Thời gian: 07/2025 - Hiện tại*
-- **PortSwigger Web Security Academy**: Hoàn thành **100+ labs** thực hành chuyên sâu (SQLi, SSRF, XSS, CSRF, Authentication vulnerabilities, Business logic flaws).
-- **Nền tảng thực hành**: Tích cực rèn luyện kỹ năng thực chiến trên **TryHackMe**, **Root-Me**, **picoCTF**.
-- **Manual Testing**: Trực tiếp khai thác thủ công và đề xuất phương án vá lỗi cho các lỗ hổng theo chuẩn OWASP Top 10.
-- **Technical Write-ups**: Đã xuất bản nhiều bài viết writeup kỹ thuật chi tiết trên HackMD và trên trang blog này.
+* **Secure Architecture**: Engineered a Laravel MVC backend with API integrations (VietQR, Gemini) and enforced Database Transactions to guarantee absolute data integrity during checkout.
+* **Vulnerability Mitigation**: Hardened application against OWASP threats by implementing Middleware RBAC, strict PDO (anti-SQLi), and a secure file upload pipeline (MIME validation, UUID renaming) to neutralize Web Shells and Path Traversal.
 
 ---
 
-## 📬 Liên hệ
+### 3. VocabMaster — Local AI English Learning Platform
+*Feb 2026 – Mar 2026*
 
-Bạn có thể liên hệ với mình qua các kênh:
+* Built a Django backend for vocabulary and quiz management.
+* Integrated a local Ollama API for offline AI-powered grammar checking and vocabulary generation.
+* Fine-tuned a Qwen2.5-3B model using LoRA & Unsloth on a custom 10,000-sample dataset to enforce strict JSON outputs.
 
-- **Email**: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)
-- **Điện thoại**: 0866384257
-- **GitHub**: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)
+---
+
+### 4. Vulnerable Web Application — Educational CTF Challenge Platform
+*Dec 2025 – Jan 2026*
+
+* **Development**: Built a PHP/MySQL CTF platform with an RBAC dashboard and automated scoring, replicating 5 OWASP Top 10 vulnerabilities (SQLi, XSS, File Upload, CSRF, Command Injection).
+* **Security Testing**: Executed white-box code reviews and manual penetration testing via Burp Suite to validate and exploit vulnerabilities.
+
+---
+
+## 🚩 Web Application Penetration Testing & CTF Practice
+
+*Jul 2025 – Present*
+
+* **PortSwigger Web Security Academy**: Completed **100+ labs** with in-depth exploitation on SQLi, XSS, SSRF, CSRF, File Upload, and business logic flaws.
+* **Hands-on Platforms**: Actively sharpening skills on **TryHackMe**, **Root-Me**, and **picoCTF**.
+* **Manual Testing**: Conducted hands-on manual testing to exploit and mitigate OWASP Top 10 vulnerabilities.
+* **Write-ups**: Published detailed technical write-ups on vulnerability exploitations on HackMD and this blog.
+
+---
+
+## 📬 Contact
+
+Feel free to connect or reach out regarding penetration testing, security research, or CTFs:
+
+* **Email**: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
+* **GitHub**: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
+* **Facebook**: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)

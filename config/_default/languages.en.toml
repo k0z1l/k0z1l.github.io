@@ -2,21 +2,25 @@ disabled = false
 locale = "en"
 label = "English"
 weight = 1
-title = "Đinh Tuấn Kiệt | Intern Penetration Tester"
+title = "Đinh Tuấn Kiệt"
 
 [params]
   displayName = "EN"
   isoCode = "en"
   rtl = false
   dateFormat = "2 January 2006"
+  logo = "tk.jpg"
   description = "Đinh Tuấn Kiệt - Intern Penetration Tester, Offensive Security Enthusiast, Information Security Student at HUIT"
   copyright = "© 2026 Đinh Tuấn Kiệt. All rights reserved."
 
 [params.author]
   name = "Đinh Tuấn Kiệt"
+  image = "tk.jpg"
+  imageQuality = 96
   headline = "Intern Penetration Tester | Information Security @ HUIT"
-  bio = "Offensive Security enthusiast & Information Security student with a solid background in networking and systems programming. Adept at researching modern attack vectors, manual exploitation, and enterprise web security."
+  bio = "Offensive Security enthusiast and Information Security student with a solid background in networking and systems programming. Adept at researching modern attack vectors. Seeking a Penetration Testing Internship to leverage manual exploitation skills in securing enterprise web applications and systems."
   links = [
     { github = "https://github.com/khv1ch4rs" },
+    { facebook = "https://www.facebook.com/tu4nk13t" },
     { email = "mailto:tuankiet121305@gmail.com" }
   ]
