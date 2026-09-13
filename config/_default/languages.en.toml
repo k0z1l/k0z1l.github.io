@@ -1,0 +1,23 @@
+disabled = false
+locale = "en"
+label = "English"
+weight = 1
+title = "tu4nk13t | Cybersecurity & CTF Writeups"
+
+[params]
+  displayName = "EN"
+  isoCode = "en"
+  rtl = false
+  dateFormat = "2 January 2006"
+  description = "Cybersecurity Student, CTF Player, Security Enthusiast"
+  copyright = "© 2026 Tuấn Kiệt (tu4nk13t). All rights reserved."
+
+[params.author]
+  name = "Tuấn Kiệt"
+  headline = "Cybersecurity Student & CTF Player"
+  bio = "Đam mê An toàn thông tin, Web Security, Binary Exploitation & Reverse Engineering. Chia sẻ write-up các giải CTF và nghiên cứu bảo mật."
+  links = [
+    { github = "https://github.com/tu4nk13t" },
+    { linkedin = "https://linkedin.com/in/tu4nk13t" },
+    { email = "mailto:your-email@example.com" }
+  ]
