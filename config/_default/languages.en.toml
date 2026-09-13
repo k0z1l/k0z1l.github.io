@@ -14,6 +14,7 @@ title = "Dinh Tuan Kiet"
 
 [params.author]
   name = "Dinh Tuan Kiet"
+  aka = "khv1ch4rs aka 0xDTK"
   image = "tk.jpg"
   imageQuality = 96
   headline = "Offensive Security Engineer | Security Researcher | AI Researcher"
