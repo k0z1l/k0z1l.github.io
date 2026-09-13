@@ -1,7 +1,7 @@
 ---
 title: "[SVATTT 2025] Web - Secure Vault (JWT None Algorithm & SQL Injection)"
 date: 2026-03-15
-categories: ["SVATTT Challenges"]
+categories: ["SVATTT 2025 Challenges"]
 description: "Phân tích và khai thác chuỗi lỗ hổng SQL Injection kết hợp JWT algorithm confusion để chiếm quyền admin và đọc flag bí mật."
 showAuthor: false
 showTableOfContents: true
