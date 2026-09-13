@@ -16,7 +16,7 @@
         {{ $squareImage = $authorImage.Crop (printf "%dx%d Center" $shortSide $shortSide ) }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0"
+        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0 self-center"
         width="96"
         height="96"
         alt="{{ $.Site.Params.Author.name | default "Author" }}"
@@ -32,7 +32,7 @@
         {{ $squareImage = $authorImage.Crop (printf "%dx%d Center" $shortSide $shortSide ) }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0"
+        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0 self-center"
         width="96"
         height="96"
         alt="{{ $.Site.Params.Author.name | default "Author" }}"

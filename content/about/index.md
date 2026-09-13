@@ -33,7 +33,7 @@ Telegram: [t.me/tu4nki3t](https://t.me/tu4nki3t)
 
 ## Awards & Honors
 
-* **Honorable Mention** | *Expanded Information Security Talent Search Competition* — Thu Dau Mot University *(Apr 2026)*
+* **Honorable Mention** | *Expanded Information Security Talent Search Competition* — TDMU *(Apr 2026)*
 
 ---
 
