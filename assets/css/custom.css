@@ -22,3 +22,19 @@
   line-height: 1.4 !important;
   display: block;
 }
+
+/* Đường kẻ dọc đồng bộ cho phần nội dung bên trái */
+article .prose > div.max-w-prose {
+  border-left: 1px dotted #525252 !important;
+  padding-left: 1.75rem !important;
+}
+
+@media (max-width: 640px) {
+  article .prose > div.max-w-prose {
+    padding-left: 1rem !important;
+  }
+}
+
+html:not(.dark) article .prose > div.max-w-prose {
+  border-left-color: #d4d4d4 !important;
+}
