@@ -17,6 +17,6 @@ title = "Đinh Tuấn Kiệt | Intern Penetration Tester"
   headline = "Intern Penetration Tester | Information Security @ HUIT"
   bio = "Offensive Security enthusiast & Information Security student with a solid background in networking and systems programming. Adept at researching modern attack vectors, manual exploitation, and enterprise web security."
   links = [
-    { github = "https://github.com/TuKi-dtk12" },
+    { github = "https://github.com/khv1ch4rs" },
     { email = "mailto:tuankiet121305@gmail.com" }
   ]
