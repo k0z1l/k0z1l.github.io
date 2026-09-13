@@ -18,7 +18,6 @@ enableEmoji = true
   anchor = 'Center'
 
 [taxonomies]
-  tag = "tags"
   category = "categories"
   author = "authors"
   series = "series"
@@ -34,10 +33,6 @@ enableEmoji = true
 [related]
   threshold = 0
   toLower = false
-
-    [[related.indices]]
-        name = "tags"
-        weight = 100
 
     [[related.indices]]
         name = "categories"

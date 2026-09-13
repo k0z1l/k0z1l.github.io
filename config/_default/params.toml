@@ -44,6 +44,7 @@ disableTextInHeader = true
   showPagination = true
   showWordCount = true
   showReadingTime = true
+  showTags = false
 
 [list]
   showTableOfContents = false

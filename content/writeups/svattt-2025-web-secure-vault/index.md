@@ -1,8 +1,7 @@
 ---
 title: "[SVATTT 2025] Web - Secure Vault (JWT None Algorithm & SQL Injection)"
 date: 2026-03-15
-tags: ["CTF", "Web", "SVATTT", "JWT", "SQLi", "Authentication"]
-categories: ["Web Security", "CTF Writeups"]
+categories: ["SVATTT Challenges"]
 description: "Phân tích và khai thác chuỗi lỗ hổng SQL Injection kết hợp JWT algorithm confusion để chiếm quyền admin và đọc flag bí mật."
 showAuthor: false
 showTableOfContents: true
