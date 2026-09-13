@@ -1,40 +1,39 @@
 ---
 title: "About Me"
-description: "Đinh Tuấn Kiệt - Intern Penetration Tester | Offensive Security Enthusiast"
+description: "Offensive Security Engineer - Security Researcher"
 date: 2026-09-13
 showAuthor: true
 showTableOfContents: true
 ---
 
-# Đinh Tuấn Kiệt
-### Intern Penetration Tester
+# Offensive Security Engineer - Security Researcher
 
-📍 Duong Duc Hien, Tay Thanh, Tan Phu, Ho Chi Minh City  
-📧 [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
-🌐 GitHub: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
-🌐 Facebook: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)
+Duong Duc Hien, Tay Thanh, Tan Phu, Ho Chi Minh City  
+Email: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
+GitHub: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
+Facebook: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)
 
 ---
 
-## 🎓 Education
+## Education
 
-### **Ho Chi Minh City University of Industry and Trade (HUIT)** *(2023 - 2027)*
+### Ho Chi Minh City University of Industry and Trade (HUIT) *(2023 - 2027)*
 
 * **Major**: Information Security  
 * **Current GPA**: **3.59 / 4.0**  
 * **Scholarships & Honors**:
-  * 🏅 **Outstanding Academic Scholarship** (2026)
-  * 🏅 **Merit Academic Scholarship** (2024)
+  * **Outstanding Academic Scholarship** (2026)
+  * **Merit Academic Scholarship** (2024)
 
 ---
 
-## 🏆 Awards & Honors
+## Awards & Honors
 
 * **Honorable Mention** | *Expanded Information Security Talent Search Competition* — Thu Dau Mot University *(Apr 2026)*
 
 ---
 
-## 🛠️ Key Skills
+## Key Skills
 
 * **Programming & Scripting**: Python, PHP, JavaScript  
 * **Security & Pentesting Tools**: Burp Suite, Nmap, Wireshark, Nessus, SQLmap, Metasploit, etc.  
@@ -43,7 +42,7 @@ showTableOfContents: true
 
 ---
 
-## 🔬 Featured Projects & Research
+## Featured Projects & Research
 
 ### 1. Causal-TGE: Lightweight Counterfactual Attack Reconstruction
 *Under Review | Jun 2026 – Jul 2026*
@@ -79,7 +78,7 @@ showTableOfContents: true
 
 ---
 
-## 🚩 Web Application Penetration Testing & CTF Practice
+## Web Application Penetration Testing & CTF Practice
 
 *Jul 2025 – Present*
 
@@ -90,7 +89,7 @@ showTableOfContents: true
 
 ---
 
-## 📬 Contact
+## Contact
 
 Feel free to connect or reach out regarding penetration testing, security research, or CTFs:
 
