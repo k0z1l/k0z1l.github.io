@@ -1,0 +1,24 @@
+/* Custom styling for Table of Contents (bảng tóm tắt bên tay phải) */
+#TableOfContents ul {
+  padding-left: 0 !important;
+}
+
+/* Chỉ hiển thị các mục chính (H2), ẩn các mục con H3/H4 */
+#TableOfContents ul ul {
+  display: none !important;
+}
+
+/* Cách đều các mục trong bảng tóm tắt */
+#TableOfContents > ul > li {
+  margin-top: 1.1rem !important;
+  margin-bottom: 1.1rem !important;
+  list-style: none !important;
+}
+
+/* Tô đậm các mục trong bảng tóm tắt */
+#TableOfContents > ul > li > a {
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.4 !important;
+  display: block;
+}
