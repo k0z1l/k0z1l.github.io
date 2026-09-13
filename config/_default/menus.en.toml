@@ -24,18 +24,3 @@
   pageRef = "about"
   weight = 50
 
-# -- Footer Menu --
-[[footer]]
-  name = "CTF Writeups"
-  pageRef = "writeups"
-  weight = 10
-
-[[footer]]
-  name = "Tags"
-  pageRef = "tags"
-  weight = 20
-
-[[footer]]
-  name = "Categories"
-  pageRef = "categories"
-  weight = 30

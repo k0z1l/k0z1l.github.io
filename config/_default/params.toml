@@ -15,7 +15,7 @@ disableTextInHeader = true
   layout = "basic"
 
 [footer]
-  showMenu = true
+  showMenu = false
   showCopyright = true
   showThemeAttribution = false
   showAppearanceSwitcher = true

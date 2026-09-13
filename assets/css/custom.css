@@ -38,3 +38,38 @@ html:not(.dark) .article-content {
     padding-left: 1rem !important;
   }
 }
+
+/* Header styling: Khác màu body, bo góc, viền tinh tế */
+header {
+  background-color: #0c2016 !important;
+  border: 1px solid #1a4330 !important;
+  border-radius: 12px !important;
+  padding: 0.35rem 1.25rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Footer styling: Khác màu body, bo góc, viền tinh tế */
+footer#site-footer {
+  background-color: #0c2016 !important;
+  border: 1px solid #1a4330 !important;
+  border-radius: 12px !important;
+  padding: 1.25rem 1.75rem !important;
+  margin-top: 3rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+footer#site-footer .flex.items-center.justify-between {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Light mode support cho Header & Footer */
+html:not(.dark) header,
+html:not(.dark) footer#site-footer {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.05) !important;
+}
