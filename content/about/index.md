@@ -2,6 +2,7 @@
 title: "About Me"
 description: "Đinh Tuấn Kiệt - Intern Penetration Tester | Offensive Security Enthusiast"
 date: 2026-09-13
+showAuthor: false
 showTableOfContents: true
 ---
 
@@ -12,12 +13,6 @@ showTableOfContents: true
 📧 [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
 🌐 GitHub: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
 🌐 Facebook: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)
-
----
-
-## 🎯 Summary
-
-Offensive Security enthusiast and Information Security student with a solid background in networking and systems programming. Adept at researching modern attack vectors. Seeking a Penetration Testing Internship to leverage manual exploitation skills in securing enterprise web applications and systems.
 
 ---
 

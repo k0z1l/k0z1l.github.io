@@ -9,6 +9,7 @@ enableCodeCopy = true
 enableStructuredBreadcrumbs = true
 
 mainSections = ["writeups", "posts"]
+disableTextInHeader = true
 
 [header]
   layout = "basic"
@@ -33,8 +34,8 @@ mainSections = ["writeups", "posts"]
   showLikes = false
   showDateOnlyInArticle = false
   showDateUpdated = true
-  showAuthor = true
-  showHero = true
+  showAuthor = false
+  showHero = false
   heroStyle = "basic"
   showBreadcrumbs = true
   showDraftLabel = true
