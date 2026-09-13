@@ -1,39 +1,53 @@
 <div class="w-full max-w-3xl mx-auto my-8 font-mono text-xs sm:text-sm select-text">
-  <!-- Kali Linux Terminal Window -->
-  <div class="rounded-[10px] overflow-hidden shadow-2xl border border-[#262936] bg-[#0f111a] transition-all duration-300 hover:border-[#3b82f6]/50">
+  <style>
+    @keyframes term-blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    .term-cursor-blink {
+      animation: term-blink 1s infinite;
+    }
+  </style>
+
+  <!-- macOS / iTerm2 Styled Terminal Window -->
+  <div class="rounded-xl overflow-hidden shadow-2xl shadow-black/60 border border-[#383838] bg-[#0c1017] transition-all duration-300 hover:border-[#4ade80]/40">
     
-    <!-- Header Bar -->
-    <div class="flex items-center px-4 py-2.5 bg-[#16161e] border-b border-[#21232d] select-none">
-      <!-- 3 Window Control Buttons -->
-      <div class="flex items-center space-x-2">
-        <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
-        <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
-        <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+    <!-- macOS Terminal Header Bar -->
+    <div class="relative flex items-center justify-center px-4 py-2.5 bg-[#2d2d2d] border-b border-[#1e1e1e] select-none">
+      <!-- 3 Mac Window Control Buttons (Close, Minimize, Maximize) -->
+      <div class="absolute left-4 flex items-center space-x-2">
+        <span class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] inline-block shadow-sm cursor-pointer hover:brightness-110 transition-all"></span>
+        <span class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] inline-block shadow-sm cursor-pointer hover:brightness-110 transition-all"></span>
+        <span class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] inline-block shadow-sm cursor-pointer hover:brightness-110 transition-all"></span>
       </div>
-      <!-- Center Title -->
-      <div class="flex-1 text-center text-xs font-semibold text-[#94a3b8] tracking-wide">
-        khv1ch4rs@cybersec:~ (zsh)
+
+      <!-- Center Title: Folder Icon + Host & Shell -->
+      <div class="flex items-center space-x-1.5 text-xs font-medium text-[#d4d4d8] tracking-wide max-w-[65%] sm:max-w-none truncate font-sans">
+        <!-- macOS Folder Icon SVG -->
+        <svg class="w-3.5 h-3.5 text-[#38bdf8] shrink-0 inline-block" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+        </svg>
+        <span class="truncate">khv1ch4rs@cybersec: ~ (zsh)</span>
       </div>
-      <div class="w-12"></div>
     </div>
 
     <!-- Terminal Body -->
-    <div class="p-4 sm:p-6 text-left leading-relaxed overflow-x-auto bf-scrollbar font-mono">
+    <div class="p-4 sm:p-6 text-left leading-relaxed overflow-x-auto bf-scrollbar font-mono bg-[#0c1017]">
       
-      <!-- Prompt 1 -->
+      <!-- Prompt 1 (Kali Linux prompt) -->
       <div class="leading-snug">
         <span class="text-[#3b82f6]">┌──(</span><span class="text-[#38bdf8] font-bold">khv1ch4rs㉿cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
       </div>
       <div class="leading-snug mt-0.5 flex items-center">
         <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
-        <span id="cmd-typing" class="text-white font-medium"></span>
-        <span id="cmd-cursor" class="inline-block w-2.5 h-4 bg-[#cbd5e1] animate-pulse ms-0.5"></span>
+        <span id="cmd-typing" class="text-[#f8fafc] font-medium"></span>
+        <span id="cmd-cursor" class="inline-block w-2.5 h-4 bg-[#00ff66] term-cursor-blink ms-0.5"></span>
       </div>
 
       <!-- motd.txt Output Area -->
       <div id="motd-output" class="hidden opacity-0 transition-opacity duration-500 ease-out">
-        <!-- ASCII Art Banner: 0xDTK -->
-        <pre class="my-3 text-[#3b82f6] dark:text-[#38bdf8] font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all">
+        <!-- ASCII Art Banner: 0xDTK in Hacker Green -->
+        <pre class="my-3 text-[#00ff66] font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all">
    ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
@@ -42,43 +56,50 @@
         </pre>
 
         <!-- Information Block -->
-        <div class="space-y-1 text-xs sm:text-sm mt-2">
+        <div class="space-y-1.5 text-xs sm:text-sm mt-2 text-[#e2e8f0]">
           <div>
-            <span class="text-[#38bdf8] font-bold">[+]</span> <span class="text-[#94a3b8]">Author :</span> <span class="text-[#f8fafc] font-semibold">khv1ch4rs</span>
+            <span class="text-[#00ff66] font-bold">[+]</span> <span class="text-[#94a3b8]">Author :</span> <span class="text-[#f8fafc] font-semibold">khv1ch4rs</span>
           </div>
           <div>
-            <span class="text-[#38bdf8] font-bold">[+]</span> <span class="text-[#94a3b8]">Focus  :</span> <span class="text-[#f8fafc] font-semibold">Security Research &amp; Web Exploitation</span>
+            <span class="text-[#00ff66] font-bold">[+]</span> <span class="text-[#94a3b8]">Focus  :</span> <span class="text-[#f8fafc] font-semibold">Security Research &amp; Web Exploitation</span>
           </div>
           <div>
-            <span class="text-[#4ade80] font-bold">[*]</span> <span class="text-[#94a3b8]">Notice :</span> <span class="text-[#4ade80] font-semibold">Grab a cup of coffee and enjoy the reads.</span>
+            <span class="text-[#38bdf8] font-bold">[*]</span> <span class="text-[#94a3b8]">Notice :</span> <span class="text-[#00ff66] font-semibold">Grab a cup of coffee and enjoy the reads.</span>
           </div>
         </div>
       </div>
 
-      <!-- Prompt 2 (Final waiting prompt) -->
+      <!-- Prompt 2 (Final waiting prompt with blinking cursor) -->
       <div id="prompt-final" class="hidden opacity-0 transition-opacity duration-300 ease-out mt-4">
         <div class="leading-snug">
           <span class="text-[#3b82f6]">┌──(</span><span class="text-[#38bdf8] font-bold">khv1ch4rs㉿cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
         </div>
         <div class="leading-snug mt-0.5 flex items-center">
           <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
-          <span class="inline-block w-2.5 h-4 bg-[#cbd5e1] animate-pulse"></span>
+          <span class="inline-block w-2.5 h-4 bg-[#00ff66] term-cursor-blink ms-1"></span>
         </div>
       </div>
 
       <!-- Fallback for browsers without JS -->
       <noscript>
-        <pre class="my-3 text-[#3b82f6] font-mono text-xs font-bold leading-tight">
+        <pre class="my-3 text-[#00ff66] font-mono text-xs font-bold leading-tight">
    ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
 / /_/ /|   // /_/ / / /  / /| |  
 \____//_/|_/_____/ /_/  /_/ |_|  
         </pre>
-        <div class="space-y-1 text-xs">
-          <div><span class="text-[#38bdf8] font-bold">[+]</span> Author : khv1ch4rs</div>
-          <div><span class="text-[#38bdf8] font-bold">[+]</span> Focus  : Security Research &amp; Web Exploitation</div>
-          <div><span class="text-[#4ade80] font-bold">[*]</span> Notice : Grab a cup of coffee and enjoy the reads.</div>
+        <div class="space-y-1 text-xs text-[#e2e8f0]">
+          <div><span class="text-[#00ff66] font-bold">[+]</span> Author : khv1ch4rs</div>
+          <div><span class="text-[#00ff66] font-bold">[+]</span> Focus  : Security Research &amp; Web Exploitation</div>
+          <div><span class="text-[#38bdf8] font-bold">[*]</span> Notice : Grab a cup of coffee and enjoy the reads.</div>
+        </div>
+        <div class="mt-4 leading-snug">
+          <span class="text-[#3b82f6]">┌──(</span><span class="text-[#38bdf8] font-bold">khv1ch4rs㉿cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
+        </div>
+        <div class="leading-snug mt-0.5 flex items-center">
+          <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
+          <span class="inline-block w-2.5 h-4 bg-[#00ff66] term-cursor-blink ms-1"></span>
         </div>
       </noscript>
 
@@ -102,23 +123,22 @@
       if (index < cmdText.length) {
         typingElem.textContent += cmdText.charAt(index);
         index++;
-        // Tốc độ gõ tự nhiên từ 60ms đến 80ms
-        const delay = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
+        // Natural typing speed between 55ms and 85ms
+        const delay = Math.floor(Math.random() * (85 - 55 + 1)) + 55;
         setTimeout(typeCharacter, delay);
       } else {
-        // Gõ xong lệnh, ẩn con trỏ của dòng lệnh
+        // Typing done, hide command cursor
         cursorElem.classList.add("hidden");
 
-        // Ngắt khoảng 300ms rồi hiển thị motd.txt
+        // Reveal motd.txt output
         setTimeout(function () {
           motdElem.classList.remove("hidden");
-          // Kích hoạt transition opacity
           requestAnimationFrame(function () {
             motdElem.classList.remove("opacity-0");
             motdElem.classList.add("opacity-100");
           });
 
-          // Hiển thị prompt chờ tiếp theo
+          // Show final prompt with blinking block cursor
           setTimeout(function () {
             finalPromptElem.classList.remove("hidden");
             requestAnimationFrame(function () {
@@ -131,7 +151,8 @@
       }
     }
 
-    // Bắt đầu gõ sau khi tải trang một chút (250ms)
+    // Start typing after brief delay (250ms)
     setTimeout(typeCharacter, 250);
   })();
 </script>
+
