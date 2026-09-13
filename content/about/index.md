@@ -10,7 +10,7 @@ showTableOfContents: true
 
 📍 Dương Đức Hiền, Tây Thạnh, Tân Phú, TP. Hồ Chí Minh  
 📧 [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com) | 📞 0866384257  
-🌐 GitHub: [github.com/TuKi-dtk12](https://github.com/TuKi-dtk12)  
+🌐 GitHub: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
 
 > [!TIP]
 > 📄 **Tải bản CV PDF chính thức**: [Download CV (Intern_Pentester_Dinh_Tuan_Kiet.pdf)](/cv/Intern_Pentester_Dinh_Tuan_Kiet.pdf)
@@ -91,4 +91,4 @@ Bạn có thể liên hệ với mình qua các kênh:
 
 - **Email**: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)
 - **Điện thoại**: 0866384257
-- **GitHub**: [github.com/TuKi-dtk12](https://github.com/TuKi-dtk12)
+- **GitHub**: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)
