@@ -1,0 +1,41 @@
+# -- Main Menu --
+[[main]]
+  name = "Home"
+  pageRef = "/"
+  weight = 10
+
+[[main]]
+  name = "CTF Writeups"
+  pageRef = "writeups"
+  weight = 20
+
+[[main]]
+  name = "Categories"
+  pageRef = "categories"
+  weight = 30
+
+[[main]]
+  name = "Tags"
+  pageRef = "tags"
+  weight = 40
+
+[[main]]
+  name = "About Me"
+  pageRef = "about"
+  weight = 50
+
+# -- Footer Menu --
+[[footer]]
+  name = "CTF Writeups"
+  pageRef = "writeups"
+  weight = 10
+
+[[footer]]
+  name = "Tags"
+  pageRef = "tags"
+  weight = 20
+
+[[footer]]
+  name = "Categories"
+  pageRef = "categories"
+  weight = 30

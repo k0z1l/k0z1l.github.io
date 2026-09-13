@@ -1,0 +1,53 @@
+# -- Theme Options --
+colorScheme = "terminal"
+defaultAppearance = "dark"
+autoSwitchAppearance = true
+
+enableA11y = false
+enableSearch = true
+enableCodeCopy = true
+enableStructuredBreadcrumbs = true
+
+mainSections = ["writeups", "posts"]
+
+[header]
+  layout = "basic"
+
+[footer]
+  showMenu = true
+  showCopyright = true
+  showThemeAttribution = false
+  showAppearanceSwitcher = true
+  showScrollToTop = true
+
+[homepage]
+  layout = "profile"
+  showRecent = true
+  showRecentItems = 5
+  showMoreLink = true
+  showMoreLinkDest = "/writeups/"
+
+[article]
+  showDate = true
+  showViews = false
+  showLikes = false
+  showDateOnlyInArticle = false
+  showDateUpdated = true
+  showAuthor = true
+  showHero = true
+  heroStyle = "basic"
+  showBreadcrumbs = true
+  showDraftLabel = true
+  showTableOfContents = true
+  showHeadingAnchors = true
+  showPagination = true
+  showWordCount = true
+  showReadingTime = true
+
+[list]
+  showTableOfContents = false
+  showBreadcrumbs = true
+  showSummary = true
+  cardView = false
+  groupByYear = true
+  paginationWidth = 1
