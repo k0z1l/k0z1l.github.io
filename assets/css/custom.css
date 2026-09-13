@@ -23,18 +23,18 @@
   display: block;
 }
 
-/* Đường kẻ dọc đồng bộ cho phần nội dung bên trái */
-article .prose > div.max-w-prose {
-  border-left: 1px dotted #525252 !important;
+/* Đường kẻ dọc đồng bộ tuyệt đối cho phần nội dung bên trái */
+.article-content {
+  border-left: 1px dotted rgba(var(--color-neutral-600), 1) !important;
   padding-left: 1.75rem !important;
 }
 
-@media (max-width: 640px) {
-  article .prose > div.max-w-prose {
-    padding-left: 1rem !important;
-  }
+html:not(.dark) .article-content {
+  border-left-color: rgba(var(--color-neutral-300), 1) !important;
 }
 
-html:not(.dark) article .prose > div.max-w-prose {
-  border-left-color: #d4d4d4 !important;
+@media (max-width: 640px) {
+  .article-content {
+    padding-left: 1rem !important;
+  }
 }
