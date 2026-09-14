@@ -87,3 +87,9 @@ article header img.rounded-full {
   object-fit: cover !important;
   object-position: center 10% !important;
 }
+
+/* Căn đều 2 bên cho nội dung mô tả tác giả */
+.author .place-self-center div:last-child {
+  text-align: justify !important;
+  text-justify: inter-word !important;
+}
