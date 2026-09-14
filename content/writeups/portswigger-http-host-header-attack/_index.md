@@ -14,7 +14,7 @@ Lỗ hổng liên quan đến header `Host` phát sinh khi ứng dụng web tin 
 
 ---
 
-## 🧭 Danh sách 6 bài Lab trong Series
+## Danh sách 6 bài Lab trong Series
 
 | Lab | Tên bài Lab | Mức độ | Kỹ thuật khai thác chính |
 | :---: | :--- | :---: | :--- |
@@ -27,7 +27,7 @@ Lỗ hổng liên quan đến header `Host` phát sinh khi ứng dụng web tin 
 
 ---
 
-## 🎯 Cấu trúc phân tích chuẩn cho mỗi bài viết
+## Cấu trúc phân tích chuẩn cho mỗi bài viết
 Mỗi bài giải trong series được chuẩn hóa theo quy trình 4 bước:
 1. **Mô tả bài toán & Trinh sát (Reconnaissance)**: Xác định cách ứng dụng xử lý header `Host`.
 2. **Cơ chế phát sinh lỗ hổng**: Phân tích luồng dữ liệu (Data Flow) và cấu hình máy chủ dẫn đến điểm yếu.

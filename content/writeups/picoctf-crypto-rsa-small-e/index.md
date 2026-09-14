@@ -7,7 +7,7 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## 📌 Thông tin thử thách
+## Thông tin thử thách
 * **Giải đấu**: picoCTF
 * **Thể loại**: Cryptography
 * **Điểm số**: 200 pts

@@ -9,7 +9,7 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## 📌 Thông tin bài Lab
+## Thông tin bài Lab
 * **Tên bài Lab**: Host header authentication bypass
 * **Chuyên đề**: HTTP Host Header attacks
 * **Mức độ**: Apprentice

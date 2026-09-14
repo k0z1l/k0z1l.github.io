@@ -9,7 +9,7 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## 📌 Thông tin bài Lab
+## Thông tin bài Lab
 * **Tên bài Lab**: Basic password reset poisoning
 * **Chuyên đề**: HTTP Host Header attacks
 * **Mức độ**: Practitioner
