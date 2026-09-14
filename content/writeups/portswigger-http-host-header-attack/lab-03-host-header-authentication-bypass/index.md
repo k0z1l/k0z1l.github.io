@@ -17,7 +17,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Mô tả bài toán & Trinh sát (Reconnaissance)
+## 1. Kiến thức nền tảng
 
 Khi cố gắng truy cập vào đường dẫn `/admin` từ trình duyệt:
 ```http
@@ -34,7 +34,7 @@ Thông báo này gợi ý rằng cơ chế phân quyền kiểm tra xem request 
 
 ---
 
-## 2. Cơ chế phát sinh lỗ hổng
+## 2. Mô hình tấn công
 
 Hệ thống kiểm tra nguồn gốc request bằng cách đọc trực tiếp header `Host`:
 ```python
@@ -46,7 +46,7 @@ Bởi vì header `Host` là một thành phần hoàn toàn do client kiểm so�
 
 ---
 
-## 3. Khai thác lỗ hổng (PoC Step-by-Step)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Can thiệp request truy cập `/admin`
 Bắt request `GET /admin` trong Burp Suite và chuyển sang **Repeater**:
@@ -70,6 +70,6 @@ Nhận phản hồi `302 Found`. Người dùng `carlos` đã bị xóa và bài
 
 ---
 
-## 4. Biện pháp khắc phục (Mitigation)
+## 4. Biện pháp khắc phục
 * **Xác thực dựa trên IP thực tế (`Remote Address`)**: Kiểm tra IP ở tầng socket kết nối TCP thực tế (`$_SERVER['REMOTE_ADDR']` hoặc socket peer address) thay vì tin tưởng header `Host`.
 * **Phân tách mạng**: Đặt giao diện quản trị trên một cổng (Port) riêng hoặc mạng VPN nội bộ tách biệt hoàn toàn với Internet công cộng.

@@ -17,7 +17,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Mô tả bài toán & Trinh sát (Reconnaissance)
+## 1. Kiến thức nền tảng
 
 Theo chuẩn RFC 7230, một HTTP Request có thể chứa **Absolute URL** trong Request Line:
 ```http
@@ -30,7 +30,7 @@ Khi một Reverse Proxy nhận được request có cả Absolute URL và header
 
 ---
 
-## 2. Cơ chế phát sinh lỗ hổng
+## 2. Mô hình tấn công
 
 Hệ thống proxy trung gian kiểm tra tính hợp lệ của request dựa trên URL trong Request Line. Khi Request Line chứa domain hợp lệ của bài lab, proxy cho phép request đi qua.
 
@@ -38,7 +38,7 @@ Tuy nhiên, khi chuyển tiếp request đến backend, proxy lại đọc giá 
 
 ---
 
-## 3. Khai thác lỗ hổng (PoC Step-by-Step)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Gửi Request kết hợp Absolute URL và Internal Host
 Chuyển request sang Burp Repeater và cấu hình:
@@ -65,6 +65,6 @@ Bài lab hoàn thành!
 
 ---
 
-## 4. Biện pháp khắc phục (Mitigation)
+## 4. Biện pháp khắc phục
 * **Chuẩn hóa Request Line trước khi chuyển tiếp (URL Normalization)**: Đảm bảo reverse proxy luôn chuyển đổi Absolute URL thành Relative path kết hợp Host header thống nhất trước khi gửi tiếp tới backend.
 * **Đồng bộ cơ chế phân tích (Parser Uniformity)**: Sử dụng các phiên bản phần mềm proxy và backend server tuân thủ nghiêm ngặt cùng một tiêu chuẩn RFC.

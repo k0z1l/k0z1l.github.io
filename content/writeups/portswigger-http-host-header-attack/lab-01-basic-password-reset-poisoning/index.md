@@ -17,7 +17,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Mô tả bài toán & Trinh sát (Reconnaissance)
+## 1. Kiến thức nền tảng
 
 Ứng dụng web cung cấp tính năng quên mật khẩu (*Forgot Password*). Khi người dùng gửi yêu cầu đặt lại mật khẩu, hệ thống sẽ gửi một email chứa đường dẫn đặt lại mật khẩu kèm token bí mật.
 
@@ -36,7 +36,7 @@ Nhận thấy ứng dụng không validate header `Host` mà sử dụng trực 
 
 ---
 
-## 2. Cơ chế phát sinh lỗ hổng
+## 2. Mô hình tấn công
 
 Hệ thống backend sử dụng giá trị từ header `Host` do client gửi lên để sinh URL tuyệt đối (Absolute URL) cho liên kết đặt lại mật khẩu:
 
@@ -48,7 +48,7 @@ Do không có danh sách máy chủ được phép (whitelist validation), kẻ 
 
 ---
 
-## 3. Khai thác lỗ hổng (PoC Step-by-Step)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Chuẩn bị máy chủ Exploit Server
 Mở **Exploit Server** được cung cấp bởi bài lab và sao chép địa chỉ domain:
@@ -87,7 +87,7 @@ Nhập mật khẩu mới và tiến hành đăng nhập với tài khoản `car
 
 ---
 
-## 4. Biện pháp khắc phục (Mitigation)
+## 4. Biện pháp khắc phục
 
 * **Không sử dụng header `Host` để tạo URL nhạy cảm**: Cấu hình giá trị domain tuyệt đối cố định trong file cấu hình của ứng dụng (ví dụ: `APP_URL` trong file `.env`).
 * **Sử dụng Server Name cố định**: Trên Nginx/Apache, cấu hình web server bỏ qua hoặc từ chối các request có header `Host` không nằm trong danh sách `server_name` hợp lệ:

@@ -17,7 +17,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Mô tả bài toán & Trinh sát (Reconnaissance)
+## 1. Kiến thức nền tảng
 
 Trong bài lab này, khi người dùng yêu cầu đặt lại mật khẩu, ứng dụng vẫn tạo ra email chứa đường dẫn link reset. Tuy nhiên, nạn nhân (mô phỏng bot) sẽ **không bao giờ click vào liên kết** bên trong email.
 
@@ -25,7 +25,7 @@ Do đó, kỹ thuật can thiệp domain thông thường như Lab 1 sẽ thất
 
 ---
 
-## 2. Cơ chế phát sinh lỗ hổng
+## 2. Mô hình tấn công
 
 Ứng dụng cho phép đưa các ký tự đặc biệt (dấu nháy đơn, nháy kép, dấu cách) vào header `Host` mà không lọc sạch khi nhúng vào template HTML của email:
 
@@ -37,7 +37,7 @@ Nếu ta đưa vào một đoạn **Dangling Markup** (thẻ HTML chưa đóng d
 
 ---
 
-## 3. Khai thác lỗ hổng (PoC Step-by-Step)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Chuẩn bị Dangling Markup Payload
 Trên Burp Repeater, gửi request reset password cho `carlos` với header `Host` tùy biến chứa payload Dangling Markup:
@@ -71,7 +71,7 @@ https://YOUR-LAB-ID.web-security-academy.net/reset-password?token=abcdef12345678
 
 ---
 
-## 4. Biện pháp khắc phục (Mitigation)
+## 4. Biện pháp khắc phục
 * **Xác thực định dạng Host Header nghiêm ngặt**: Chỉ chấp nhận tên miền hợp lệ theo chuẩn RFC (không chứa ký tự HTML như `'`, `"`, `<`, `>`, khoảng trắng hoặc ký tự điều khiển).
 * **Mã hóa ngữ cảnh (Context-aware Encoding)**: Encode toàn bộ dữ liệu động trước khi nhúng vào các template email hoặc trang web HTML.
 * **Content Security Policy (CSP)** cho Email / Web Client: Hạn chế nguồn nạp tài nguyên và gửi dữ liệu ra bên ngoài.

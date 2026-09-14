@@ -17,7 +17,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Mô tả bài toán & Trinh sát (Reconnaissance)
+## 1. Kiến thức nền tảng
 
 Trang chủ của bài lab sử dụng cơ chế lưu đệm (Caching) cho các tài nguyên tĩnh và tài liệu HTML. Khi phân tích phản hồi, ta thấy hệ thống import một file JavaScript tĩnh:
 
@@ -31,7 +31,7 @@ Trang chủ của bài lab sử dụng cơ chế lưu đệm (Caching) cho các 
 
 ---
 
-## 2. Cơ chế phát sinh lỗ hổng
+## 2. Mô hình tấn công
 
 Khi một request chứa **2 header `Host` trùng lặp**:
 1. Tầng **Reverse Proxy / Cache** chỉ quan sát và dùng header `Host` đầu tiên để định tuyến và tạo Cache Key.
@@ -41,7 +41,7 @@ Do đó, ta có thể lưu một trang chủ bị đầu độc đường dẫn 
 
 ---
 
-## 3. Khai thác lỗ hổng (PoC Step-by-Step)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Chuẩn bị file script độc hại trên Exploit Server
 1. Truy cập **Exploit Server**.
@@ -73,6 +73,6 @@ Gửi request liên tục cho đến khi header trả về `X-Cache: hit` (khi c
 
 ---
 
-## 4. Biện pháp khắc phục (Mitigation)
+## 4. Biện pháp khắc phục
 * **Từ chối các request có nhiều header `Host`**: Cấu hình HTTP parser ở tầng Proxy/CDN từ chối ngay lập tức (trả về mã lỗi `400 Bad Request`) nếu xuất hiện nhiều hơn một header `Host`.
 * **Sử dụng đường dẫn tương đối (Relative URLs)** cho việc nhúng tài nguyên tĩnh: `<script src="/resources/js/tracking.js"></script>`.
