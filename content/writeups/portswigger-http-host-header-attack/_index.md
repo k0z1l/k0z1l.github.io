@@ -1,7 +1,7 @@
 ---
 title: "[PortSwigger] HTTP Host Header Attacks Series"
 date: 2026-09-14
-description: "Tổng hợp phân tích và kỹ thuật khai thác chi tiết chuỗi 6 bài lab về lỗ hổng HTTP Host Header trên PortSwigger Web Security Academy."
+description: "Tổng hợp phân tích và kỹ thuật khai thác chi tiết chuỗi 7 bài lab về lỗ hổng HTTP Host Header trên PortSwigger Web Security Academy."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
 showAuthor: false
@@ -14,16 +14,17 @@ Lỗ hổng liên quan đến header `Host` phát sinh khi ứng dụng web tin 
 
 ---
 
-## Danh sách 6 bài Lab trong Series
+## Danh sách 7 bài Lab trong Series
 
 | Lab | Tên bài Lab | Mức độ | Kỹ thuật khai thác chính |
 | :---: | :--- | :---: | :--- |
-| **01** | [Basic password reset poisoning](lab-01-basic-password-reset-poisoning/) | Practitioner | Đầu độc header `Host` trong yêu cầu quên mật khẩu |
+| **01** | [Basic password reset poisoning](lab-01-basic-password-reset-poisoning/) | Apprentice | Đầu độc header `Host` trong yêu cầu quên mật khẩu |
 | **02** | [Host header authentication bypass](lab-02-host-header-authentication-bypass/) | Apprentice | Giả mạo Host truy cập trái phép trang quản trị nội bộ |
 | **03** | [Web cache poisoning via ambiguous requests](lab-03-web-cache-poisoning-via-ambiguous-requests/) | Practitioner | Kỹ thuật Duplicate Host Header đầu độc Web Cache |
 | **04** | [Routing-based SSRF](lab-04-routing-based-ssrf/) | Practitioner | Tận dụng reverse proxy định tuyến sai để quét và truy cập mạng nội bộ |
-| **05** | [SSRF via flawed request parsing](lab-05-ssrf-via-flawed-request-parsing/) | Expert | Bất đồng bộ phân tích URL giữa reverse proxy và backend server |
-| **06** | [Password reset poisoning via dangling markup](lab-06-password-reset-poisoning-via-dangling-markup/) | Expert | Trích xuất token reset qua dangling markup injection khi không có tương tác người dùng |
+| **05** | [SSRF via flawed request parsing](lab-05-ssrf-via-flawed-request-parsing/) | Practitioner | Bất đồng bộ phân tích URL giữa reverse proxy và backend server |
+| **06** | [Host validation bypass via connection state attack](lab-06-host-validation-bypass-via-connection-state-attack/) | Practitioner | Khai thác cơ chế HTTP persistent connection để bypass kiểm tra Host |
+| **07** | [Password reset poisoning via dangling markup](lab-07-password-reset-poisoning-via-dangling-markup/) | Expert | Trích xuất token reset qua dangling markup injection khi không có tương tác người dùng |
 
 ---
 
