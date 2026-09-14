@@ -1,6 +1,6 @@
 ---
 title: "About Me"
-description: "Dinh Tuan Kiet - Offensive Security Engineer | Security Researcher | AI Researcher"
+description: "Dinh Tuan Kiet - Offensive Security Engineer | AI & Security Researcher"
 date: 2026-09-13
 showAuthor: true
 showTableOfContents: true
@@ -9,7 +9,7 @@ showWordCount: false
 showReadingTime: false
 ---
 
-### Offensive Security Engineer | Security Researcher | AI Researcher
+### Offensive Security Engineer | AI & Security Researcher
 
 Duong Duc Hien, Tay Thanh, Tan Phu, Ho Chi Minh City  
 Email: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
