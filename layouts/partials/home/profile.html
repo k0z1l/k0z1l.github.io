@@ -20,7 +20,8 @@
           {{ $squareImage = $authorImage.Crop (printf "%dx%d Center" $shortSide $shortSide ) }}
         {{ end }}
         <img
-          class="mb-2 h-36 w-36 rounded-full"
+          class="mb-2 h-36 w-36 rounded-full object-cover"
+          style="object-position: center 15%;"
           width="144"
           height="144"
           alt="{{ $.Site.Params.Author.name | default `Author` }}"
