@@ -47,7 +47,7 @@
       </div>
     {{ end }}
     {{ with .Site.Params.Author.bio | markdownify }}
-      <div class="text-sm text-neutral-700 dark:text-neutral-400 mt-1 max-w-none">{{ . }}</div>
+      <div class="text-sm text-neutral-700 dark:text-neutral-400 mt-1 max-w-none text-justify" style="text-align: justify; text-justify: inter-word;">{{ . }}</div>
     {{ end }}
   </div>
 </div>
