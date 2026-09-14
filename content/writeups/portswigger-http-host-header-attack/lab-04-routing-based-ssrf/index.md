@@ -145,7 +145,7 @@ Thử nghiệm gửi nhanh bằng phương thức `GET /admin/delete?username=ca
 
 ![Hình 7: Gửi request GET bị từ chối do thiếu tham số csrf](extracted_images/image7.png)
 
-Kiểm tra tính hợp lệ của token CSRF và phiên đăng nhập:
+Dùng phiên đăng nhập để tạo ra token CSRF hợp lệ:
 
 ![Hình 8: Đối chiếu token CSRF trong phiên làm việc hiện tại](extracted_images/image8.png)
 
