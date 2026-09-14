@@ -50,9 +50,9 @@ header {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Mở rộng box header của About Me / Single page sang bên phải */
+/* Mở rộng box header của About Me / Single page sang bên phải vừa vặn */
 header#single_header {
-  max-width: 820px !important;
+  max-width: 740px !important;
   width: 100% !important;
 }
 
@@ -88,8 +88,9 @@ article header img.rounded-full {
   object-position: center 10% !important;
 }
 
-/* Căn đều 2 bên cho nội dung mô tả tác giả */
+/* Căn đều 2 bên và giữ chuẩn 4 dòng cho nội dung mô tả tác giả */
 .author .place-self-center div:last-child {
   text-align: justify !important;
   text-justify: inter-word !important;
+  max-width: 570px !important;
 }
