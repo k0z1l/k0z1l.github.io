@@ -1,10 +1,10 @@
 ---
-title: "[PortSwigger] Lab 6: Password Reset Poisoning via Dangling Markup"
+title: "[PortSwigger] Lab 7: Password Reset Poisoning via Dangling Markup"
 date: 2026-09-14
 description: "Khai thác lỗ hổng Password Reset Poisoning kết hợp kỹ thuật Dangling Markup Injection để đánh cắp token đặt lại mật khẩu của người dùng mà không cần nạn nhân click vào link."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
-series_order: 6
+series_order: 7
 showAuthor: false
 showTableOfContents: true
 ---

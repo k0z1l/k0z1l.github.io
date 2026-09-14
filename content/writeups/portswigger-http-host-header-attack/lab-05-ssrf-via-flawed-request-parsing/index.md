@@ -12,7 +12,7 @@ showTableOfContents: true
 ## Thông tin bài Lab
 * **Tên bài Lab**: SSRF via flawed request parsing
 * **Chuyên đề**: HTTP Host Header attacks
-* **Mức độ**: Expert
+* **Mức độ**: Practitioner
 * **Mục tiêu**: Khai thác lỗi phân tích request line để gửi yêu cầu đến mạng nội bộ `192.168.0.0/24` và xóa người dùng `carlos`.
 
 ---
