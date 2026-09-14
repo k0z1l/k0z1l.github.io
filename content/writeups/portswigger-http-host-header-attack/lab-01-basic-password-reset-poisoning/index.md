@@ -88,7 +88,7 @@ Vì trường header Host hoàn toàn do client kiểm soát và có thể bị 
 
 > [!NOTE]
 > **Q1: Tại sao dev lại không hardcode domain mà lại lấy từ Host header?**  
-> **Trả lời:** Thông thường, các dự án thực tế chạy trên nhiều môi trường như dev, staging, test, production hoặc kiến trúc Multi-tenant khi nhiều domain dùng chung một backend code. Lập trình viên thường ngại cấu hình biến môi trường `BASE_URL` riêng cho từng môi trường nên chọn giải pháp nhanh là đọc trực tiếp từ trường header `Host`, từ đó vô tình tạo ra lỗ hổng.
+> **Trả lời:** Các dự án thực tế chạy trên nhiều môi trường như dev, staging, test, production hoặc kiến trúc Multi-tenant khi nhiều domain dùng chung một backend code. Lập trình viên thường ngại cấu hình biến môi trường `BASE_URL` riêng cho từng môi trường nên chọn giải pháp nhanh là đọc trực tiếp từ trường header `Host`, từ đó vô tình tạo ra lỗ hổng.
 > 
 > **Q2: Nếu Web Server hoặc Reverse Proxy đứng trước chặn không cho đổi Host header thì sao?**  
 > **Trả lời:** Nếu Reverse Proxy kiểm tra nghiêm ngặt header `Host`, attacker sẽ chuyển hướng sang các kỹ thuật bypass nâng cao hơn:
