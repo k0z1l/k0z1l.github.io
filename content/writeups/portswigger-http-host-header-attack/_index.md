@@ -19,8 +19,8 @@ Lỗ hổng liên quan đến header `Host` phát sinh khi ứng dụng web tin 
 | Lab | Tên bài Lab | Mức độ | Kỹ thuật khai thác chính |
 | :---: | :--- | :---: | :--- |
 | **01** | [Basic password reset poisoning](lab-01-basic-password-reset-poisoning/) | Practitioner | Đầu độc header `Host` trong yêu cầu quên mật khẩu |
-| **02** | [Web cache poisoning via ambiguous requests](lab-02-web-cache-poisoning-via-ambiguous-requests/) | Practitioner | Tranh chấp header Host kép (Duplicate Host) đầu độc bộ nhớ đệm |
-| **03** | [Host header authentication bypass](lab-03-host-header-authentication-bypass/) | Apprentice | Giả mạo Host truy cập trái phép trang quản trị nội bộ |
+| **02** | [Host header authentication bypass](lab-02-host-header-authentication-bypass/) | Apprentice | Giả mạo Host truy cập trái phép trang quản trị nội bộ |
+| **03** | [Web cache poisoning via ambiguous requests](lab-03-web-cache-poisoning-via-ambiguous-requests/) | Practitioner | Tranh chấp header Host kép (Duplicate Host) đầu độc bộ nhớ đệm |
 | **04** | [Routing-based SSRF](lab-04-routing-based-ssrf/) | Practitioner | Tận dụng reverse proxy định tuyến sai để quét và truy cập mạng nội bộ |
 | **05** | [SSRF via flawed request parsing](lab-05-ssrf-via-flawed-request-parsing/) | Expert | Bất đồng bộ phân tích URL giữa reverse proxy và backend server |
 | **06** | [Password reset poisoning via dangling markup](lab-06-password-reset-poisoning-via-dangling-markup/) | Expert | Trích xuất token reset qua dangling markup injection khi không có tương tác người dùng |
