@@ -14,13 +14,13 @@ title = "Dinh Tuan Kiet"
 
 [params.author]
   name = "Dinh Tuan Kiet"
-  aka = "I'm khv1ch4rs aka 0xDTK"
+  aka = "I'm k0z1l aka 0xDTK"
   image = "tk.jpg"
   imageQuality = 96
   headline = "Offensive Security Engineer | AI & Security Researcher"
   bio = "Offensive Security Engineer and Security Researcher with a solid background in networking, systems programming, and modern attack vectors. Passionate about manual web exploitation, analyzing complex threat behaviors, and bridging offensive tradecraft with machine intelligence to secure critical systems."
   links = [
-    { github = "https://github.com/khv1ch4rs" },
+    { github = "https://github.com/k0z1l" },
     { facebook = "https://www.facebook.com/tu4nk13t" },
     { telegram = "https://t.me/tu4nki3t" },
     { email = "mailto:tuankiet121305@gmail.com" }
