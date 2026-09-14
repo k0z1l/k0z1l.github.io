@@ -9,7 +9,7 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## 📌 Thông tin bài Lab
+## Thông tin bài Lab
 * **Tên bài Lab**: SSRF via flawed request parsing
 * **Chuyên đề**: HTTP Host Header attacks
 * **Mức độ**: Expert

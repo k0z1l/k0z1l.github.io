@@ -9,7 +9,7 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## 📌 Thông tin bài Lab
+## Thông tin bài Lab
 * **Tên bài Lab**: Password reset poisoning via dangling markup
 * **Chuyên đề**: HTTP Host Header attacks
 * **Mức độ**: Expert

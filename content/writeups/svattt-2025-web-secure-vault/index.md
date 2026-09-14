@@ -7,7 +7,7 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## 📌 Thông tin bài thi
+## Thông tin bài thi
 * **Giải đấu**: Sinh viên với An toàn thông tin (SVATTT)
 * **Thể loại**: Web Exploitation
 * **Điểm số**: 350 pts
@@ -103,7 +103,7 @@ Authorization: Bearer eyJhbGciOiAibm9uZSI...
 }
 ```
 
-🚩 **Flag**: `SVATTT{jwt_n0n3_4lg_c0mb1n3d_w1th_sql1_77a9b2}`
+**Flag**: `SVATTT{jwt_n0n3_4lg_c0mb1n3d_w1th_sql1_77a9b2}`
 
 ---
 
