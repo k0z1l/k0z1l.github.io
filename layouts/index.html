@@ -12,7 +12,15 @@
 
   {{ partial "home/terminal-box.html" . }}
 
-  <section>
-    {{ partial "recent-articles/main.html" . }}
-  </section>
+  <div class="my-10 flex justify-center">
+    <a href="{{ .Site.Params.homepage.showMoreLinkDest | default `/writeups/` | relLangURL }}" class="show-more-glow-btn group" aria-label="Show More">
+      <span class="show-more-glow-beam"></span>
+      <span class="show-more-inner">
+        <span>{{ i18n "recent.show_more" | default "Show More" | markdownify }}</span>
+        <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </span>
+    </a>
+  </div>
 {{ end }}
