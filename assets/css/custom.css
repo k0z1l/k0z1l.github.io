@@ -67,10 +67,38 @@ header {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Mở rộng box header tiêu đề bài viết và trang About Me sang phải đồng bộ */
+/* Mở rộng và căn đều trên-dưới cho box header tiêu đề bài viết / About Me */
 header#single_header {
   max-width: 880px !important;
   width: 100% !important;
+  padding: 1.35rem 1.75rem !important;
+}
+
+header#single_header ol {
+  margin-top: 0 !important;
+  margin-bottom: 0.6rem !important;
+}
+
+header#single_header h1 {
+  margin-top: 0 !important;
+  margin-bottom: 0.6rem !important;
+  line-height: 1.25 !important;
+}
+
+/* Triệt tiêu margin-bottom thừa của metadata để khoảng cách trên - dưới cách đều tuyệt đối */
+header#single_header .mb-6 {
+  margin-bottom: 0 !important;
+}
+
+header#single_header .mb-5,
+header#single_header .mb-10 {
+  margin-bottom: 0 !important;
+  display: none !important;
+}
+
+/* Khi có thông tin tác giả (ví dụ trang About Me) */
+header#single_header .author {
+  margin-top: 1rem !important;
 }
 
 /* Bố cục trang bài viết (Single Post): Mở rộng nội dung chính, đẩy TOC sang phải */
