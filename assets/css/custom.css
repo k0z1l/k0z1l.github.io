@@ -67,26 +67,30 @@ header {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Mở rộng và căn đều trên-dưới cho box header tiêu đề bài viết / About Me */
-header#single_header {
+/* Mở rộng và căn đều trên-dưới cho box header tiêu đề bài viết / About Me / List */
+header#single_header,
+main > header {
   max-width: 880px !important;
   width: 100% !important;
   padding: 1.35rem 1.75rem !important;
 }
 
-header#single_header ol {
+header#single_header ol,
+main > header ol {
   margin-top: 0 !important;
   margin-bottom: 0.6rem !important;
 }
 
-header#single_header h1 {
+header#single_header h1,
+main > header h1 {
   margin-top: 0 !important;
   margin-bottom: 0.6rem !important;
   line-height: 1.25 !important;
 }
 
 /* Triệt tiêu margin-bottom thừa của metadata để khoảng cách trên - dưới cách đều tuyệt đối */
-header#single_header .mb-6 {
+header#single_header .mb-6,
+main > header .mb-2 {
   margin-bottom: 0 !important;
 }
 
@@ -101,7 +105,7 @@ header#single_header .author {
   margin-top: 1rem !important;
 }
 
-/* Bố cục trang bài viết (Single Post): Mở rộng nội dung chính, đẩy TOC sang phải */
+/* Bố cục trang bài viết (Single Post) & Chuyên đề (List/Series): Mở rộng nội dung chính, đẩy TOC sang phải */
 article {
   width: 100% !important;
   max-width: 100% !important;
@@ -113,7 +117,9 @@ article footer.max-w-prose {
 }
 
 @media (min-width: 1024px) {
-  article section {
+  /* Áp dụng cho cả Single Post (article section) và List/Series Overview (main > section.prose) */
+  article section,
+  main > section.prose {
     width: 100% !important;
     max-width: 100% !important;
     display: flex !important;
@@ -123,20 +129,31 @@ article footer.max-w-prose {
     gap: 2rem !important;
   }
 
-  /* Khối nội dung chính: Mở rộng sang phải, dời sang trái */
-  article section > div:not(.order-first) {
+  /* Khối nội dung chính: Mở rộng sang phải đạt 880px như các bài lab con */
+  article section > div:not(.order-first),
+  main > section.prose > div:not(.order-first) {
     flex: 1 1 0% !important;
     max-width: 880px !important;
     min-width: 0 !important;
     width: 100% !important;
   }
 
-  article section > div:not(.order-first) details {
+  article section > div:not(.order-first) details,
+  main > section.prose > div:not(.order-first) details {
     width: 100% !important;
   }
 
+  /* Đảm bảo table chiếm toàn bộ chiều rộng 880px */
+  article section table,
+  main > section.prose table {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: table !important;
+  }
+
   /* Bảng mục lục Table of Contents: Đẩy sang bên phải */
-  article section > div.order-first {
+  article section > div.order-first,
+  main > section.prose > div.order-first {
     flex-shrink: 0 !important;
     width: 250px !important;
     max-width: 280px !important;
