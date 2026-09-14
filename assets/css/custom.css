@@ -23,10 +23,27 @@
   display: block;
 }
 
+/* Tối ưu lề trang: Dời toàn bộ nội dung sang trái, mở rộng khoảng không sang phải */
+@media (min-width: 768px) {
+  body {
+    padding-left: 1.75rem !important;
+    padding-right: 1.75rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}
+
 /* Đường kẻ dọc đồng bộ tuyệt đối cho phần nội dung bên trái */
 .article-content {
   border-left: 1px dotted rgba(var(--color-neutral-600), 1) !important;
-  padding-left: 1.75rem !important;
+  padding-left: 1.5rem !important;
+  max-width: 100% !important;
+  width: 100% !important;
 }
 
 html:not(.dark) .article-content {
@@ -50,10 +67,53 @@ header {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Mở rộng box header của About Me / Single page sang bên phải vừa vặn */
+/* Mở rộng box header tiêu đề bài viết và trang About Me sang phải đồng bộ */
 header#single_header {
-  max-width: 740px !important;
+  max-width: 880px !important;
   width: 100% !important;
+}
+
+/* Bố cục trang bài viết (Single Post): Mở rộng nội dung chính, đẩy TOC sang phải */
+article {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+article footer.max-w-prose {
+  max-width: 880px !important;
+  width: 100% !important;
+}
+
+@media (min-width: 1024px) {
+  article section {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 2rem !important;
+  }
+
+  /* Khối nội dung chính: Mở rộng sang phải, dời sang trái */
+  article section > div:not(.order-first) {
+    flex: 1 1 0% !important;
+    max-width: 880px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  article section > div:not(.order-first) details {
+    width: 100% !important;
+  }
+
+  /* Bảng mục lục Table of Contents: Đẩy sang bên phải */
+  article section > div.order-first {
+    flex-shrink: 0 !important;
+    width: 250px !important;
+    max-width: 280px !important;
+    margin-left: auto !important;
+  }
 }
 
 /* Footer styling: Khác màu body, bo góc, viền tinh tế */
