@@ -74,6 +74,18 @@ Vì gói tin TCP từ Internet vẫn được định tuyến đến đúng đ�
 [ Trả về 200 OK / 302 Found cho Attacker ]
 ```
 
+> [!NOTE]
+> **Question:** Trong thực tế, nếu đổi `Host: localhost` mà bị lỗi `504 Gateway Timeout` hoặc `404 Not Found` thì do đâu?
+> 
+> **Answer:**  
+> Trường hợp này xảy ra khi Reverse Proxy (Nginx, HAProxy) dùng chính header `Host` để định tuyến nội bộ. Khi đổi thành `localhost`, proxy tìm máy chủ tên là `localhost` trong cụm upstream nhưng không tồn tại, dẫn đến lỗi 404 hoặc timeout. Để khắc phục và tìm hướng bypass khác, pentester thường áp dụng:
+> - **Giữ nguyên `Host: victim.com` và chèn các header ghi đè IP nguồn:**
+>   - `X-Forwarded-For: 127.0.0.1`
+>   - `X-Real-IP: 127.0.0.1`
+>   - `X-Custom-IP-Authorization: 127.0.0.1`
+> - **Thử các biến thể của localhost:** `127.0.0.1`, `[::1]`, `127.1`, `localhost:80`, `localhost:443`.
+> - **Kỹ thuật Duplicate Host:** Gửi 2 header `Host` trong cùng một request.
+
 ---
 
 ## 3. Khai thác lỗ hổng
