@@ -73,5 +73,5 @@ https://YOUR-LAB-ID.web-security-academy.net/reset-password?token=abcdef12345678
 
 ## 4. Biện pháp khắc phục
 * **Xác thực định dạng Host Header nghiêm ngặt**: Chỉ chấp nhận tên miền hợp lệ theo chuẩn RFC (không chứa ký tự HTML như `'`, `"`, `<`, `>`, khoảng trắng hoặc ký tự điều khiển).
-* **Mã hóa ngữ cảnh (Context-aware Encoding)**: Encode toàn bộ dữ liệu động trước khi nhúng vào các template email hoặc trang web HTML.
+* **Mã hóa theo ngữ cảnh**: Encode toàn bộ dữ liệu động trước khi nhúng vào các template email hoặc trang web HTML.
 * **Content Security Policy (CSP)** cho Email / Web Client: Hạn chế nguồn nạp tài nguyên và gửi dữ liệu ra bên ngoài.

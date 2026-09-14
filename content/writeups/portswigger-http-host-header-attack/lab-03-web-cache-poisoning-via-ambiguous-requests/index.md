@@ -13,13 +13,13 @@ showTableOfContents: true
 * **Tên bài Lab**: Web cache poisoning via ambiguous requests
 * **Chuyên đề**: HTTP Host Header attacks / Web Cache Poisoning
 * **Mức độ**: Practitioner
-* **Mục tiêu**: Đầu độc bộ nhớ đệm (Web Cache) của trang chủ để kích hoạt hàm JavaScript `alert(document.cookie)` trên trình duyệt của nạn nhân.
+* **Mục tiêu**: Đầu độc Web Cache của trang chủ để kích hoạt hàm JavaScript `alert(document.cookie)` trên trình duyệt của nạn nhân.
 
 ---
 
 ## 1. Kiến thức nền tảng
 
-Để hiểu và khai thác thành công lỗ hổng này, chúng ta cần nắm vững cơ chế phối hợp giữa máy chủ đệm (Caching Proxy) và máy chủ ứng dụng (Backend Application), cũng như khái niệm Cache Key và chuẩn xử lý HTTP Request Headers.
+Để hiểu và khai thác thành công lỗ hổng này, chúng ta cần nắm vững cơ chế phối hợp giữa Caching Proxy và Backend, cũng như khái niệm Cache Key và chuẩn xử lý HTTP Request Headers.
 
 ### 1.1. Cơ chế hoạt động của Web Cache và Cache Key
 
@@ -34,32 +34,32 @@ Cache Key = HTTP Method + Request Path / URI + Host Header chính
 - **Cache Hit (`X-Cache: hit`):** Request gửi lên có Cache Key trùng khớp với một bản ghi đang tồn tại trong Cache RAM/Disk. Máy chủ Cache lập tức trả về nội dung đã lưu trữ mà không cần kết nối vào máy chủ Backend.
 - **Cache Miss (`X-Cache: miss`):** Cache Key chưa tồn tại trong bộ nhớ đệm. Proxy sẽ chuyển tiếp request vào Backend để lấy dữ liệu tươi mới, sau đó lưu bản sao vào Cache (theo chỉ thị `Cache-Control: max-age=...`) rồi mới phản hồi cho Client.
 
-### 1.2. Khái niệm Ambiguous Requests (Request nhập nhằng) & Parser Discrepancy
+### 1.2. Khái niệm Ambiguous Requests & Parser Discrepancy
 
 Theo đặc tả kỹ thuật **RFC 7230 (mục 5.4)**, trong một request HTTP/1.1 chuẩn **chỉ được phép tồn tại duy nhất một header `Host`**. Nếu một gói tin chứa từ 2 header `Host` trở lên, máy chủ bắt buộc phải từ chối xử lý và phản hồi bằng mã lỗi `400 Bad Request`.
 
-Tuy nhiên, trong mô hình phân tán gồm tầng Front-end Proxy và Back-end Server, hai thành phần này thường sử dụng các thư viện phân tích cú pháp (HTTP Parser) khác nhau:
+Tuy nhiên, trong mô hình phân tán gồm tầng Front-end Proxy và Backend Server, hai thành phần này thường sử dụng các bộ HTTP Parser khác nhau:
 
 - **Tại tầng Front-end Cache:** Hệ thống parser chỉ đọc header `Host` đầu tiên để tạo Cache Key, coi các header trùng lặp tiếp theo là unkeyed hoặc bỏ qua.
-- **Tại tầng Back-end Application:** Bộ parser của framework (hoặc ứng dụng) khi gặp các header trùng tên lại ưu tiên ghi đè và sử dụng giá trị của header `Host` thứ hai để xử lý logic sinh giao diện HTML.
+- **Tại tầng Backend Application:** Bộ parser của framework hoặc ứng dụng khi gặp các header trùng tên lại ưu tiên ghi đè và sử dụng giá trị của header `Host` thứ hai để xử lý logic sinh giao diện HTML.
 
 > [!NOTE]
-> **Điểm mấu chốt:** Sự chênh lệch trong việc đọc cú pháp (Parser Differential) giữa Proxy Cache và Backend chính là kẽ hở cho phép kẻ tấn công tạo ra một request "nhập nhằng" (Ambiguous Request): một mặt đánh lừa Cache Proxy lưu dữ liệu vào Cache Key hợp lệ của người dùng, mặt khác ép Backend sinh ra mã nguồn độc hại.
+> **Điểm mấu chốt:** Sự chênh lệch Parser Differential giữa Proxy Cache và Backend chính là kẽ hở cho phép kẻ tấn công tạo ra một Ambiguous Request: một mặt đánh lừa Cache Proxy lưu dữ liệu vào Cache Key hợp lệ của người dùng, mặt khác ép Backend sinh ra mã nguồn độc hại.
 
 ---
 
 ## 2. Mô hình tấn công
 
-### 2.1. Phân tích nguyên nhân gốc rễ (Root Cause)
+### 2.1. Phân tích nguyên nhân gốc rễ
 
 Lỗ hổng phát sinh từ sự kết hợp của hai thiếu sót bảo mật:
-1. **Thiếu chuẩn hóa tại tầng Cache Proxy:** Proxy không thực thi nghiêm ngặt RFC 7230 để loại bỏ request có nhiều `Host` header, đồng thời không đưa header `Host` thứ hai vào Cache Key (Unkeyed Input).
+1. **Thiếu chuẩn hóa tại tầng Cache Proxy:** Proxy không thực thi nghiêm ngặt RFC 7230 để loại bỏ request có nhiều `Host` header, đồng thời không đưa header `Host` thứ hai vào Cache Key.
 2. **Tin tưởng ngầm định Input tại tầng Backend:** Ứng dụng Backend tự động lấy giá trị từ header `Host` do người dùng kiểm soát để ghép vào chuỗi nạp file JavaScript tĩnh (`<script src="//[Host-Header-Value]/resources/js/tracking.js">`).
 
-### 2.2. Sơ đồ luồng dữ liệu tấn công (Attack Data Flow)
+### 2.2. Sơ đồ luồng dữ liệu tấn công
 
 ```text
-[ Kẻ tấn công (Attacker) ]
+[ Kẻ tấn công ]
        │
        │  Gửi Request Ambiguous:
        │  GET / HTTP/1.1
@@ -75,7 +75,7 @@ Lỗ hổng phát sinh từ sự kết hợp của hai thiếu sót bảo mật:
        │
        ├─► [ LƯU VÀO CACHE ] Gán với Cache Key: "GET / victim-lab.net"
        │
-[ Nạn nhân (Victim / Bot) ]
+[ Nạn nhân ]
        │  GET / HTTP/1.1
        │  Host: victim-lab.net         <── Gửi request truy cập trang chủ bình thường
        ▼
@@ -109,7 +109,7 @@ Nhận xét: Tên miền trong đường dẫn nạp file JS chính là giá tr�
 
 ### Bước 2: Thử nghiệm kỹ thuật Ambiguous Request với Cache Buster (`?abc=1`)
 
-Để kiểm chứng khả năng can thiệp vào mã nguồn mà không làm hỏng bản cache của trang chủ thật, ta sử dụng một **Cache Buster** là tham số `?abc=1` nhằm tạo ra một không gian Cache Key độc lập. Đồng thời, ta chèn thêm một header `Host` thứ hai với giá trị tùy biến `Host: tu4nki3t`:
+Để kiểm chứng khả năng can thiệp vào mã nguồn mà không làm hỏng bản cache của trang chủ thật, ta sử dụng một Cache Buster là tham số `?abc=1` nhằm tạo ra một không gian Cache Key độc lập. Đồng thời, ta chèn thêm một header `Host` thứ hai với giá trị tùy biến `Host: tu4nki3t`:
 
 ```http
 GET /?abc=1 HTTP/1.1
@@ -142,7 +142,7 @@ Vì backend của ứng dụng vẫn giữ nguyên cấu trúc đường dẫn f
   HTTP/1.1 200 OK
   Content-Type: application/javascript; charset=utf-8
   ```
-- **Response Body (Payload):**
+- **Response Body:**
   ```javascript
   alert(document.cookie);
   ```
@@ -180,32 +180,32 @@ Khi gửi tiếp một lần nữa, header phản hồi ghi nhận `X-Cache: hit
 
 ### Bước 5: Kích hoạt tấn công và kiểm tra kết quả
 
-Người dùng nạn nhân (con bot giả lập của PortSwigger) khi duyệt vào trang chủ sẽ nhận được bản lưu trữ nhiễm độc từ Cache Proxy. Trình duyệt của nạn nhân tự động tải và thực thi file `/resources/js/tracking.js` từ Exploit Server, kích hoạt hộp thoại `alert(document.cookie)`.
+Nạn nhân khi duyệt vào trang chủ sẽ nhận được bản lưu trữ nhiễm độc từ Cache Proxy. Trình duyệt của nạn nhân tự động tải và thực thi file `/resources/js/tracking.js` từ Exploit Server, kích hoạt hộp thoại `alert(document.cookie)`.
 
 Giao diện bài Lab lập tức xuất hiện thông báo: **Congratulations, you solved the lab!**
 
-![Hình 5: Bài lab được giải quyết thành công (Lab Solved)](extracted_images/image5.png)
+![Hình 5: Bài lab được giải quyết thành công](extracted_images/image5.png)
 
 ---
 
 ## 4. Biện pháp khắc phục
 
-Để phòng ngừa triệt để các lỗ hổng Web Cache Poisoning qua kỹ thuật Ambiguous Request, đội ngũ vận hành và phát triển cần áp dụng mô hình phòng thủ theo chiều sâu (Defense-in-Depth) tại cả 2 lớp:
+Để phòng ngừa triệt để các lỗ hổng Web Cache Poisoning qua kỹ thuật Ambiguous Request, đội ngũ vận hành và phát triển cần áp dụng mô hình phòng thủ Defense-in-Depth tại cả 2 tầng:
 
-### 4.1. Cấu hình bảo vệ tại tầng Web Server / Reverse Proxy
+### 4.1. Cấu hình bảo vệ tại tầng Reverse Proxy
 
-- **Tuân thủ nghiêm ngặt đặc tả RFC 7230:** Cấu hình Web Server / Reverse Proxy (Nginx, Apache, HAProxy, Envoy) từ chối lập tức bằng mã lỗi `400 Bad Request` đối với bất kỳ request nào chứa nhiều hơn một header `Host` hoặc header `Host` không hợp lệ.
-- **Chuẩn hóa Request (Request Normalization):** Trước khi chuyển tiếp request vào mạng nội bộ, proxy phải chuẩn hóa lại toàn bộ HTTP headers và loại bỏ triệt để các header trùng lặp hoặc không xác thực.
-- **Loại bỏ Unkeyed Headers độc hại:** Cấu hình tầng biên (Edge Proxy / CDN) tự động strip (loại bỏ) các header ghi đè như `X-Forwarded-Host`, `X-Host`, `X-Forwarded-Server` do client từ Internet gửi lên.
+- **Tuân thủ nghiêm ngặt đặc tả RFC 7230:** Cấu hình Reverse Proxy (Nginx, Apache, HAProxy, Envoy) từ chối lập tức bằng mã lỗi `400 Bad Request` đối với bất kỳ request nào chứa nhiều hơn một header `Host` hoặc header `Host` không hợp lệ.
+- **Chuẩn hóa Request:** Trước khi chuyển tiếp request vào mạng nội bộ, proxy phải chuẩn hóa lại toàn bộ HTTP headers và loại bỏ triệt để các header trùng lặp hoặc không xác thực.
+- **Loại bỏ Unkeyed Headers độc hại:** Cấu hình Edge Proxy tự động loại bỏ các header ghi đè như `X-Forwarded-Host`, `X-Host`, `X-Forwarded-Server` do client từ Internet gửi lên.
 
-### 4.2. Cấu hình bảo vệ tại tầng Ứng dụng (Application Layer)
+### 4.2. Cấu hình bảo vệ tại tầng Backend
 
-- **Sử dụng đường dẫn tương đối (Relative URLs):** Tuyệt đối không sử dụng header `Host` động để sinh đường dẫn nạp tài nguyên tĩnh (JS, CSS, hình ảnh). Thay vào đó, hãy luôn sử dụng đường dẫn tương đối an toàn:
+- **Sử dụng đường dẫn tương đối:** Tuyệt đối không sử dụng header `Host` động để sinh đường dẫn nạp tài nguyên tĩnh (JS, CSS, hình ảnh). Thay vào đó, hãy luôn sử dụng đường dẫn tương đối an toàn:
 
 ```html
 <!-- Cấu hình chuẩn: Nạp tài nguyên bằng đường dẫn tương đối -->
 <script src="/resources/js/tracking.js"></script>
 ```
 
-- **Sử dụng Domain tĩnh (Static Base URL):** Trong trường hợp bắt buộc phải sử dụng đường dẫn tuyệt đối (Absolute URL), domain phải được lấy cố định từ biến môi trường cấu hình của hệ thống (ví dụ `APP_URL=https://example.com` trong file `.env`), không bao giờ đọc trực tiếp từ biến động như `$_SERVER['HTTP_HOST']` hay `req.headers.host`.
+- **Sử dụng Domain tĩnh:** Trong trường hợp bắt buộc phải sử dụng đường dẫn tuyệt đối, domain phải được lấy cố định từ biến môi trường cấu hình của hệ thống (ví dụ `APP_URL=https://example.com` trong file `.env`), không bao giờ đọc trực tiếp từ biến động như `$_SERVER['HTTP_HOST']` hay `req.headers.host`.
 - **Thiết lập chính sách Cache phù hợp:** Đối với các trang web hoặc tài nguyên có phản xạ thông tin từ người dùng, cần khai báo rõ ràng chỉ thị `Cache-Control: private, no-cache` để ngăn cản Proxy lưu trữ vào bộ nhớ đệm công cộng.
