@@ -33,8 +33,14 @@
     <h1 class="text-4xl font-extrabold">
       {{ .Site.Params.Author.name | default .Site.Title }}
     </h1>
-    <div class="text-lg font-mono font-medium text-neutral-400 dark:text-neutral-300 mt-1 mb-1">
-      {{ .Site.Params.Author.aka | default "I'm khv1ch4rs aka 0xDTK 🇻🇳" | emojify | safeHTML }}
+    <div class="text-lg font-mono font-medium text-neutral-400 dark:text-neutral-300 mt-1 mb-1 inline-flex items-center justify-center gap-2">
+      <span>{{ .Site.Params.Author.aka | default "I'm khv1ch4rs aka 0xDTK" }}</span>
+      <span class="inline-flex items-center" title="Vietnam">
+        <svg class="rounded-xs shadow-xs" style="width: 1.35em; height: 0.9em; border-radius: 2px; display: inline-block; vertical-align: middle;" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
+          <rect width="30" height="20" fill="#da251d"/>
+          <polygon points="15,4 11.47,14.85 20.71,8.15 9.29,8.15 18.53,14.85" fill="#ff0"/>
+        </svg>
+      </span>
     </div>
     {{ with .Site.Params.Author.headline }}
       <h2 class="text-xl text-neutral-500 dark:text-neutral-400">
