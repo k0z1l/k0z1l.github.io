@@ -23,7 +23,7 @@ disableTextInHeader = true
 
 [homepage]
   layout = "profile"
-  showRecent = true
+  showRecent = false
   showRecentItems = 1
   showMoreLink = true
   showMoreLinkDest = "/writeups/"

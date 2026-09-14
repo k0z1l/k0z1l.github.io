@@ -198,3 +198,82 @@ article header img.rounded-full {
   text-align: left !important;
   max-width: 570px !important;
 }
+
+/* Nút Show More với hiệu ứng ánh sáng neon tự động chạy quanh viền (Border Beam) */
+.show-more-glow-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  overflow: hidden;
+  border-radius: 12px;
+  text-decoration: none !important;
+  box-shadow: 0 0 15px -3px rgba(0, 255, 102, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.show-more-glow-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 30px 4px rgba(0, 255, 102, 0.55);
+}
+
+.show-more-glow-beam {
+  position: absolute;
+  width: 320%;
+  height: 320%;
+  left: -110%;
+  top: -110%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 240deg,
+    rgba(56, 189, 248, 0.7) 290deg,
+    #00ff66 360deg
+  );
+  animation: border-beam-rotate 2.6s linear infinite;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@keyframes border-beam-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.show-more-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.85rem;
+  border-radius: 10px;
+  background-color: #0c1017;
+  color: #00ff66;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  transition: all 0.3s ease;
+}
+
+html:not(.dark) .show-more-inner {
+  background-color: #ffffff;
+  color: #16a34a;
+}
+
+.show-more-glow-btn:hover .show-more-inner {
+  background-color: #131d27;
+  color: #ffffff;
+}
+
+html:not(.dark) .show-more-glow-btn:hover .show-more-inner {
+  background-color: #f1f5f9;
+  color: #15803d;
+}
+
