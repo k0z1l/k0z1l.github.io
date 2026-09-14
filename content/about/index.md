@@ -13,7 +13,7 @@ showReadingTime: false
 
 Duong Duc Hien, Tay Thanh, Tan Phu, Ho Chi Minh City  
 Email: [tuankiet121305@gmail.com](mailto:tuankiet121305@gmail.com)  
-GitHub: [github.com/khv1ch4rs](https://github.com/khv1ch4rs)  
+GitHub: [github.com/k0z1l](https://github.com/k0z1l)  
 Facebook: [facebook.com/tu4nk13t](https://www.facebook.com/tu4nk13t)  
 Telegram: [t.me/tu4nki3t](https://t.me/tu4nki3t)
 

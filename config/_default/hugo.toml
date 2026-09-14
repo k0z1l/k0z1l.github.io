@@ -1,6 +1,6 @@
 # -- Site Configuration --
 theme = "blowfish"
-baseURL = "https://khv1ch4rs.github.io/"
+baseURL = "https://k0z1l.github.io/"
 defaultContentLanguage = "en"
 
 enableRobotsTXT = true
