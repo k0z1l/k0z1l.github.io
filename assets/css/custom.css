@@ -85,5 +85,5 @@ html:not(.dark) footer#site-footer {
 header img.rounded-full,
 article header img.rounded-full {
   object-fit: cover !important;
-  object-position: center 15% !important;
+  object-position: center 10% !important;
 }

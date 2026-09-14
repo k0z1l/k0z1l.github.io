@@ -15,13 +15,12 @@
         {{ $final := $authorImage }}
         {{ $squareImage := $authorImage }}
         {{ if not (or $disableImageOptimization (eq $authorImage.MediaType.SubType "svg")) }}
-          {{ $final = $authorImage.Fill (print "288x288 Center q" ( $.Site.Params.Author.imagequality | default "96" )) }}
-          {{ $shortSide := int (math.Min $authorImage.Width $authorImage.Height) }}
-          {{ $squareImage = $authorImage.Crop (printf "%dx%d Center" $shortSide $shortSide ) }}
+          {{ $final = $authorImage.Resize (print "400x q" ( $.Site.Params.Author.imagequality | default "96" )) }}
+          {{ $squareImage = $authorImage.Resize "800x" }}
         {{ end }}
         <img
           class="mb-2 h-36 w-36 rounded-full object-cover"
-          style="object-position: center 15%;"
+          style="object-position: center 10%;"
           width="144"
           height="144"
           alt="{{ $.Site.Params.Author.name | default `Author` }}"
