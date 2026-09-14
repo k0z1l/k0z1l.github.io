@@ -84,6 +84,14 @@ Lỗ hổng phát sinh từ sự kết hợp của hai thiếu sót bảo mật:
                                             từ exploit-server và thực thi ==> XSS Kích hoạt!
 ```
 
+> [!NOTE]
+> **Question:** Tại sao không dùng 1 header `Host: exploit-server.net` duy nhất mà phải dùng 2 header?
+> 
+> **Answer:**  
+> Nếu ta chỉ gửi một header `Host: exploit-server.net`, Front-end Cache sẽ dùng chính domain của exploit server để làm Cache Key. Khi đó, bản cache độc hại chỉ được lưu dưới key `exploit-server.net`. Người dùng bình thường truy cập bằng domain thật `victim-lab.net` sẽ không bao giờ chạm vào bản cache đó. Ta bắt buộc phải gửi 2 header `Host`:
+> - **Header 1 (`victim-lab.net`)**: Dùng để lừa Front-end Cache lưu vào đúng Cache Key của người dùng thật.
+> - **Header 2 (`exploit-server.net`)**: Dùng để lừa Backend render mã độc vào nội dung trang.
+
 ---
 
 ## 3. Khai thác lỗ hổng
