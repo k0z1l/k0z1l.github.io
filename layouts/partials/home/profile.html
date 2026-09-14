@@ -34,7 +34,7 @@
       {{ .Site.Params.Author.name | default .Site.Title }}
     </h1>
     <div class="text-lg font-mono font-medium text-neutral-400 dark:text-neutral-300 mt-1 mb-1">
-      {{ .Site.Params.Author.aka | default "khv1ch4rs aka 0xDTK" }}
+      {{ .Site.Params.Author.aka | default "I'm khv1ch4rs aka 0xDTK 🇻🇳" | emojify | safeHTML }}
     </div>
     {{ with .Site.Params.Author.headline }}
       <h2 class="text-xl text-neutral-500 dark:text-neutral-400">

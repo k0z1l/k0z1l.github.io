@@ -9,15 +9,15 @@ title = "Dinh Tuan Kiet"
   isoCode = "en"
   rtl = false
   dateFormat = "2 January 2006"
-  description = "Dinh Tuan Kiet - Offensive Security Engineer | Security Researcher | AI Researcher"
+  description = "Dinh Tuan Kiet - Offensive Security Engineer | AI & Security Researcher"
   copyright = "© 2026 Dinh Tuan Kiet. All rights reserved."
 
 [params.author]
   name = "Dinh Tuan Kiet"
-  aka = "khv1ch4rs aka 0xDTK"
+  aka = "I'm khv1ch4rs aka 0xDTK 🇻🇳"
   image = "tk.jpg"
   imageQuality = 96
-  headline = "Offensive Security Engineer | Security Researcher | AI Researcher"
+  headline = "Offensive Security Engineer | AI & Security Researcher"
   bio = "Offensive Security Engineer and Security Researcher with a solid background in networking, systems programming, and modern attack vectors. Passionate about manual web exploitation, analyzing complex threat behaviors, and bridging offensive tradecraft with machine intelligence to secure critical systems."
   links = [
     { github = "https://github.com/khv1ch4rs" },
