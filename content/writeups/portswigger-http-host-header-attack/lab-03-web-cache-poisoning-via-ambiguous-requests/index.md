@@ -1,10 +1,10 @@
 ---
-title: "[PortSwigger] Lab 2: Web Cache Poisoning via Ambiguous Requests"
+title: "[PortSwigger] Lab 3: Web Cache Poisoning via Ambiguous Requests"
 date: 2026-09-14
 description: "Khai thác lỗ hổng Web Cache Poisoning thông qua sự bất đồng bộ trong việc xử lý hai header Host trùng lặp giữa tầng Cache và tầng Backend."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
-series_order: 2
+series_order: 3
 showAuthor: false
 showTableOfContents: true
 ---

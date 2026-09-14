@@ -1,10 +1,10 @@
 ---
-title: "[PortSwigger] Lab 3: Host Header Authentication Bypass"
+title: "[PortSwigger] Lab 2: Host Header Authentication Bypass"
 date: 2026-09-14
 description: "Vượt qua cơ chế kiểm soát truy cập trang quản trị nội bộ thông qua việc giả mạo header Host thành localhost."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
-series_order: 3
+series_order: 2
 showAuthor: false
 showTableOfContents: true
 ---
