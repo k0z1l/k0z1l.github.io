@@ -28,8 +28,8 @@ Lỗ hổng liên quan đến header `Host` phát sinh khi ứng dụng web tin 
 ---
 
 ## Cấu trúc phân tích chuẩn cho mỗi bài viết
-Mỗi bài giải trong series được chuẩn hóa theo quy trình 4 bước:
-1. **Mô tả bài toán & Trinh sát (Reconnaissance)**: Xác định cách ứng dụng xử lý header `Host`.
-2. **Cơ chế phát sinh lỗ hổng**: Phân tích luồng dữ liệu (Data Flow) và cấu hình máy chủ dẫn đến điểm yếu.
-3. **Khai thác lỗ hổng (PoC Step-by-Step)**: Hướng dẫn thao tác chi tiết qua Burp Suite và mã khai thác thực tế.
-4. **Biện pháp khắc phục (Mitigation)**: Cấu hình an toàn cho Web Server / Reverse Proxy (Nginx, Apache) và tầng ứng dụng.
+Mỗi bài giải trong series được chuẩn hóa theo cấu trúc 4 phần:
+1. **Kiến thức nền tảng**: Cơ chế hoạt động của giao thức, thành phần hệ thống liên quan và bối cảnh bài toán.
+2. **Mô hình tấn công**: Sơ đồ luồng dữ liệu (Data Flow) và nguyên nhân phát sinh lỗ hổng bảo mật.
+3. **Khai thác lỗ hổng**: Chi tiết các bước thực nghiệm, phân tích request/response qua Burp Suite và xây dựng PoC.
+4. **Biện pháp khắc phục**: Hướng dẫn vá lỗi, cấu hình an toàn cho tầng Web Server / Reverse Proxy và tầng ứng dụng.

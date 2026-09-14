@@ -17,7 +17,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Mô tả bài toán & Trinh sát (Reconnaissance)
+## 1. Kiến thức nền tảng
 
 Trong kiến trúc hệ thống hiện đại, một Reverse Proxy đứng phía trước thường chuyển tiếp (forward) request đến các backend server dựa trên thông tin định tuyến trong header `Host`.
 
@@ -25,7 +25,7 @@ Nếu Reverse Proxy được cấu hình lỏng lẻo cho phép định tuyến 
 
 ---
 
-## 2. Cơ chế phát sinh lỗ hổng
+## 2. Mô hình tấn công
 
 ```text
 [Attacker] ---> [Reverse Proxy] ---> [Internal IP: 192.168.0.X]
@@ -36,7 +36,7 @@ Proxy phân giải và kết nối trực tiếp đến IP được cung cấp t
 
 ---
 
-## 3. Khai thác lỗ hổng (PoC Step-by-Step)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Quét dải mạng nội bộ qua Burp Intruder
 Gửi request truy cập trang chủ sang **Intruder**:
@@ -72,6 +72,6 @@ Bài lab hoàn thành!
 
 ---
 
-## 4. Biện pháp khắc phục (Mitigation)
+## 4. Biện pháp khắc phục
 * **Khóa danh sách đích chuyển tiếp (Forwarding Whitelist)**: Chỉ cho phép Reverse Proxy chuyển tiếp request đến một danh sách backend IP cố định đã được định cấu hình sẵn.
 * **Ngăn chặn Private IP Routing**: Cấu hình proxy từ chối định tuyến tới các dải IP riêng tư (RFC 1918: `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `127.0.0.0/8`).
