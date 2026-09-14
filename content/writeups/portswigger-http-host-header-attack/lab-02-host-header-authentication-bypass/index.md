@@ -72,4 +72,4 @@ Nhận phản hồi `302 Found`. Người dùng `carlos` đã bị xóa và bài
 
 ## 4. Biện pháp khắc phục
 * **Xác thực dựa trên IP thực tế (`Remote Address`)**: Kiểm tra IP ở tầng socket kết nối TCP thực tế (`$_SERVER['REMOTE_ADDR']` hoặc socket peer address) thay vì tin tưởng header `Host`.
-* **Phân tách mạng**: Đặt giao diện quản trị trên một cổng (Port) riêng hoặc mạng VPN nội bộ tách biệt hoàn toàn với Internet công cộng.
+* **Phân tách mạng**: Đặt giao diện quản trị trên một port riêng hoặc mạng VPN nội bộ tách biệt hoàn toàn với Internet công cộng.

@@ -26,7 +26,7 @@ Host: internal-server
 ```
 
 Khi một Reverse Proxy nhận được request có cả Absolute URL và header `Host`:
-* Nếu Proxy ưu tiên Request Line để định tuyến, nhưng Backend Server lại ưu tiên header `Host` (hoặc ngược lại), sự bất đồng bộ này có thể bị lợi dụng để vượt qua các bộ lọc kiểm soát truy cập (Access Control Bypass) hoặc dẫn đến SSRF.
+* Nếu Proxy ưu tiên Request Line để định tuyến, nhưng Backend Server lại ưu tiên header `Host` (hoặc ngược lại), sự bất đồng bộ này có thể bị lợi dụng để bypass kiểm soát truy cập hoặc dẫn đến SSRF.
 
 ---
 
@@ -66,5 +66,5 @@ Bài lab hoàn thành!
 ---
 
 ## 4. Biện pháp khắc phục
-* **Chuẩn hóa Request Line trước khi chuyển tiếp (URL Normalization)**: Đảm bảo reverse proxy luôn chuyển đổi Absolute URL thành Relative path kết hợp Host header thống nhất trước khi gửi tiếp tới backend.
-* **Đồng bộ cơ chế phân tích (Parser Uniformity)**: Sử dụng các phiên bản phần mềm proxy và backend server tuân thủ nghiêm ngặt cùng một tiêu chuẩn RFC.
+* **Chuẩn hóa Request trước khi chuyển tiếp**: Đảm bảo reverse proxy luôn chuyển đổi Absolute URL thành Relative path kết hợp Host header thống nhất trước khi gửi tiếp tới backend.
+* **Đồng bộ cơ chế HTTP Parser**: Sử dụng các phiên bản phần mềm proxy và backend server tuân thủ nghiêm ngặt cùng một tiêu chuẩn RFC.

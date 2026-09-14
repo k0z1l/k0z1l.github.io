@@ -7,7 +7,7 @@ showTableOfContents: false
 
 Chào mừng bạn đến với **Writeups** của mình, đây sẽ là nơi lưu lại các bài lab và các challenge CTF mà mình đã solve.
 
-Mỗi bài viết đều được ghi chép theo cấu trúc chuẩn: **Mô tả bài toán -> Quá trình trinh sát / Phân tích mã nguồn -> Khai thác lỗ hổng (PoC) -> Bài học & Biện pháp khắc phục (Mitigation)**.
+Mỗi bài viết đều được ghi chép theo cấu trúc chuẩn: **1. Kiến thức nền tảng -> 2. Mô hình tấn công -> 3. Khai thác lỗ hổng -> 4. Biện pháp khắc phục**.
 
 Bạn có thể lọc bài viết theo [Categories](/categories/).
 

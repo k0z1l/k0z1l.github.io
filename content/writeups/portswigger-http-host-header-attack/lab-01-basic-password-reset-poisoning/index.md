@@ -38,13 +38,13 @@ Nhận thấy ứng dụng không validate header `Host` mà sử dụng trực 
 
 ## 2. Mô hình tấn công
 
-Hệ thống backend sử dụng giá trị từ header `Host` do client gửi lên để sinh URL tuyệt đối (Absolute URL) cho liên kết đặt lại mật khẩu:
+Hệ thống backend sử dụng giá trị từ header `Host` do client gửi lên để sinh URL tuyệt đối cho liên kết đặt lại mật khẩu:
 
 ```php
 $reset_url = "https://" . $_SERVER['HTTP_HOST'] . "/reset-password?token=" . $token;
 ```
 
-Do không có danh sách máy chủ được phép (whitelist validation), kẻ tấn công có thể thay thế header `Host` bằng domain máy chủ khai thác do mình kiểm soát (Exploit Server). Khi nạn nhân click vào liên kết trong email, token bí mật sẽ được gửi thẳng đến Access Log của máy chủ kẻ tấn công.
+Do không cấu hình danh sách Whitelist cho domain, kẻ tấn công có thể thay thế header `Host` bằng domain máy chủ Exploit Server. Khi nạn nhân click vào liên kết trong email, token bí mật sẽ được gửi thẳng đến Access Log của máy chủ kẻ tấn công.
 
 ---
 
