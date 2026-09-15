@@ -1,4 +1,4 @@
-﻿---
+---
 title: "[PortSwigger] HTTP Host Header Attacks Series"
 date: 2026-09-14
 description: "Tổng hợp phân tích toàn diện chuỗi 7 bài lab về lỗ hổng HTTP Host Header trên PortSwigger Web Security Academy: nguyên nhân cốt lõi, kỹ thuật khai thác chuyên sâu và giải pháp phòng vệ theo chiều sâu."
@@ -75,7 +75,7 @@ Quá trình pentest và khai thác lỗ hổng HTTP Host Header đòi hỏi sự
  Đặt lại mật khẩu          Web Cache Poisoning       Routing-based SSRF      Bypass kiểm duyệt
  (Password Reset)          (Đầu độc bộ nhớ đệm)      (Xâm nhập mạng LAN)     (Vượt qua bộ lọc)
    - Direct Injection        - Duplicate Host          - Virtual Host scan     - Absolute URL
-   - Dangling Markup         - HTTP/2 Downgrade        - Intruder IP bruteforce- Connection State
+   - Dangling Markup         - HTTP/2 Downgrade        - Bruteforce IP         - Connection State
 ```
 
 ### 1. Đầu độc Host trực tiếp để đánh cắp Token (Lab 1)
