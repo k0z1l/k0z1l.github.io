@@ -107,14 +107,7 @@ Disallow: /admin
 
 ### Bước 2: Xác nhận cơ chế phòng thủ tại /admin
 
-Truy cập trực tiếp vào đường dẫn vừa phát hiện: `GET /admin HTTP/2` với header Host mặc định của bài lab. Hệ thống từ chối truy cập bằng phản hồi:
-
-```http
-HTTP/2 401 Unauthorized
-Content-Type: text/html; charset=utf-8
-
-Admin interface only available to local users
-```
+Truy cập trực tiếp vào đường dẫn vừa phát hiện: `GET /admin HTTP/2` với header Host mặc định của bài lab. Hệ thống từ chối truy cập:
 
 ![Hình 2: Truy cập /admin thông thường bị chặn với mã lỗi 401 Unauthorized](extracted_images/image2.png)
 
