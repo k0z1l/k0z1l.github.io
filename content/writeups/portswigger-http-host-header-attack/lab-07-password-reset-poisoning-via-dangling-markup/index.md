@@ -1,4 +1,4 @@
-﻿---
+---
 title: "[PortSwigger] Lab 7: Password Reset Poisoning via Dangling Markup"
 date: 2026-09-14
 description: "Khai thác lỗ hổng Password Reset Poisoning kết hợp kỹ thuật Dangling Markup Injection để đánh cắp mật khẩu tạm thời của nạn nhân mà không cần tương tác nhấp chuột."
@@ -106,11 +106,6 @@ Kiểm tra hộp thư đến của người dùng `wiener` trên máy chủ emai
 ![Hình 2: Email nhận được chứa mật khẩu tạm thời và liên kết đăng nhập](extracted_images/image2.png)
 
 Xem mã nguồn HTML gốc của email bằng chức năng View raw để phân tích vị trí phản xạ của tên miền:
-
-```html
-<p>Please log in using your new password: <a href='https://0a5400430459246181ac7fc100d80008.web-security-academy.net/login'>click here</a></p>
-<p>Your new password is: ryQwT1CBaM</p>
-```
 
 ![Hình 3: Mã nguồn HTML gốc của email thể hiện liên kết đăng nhập và mật khẩu tạm thời](extracted_images/image3.png)
 
