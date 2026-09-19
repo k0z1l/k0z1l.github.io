@@ -25,9 +25,9 @@ Khác với SSRF truyền thống vốn bắt nguồn từ các tham số URL �
 
 Trong kiến trúc mạng đám mây hiện đại, Reverse Proxy và Load Balancer nắm giữ vị trí đặc quyền: tiếp nhận lưu lượng truy cập trực tiếp từ Internet, đồng thời kết nối trực tiếp vào toàn bộ mạng riêng nội bộ. Khi client gửi HTTP Request, thành phần trung gian này có nhiệm vụ phân tích gói tin và định tuyến đến cụm máy chủ xử lý tương ứng.
 
-### 1.2. Cơ chế Virtual Hosting và kỹ thuật vét cạn máy chủ ảo
+### 1.2. Cơ chế Virtual Hosting và kỹ thuật brute force máy chủ ảo
 
-Doanh nghiệp thường cấu hình một máy chủ vật lý lưu trữ đồng thời cả website công khai lẫn các trang quản trị nội bộ. Các dịch vụ nội bộ thường được gán tên miền riêng nhưng chỉ phân giải ra IP riêng hoặc không có bản ghi DNS công khai. Hệ thống dựa vào giá trị chuỗi của trường Host header để điều phối truy cập. Kẻ tấn công có thể gửi gói tin đến IP công khai và thực hiện vét cạn tên miền phụ qua Host header để chạm đến các dịch vụ ẩn này.
+Doanh nghiệp thường cấu hình một máy chủ vật lý lưu trữ đồng thời cả website công khai lẫn các trang quản trị nội bộ. Các dịch vụ nội bộ thường được gán tên miền riêng nhưng chỉ phân giải ra IP riêng hoặc không có bản ghi DNS công khai. Hệ thống dựa vào giá trị chuỗi của trường Host header để điều phối truy cập. Kẻ tấn công có thể gửi gói tin đến IP công khai và thực hiện brute force tên miền phụ qua Host header để chạm đến các dịch vụ ẩn này.
 
 ### 1.3. Định dạng dải mạng CIDR trong khai thác SSRF
 
@@ -98,7 +98,7 @@ Kiểm tra tab Burp Collaborator, hệ thống ghi nhận các tương tác DNS 
 
 ---
 
-### Bước 2: Quét vét cạn dải mạng nội bộ bằng Burp Intruder
+### Bước 2: Quét brute force dải mạng nội bộ bằng Burp Intruder
 
 Chuyển request sang tab Burp Intruder. Thiết lập vị trí payload tại octet cuối cùng của địa chỉ IP nội bộ `192.168.0.0/24`:
 

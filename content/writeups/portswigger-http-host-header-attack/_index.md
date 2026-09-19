@@ -96,7 +96,7 @@ Quá trình pentest và khai thác lỗ hổng HTTP Host Header đòi hỏi sự
 - **Tác động**: Cache Key được tạo dựa trên tên miền chính thức, nhưng phản hồi trả về lại chứa mã JavaScript nhúng từ máy chủ tấn công. Mọi người dùng thông thường truy cập trang web sau đó đều sẽ tải về và thực thi mã độc XSS từ bộ nhớ đệm.
 
 ### 4. Kỹ thuật Routing-based SSRF quét mạng nội bộ (Lab 4)
-- **Kỹ năng**: Đưa địa chỉ IP mạng riêng vào `Host` header kết hợp với Burp Intruder để quét vét cạn toàn bộ dải mạng LAN (`192.168.0.0/24`):
+- **Kỹ năng**: Đưa địa chỉ IP mạng riêng vào `Host` header kết hợp với Burp Intruder để quét brute force toàn bộ dải mạng LAN (`192.168.0.0/24`):
   ```http
   GET /admin HTTP/1.1
   Host: 192.168.0.§0§
