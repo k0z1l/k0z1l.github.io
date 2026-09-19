@@ -139,10 +139,6 @@ Yêu cầu được thực thi thành công với mã phản hồi 200 OK, chứ
 
 Kiểm tra lại hộp thư email và xem mã nguồn HTML gốc của thư mới nhận:
 
-```html
-<p>Please log in using your new password: <a href='https://0a5400430459246181ac7fc100d80008.web-security-academy.net:333/login'>click here</a></p>
-```
-
 Chuỗi `:333` được phản xạ nguyên vẹn vào thuộc tính `href` trong email. Điều này khẳng định backend tiếp nhận toàn bộ chuỗi bao gồm cả phần cổng mạng và đưa trực tiếp vào mẫu email mà không loại bỏ hoặc mã hóa.
 
 ![Hình 6: Email hiển thị liên kết chứa cổng mạng đã chèn](extracted_images/image6.png)
