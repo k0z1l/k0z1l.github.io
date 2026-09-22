@@ -30,6 +30,6 @@ Tất cả các bài giải trong series đều tuân thủ cấu trúc 4 phần
 
 | Lab | Tên bài Lab | Mức độ | Kỹ thuật khai thác chính |
 | :---: | :--- | :---: | :--- |
-| **01** | [HTTP request smuggling, basic CL.TE vulnerability](lab-01-HTTP%20request%20smuggling-basic%20CL.TE%20vulnerability/) | Apprentice | Khai thác bất đồng bộ CL.TE làm biến dạng phương thức yêu cầu tiếp theo thành `GPOST` |
+| **01** | [HTTP request smuggling, basic CL.TE vulnerability](lab-01-HTTP%20request%20smuggling-basic%20CL.TE%20vulnerability/) | Practitioner | Khai thác bất đồng bộ CL.TE làm biến dạng phương thức yêu cầu tiếp theo thành `GPOST` |
 
 *Các bài lab tiếp theo sẽ liên tục được cập nhật tại đây.*
