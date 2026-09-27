@@ -276,3 +276,125 @@
   if (r.addEventListener) r.addEventListener("change", y);
 })();
 </script>
+
+<!-- ==========================================================================
+     k0z1l Bilingual Instant 1-Click Translator (English / Vietnamese)
+     ========================================================================== -->
+<div id="google_translate_element" style="display:none;" class="notranslate" translate="no"></div>
+
+<script>
+(function() {
+  const STORAGE_KEY = "k0z1l_site_lang";
+
+  function setTransCookie(lang) {
+    const cookieVal = "/vi/" + lang;
+    const host = window.location.hostname;
+    document.cookie = "googtrans=" + cookieVal + "; path=/;";
+    if (host && host !== "localhost") {
+      document.cookie = "googtrans=" + cookieVal + "; path=/; domain=" + host + ";";
+      const parts = host.split(".");
+      if (parts.length > 1) {
+        const rootDomain = "." + parts.slice(-2).join(".");
+        document.cookie = "googtrans=" + cookieVal + "; path=/; domain=" + rootDomain + ";";
+      }
+    }
+  }
+
+  function clearTransCookie() {
+    const host = window.location.hostname;
+    const exp = "expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "googtrans=; " + exp;
+    if (host && host !== "localhost") {
+      document.cookie = "googtrans=; " + exp + " domain=" + host + ";";
+      const parts = host.split(".");
+      if (parts.length > 1) {
+        const rootDomain = "." + parts.slice(-2).join(".");
+        document.cookie = "googtrans=; " + exp + " domain=" + rootDomain + ";";
+      }
+    }
+  }
+
+  function protectCodeContent() {
+    const targets = document.querySelectorAll(
+      'pre, code, .highlight, .terminal-window, #cmd-typing, #motd-output, .show-more-glow-btn, [translate="no"], .notranslate'
+    );
+    targets.forEach(el => {
+      el.classList.add("notranslate");
+      el.setAttribute("translate", "no");
+    });
+  }
+
+  function updateUI(lang) {
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+      if (btn.getAttribute("data-lang") === lang) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
+
+  window.k0z1lSwitchLanguage = function(targetLang) {
+    const current = localStorage.getItem(STORAGE_KEY) || "en";
+    if (current === targetLang) return;
+
+    localStorage.setItem(STORAGE_KEY, targetLang);
+    updateUI(targetLang);
+
+    if (targetLang === "vi") {
+      clearTransCookie();
+      setTransCookie("vi");
+      window.location.reload();
+    } else {
+      setTransCookie("en");
+      const combo = document.querySelector(".goog-te-combo");
+      if (combo) {
+        combo.value = "en";
+        combo.dispatchEvent(new Event("change"));
+      } else {
+        window.location.reload();
+      }
+    }
+  };
+
+  let activeLang = localStorage.getItem(STORAGE_KEY);
+  if (!activeLang) {
+    activeLang = "en";
+    localStorage.setItem(STORAGE_KEY, "en");
+    setTransCookie("en");
+  } else if (activeLang === "en") {
+    setTransCookie("en");
+  }
+
+  function bindButtons() {
+    updateUI(activeLang);
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+      btn.onclick = function(e) {
+        e.preventDefault();
+        const target = this.getAttribute("data-lang");
+        window.k0z1lSwitchLanguage(target);
+      };
+    });
+  }
+
+  protectCodeContent();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      protectCodeContent();
+      bindButtons();
+    });
+  } else {
+    bindButtons();
+  }
+
+  window.googleTranslateElementInit = function() {
+    new google.translate.TranslateElement({
+      pageLanguage: "vi",
+      includedLanguages: "en,vi",
+      autoDisplay: false
+    }, "google_translate_element");
+  };
+})();
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
