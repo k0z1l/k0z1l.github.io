@@ -88,7 +88,7 @@
       }
     }
 
-    const isDark = document.documentElement.classList.contains("dark");
+    const isRuby = document.documentElement.classList.contains("theme-ruby");
 
     // Draw lines between nearby particles
     for (let e = 0; e < a.length; e += 1) {
@@ -99,9 +99,9 @@
           t.beginPath();
           t.moveTo(h.x, h.y);
           t.lineTo(m.x, m.y);
-          t.strokeStyle = isDark
-            ? "rgba(0, 242, 254, " + ((1 - x / s) * 0.3) + ")"
-            : "rgba(0, 127, 150, " + ((1 - x / s) * 0.22) + ")";
+          t.strokeStyle = isRuby
+            ? "rgba(255, 23, 68, " + ((1 - x / s) * 0.3) + ")"
+            : "rgba(0, 242, 254, " + ((1 - x / s) * 0.3) + ")";
           t.lineWidth = 0.8;
           t.stroke();
         }
@@ -116,9 +116,9 @@
           t.beginPath();
           t.moveTo(e.x, e.y);
           t.lineTo(mouse.x, mouse.y);
-          t.strokeStyle = isDark
-            ? "rgba(0, 242, 254, " + ((1 - dMouse / mouse.radius) * 0.45) + ")"
-            : "rgba(0, 127, 150, " + ((1 - dMouse / mouse.radius) * 0.35) + ")";
+          t.strokeStyle = isRuby
+            ? "rgba(255, 82, 82, " + ((1 - dMouse / mouse.radius) * 0.45) + ")"
+            : "rgba(0, 242, 254, " + ((1 - dMouse / mouse.radius) * 0.45) + ")";
           t.lineWidth = 1;
           t.stroke();
         }
@@ -129,9 +129,9 @@
     for (const e of a) {
       t.beginPath();
       t.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-      t.fillStyle = isDark
-        ? "rgba(0, 242, 254, " + e.alpha + ")"
-        : "rgba(0, 127, 150, " + (e.alpha * 0.85) + ")";
+      t.fillStyle = isRuby
+        ? "rgba(255, 23, 68, " + e.alpha + ")"
+        : "rgba(0, 242, 254, " + e.alpha + ")";
       t.fill();
     }
   };
@@ -223,7 +223,7 @@
     n.textAlign = "center";
     n.textBaseline = "middle";
 
-    const isDark = document.documentElement.classList.contains("dark");
+    const isRuby = document.documentElement.classList.contains("theme-ruby");
 
     for (const e of f) {
       for (let t = 0; t < e.trail; t += 1) {
@@ -234,22 +234,22 @@
         const o = 1 - t / e.trail;
         const L = e.glyphs[(s + t) % e.glyphs.length];
 
-        if (isDark) {
+        if (isRuby) {
+          if (t === 0) {
+            n.fillStyle = "rgba(255, 235, 240, " + (0.95 * o) + ")";
+          } else if (t < 3) {
+            n.fillStyle = "rgba(255, 23, 68, " + (0.75 * o) + ")";
+          } else {
+            n.fillStyle = "rgba(213, 0, 50, " + (0.45 * o * o) + ")";
+          }
+        } else {
+          // Cyan Jade Mode
           if (t === 0) {
             n.fillStyle = "rgba(220, 252, 255, " + (0.95 * o) + ")";
           } else if (t < 3) {
             n.fillStyle = "rgba(0, 242, 254, " + (0.75 * o) + ")";
           } else {
             n.fillStyle = "rgba(0, 188, 212, " + (0.45 * o * o) + ")";
-          }
-        } else {
-          // Light Mode Colors (Deep Cyan & Slate Teal)
-          if (t === 0) {
-            n.fillStyle = "rgba(0, 85, 105, " + (0.9 * o) + ")";
-          } else if (t < 3) {
-            n.fillStyle = "rgba(0, 127, 150, " + (0.65 * o) + ")";
-          } else {
-            n.fillStyle = "rgba(75, 160, 180, " + (0.35 * o * o) + ")";
           }
         }
         n.fillText(L, e.x, l);
@@ -420,6 +420,59 @@
     applyLanguageToCombo(activeLang);
   };
 })();
-</script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
+<!-- ==========================================================================
+     Cyber Theme Switcher: Cyan Jade (Xanh Ngọc) ⮂ Ruby Red (Đỏ Ngọc)
+     ========================================================================== -->
+<script>
+(function() {
+  const COLOR_THEME_KEY = "k0z1l_color_theme";
+
+  // Always force dark mode class on root so Blowfish light-mode black text is never triggered
+  document.documentElement.classList.add("dark");
+
+  function applyColorTheme(theme) {
+    if (theme === "ruby") {
+      document.documentElement.classList.add("theme-ruby");
+    } else {
+      document.documentElement.classList.remove("theme-ruby");
+    }
+  }
+
+  // Load saved theme (default to cyan)
+  let savedTheme = localStorage.getItem(COLOR_THEME_KEY) || "cyan";
+  applyColorTheme(savedTheme);
+
+  function bindThemeSwitcher() {
+    document.documentElement.classList.add("dark");
+
+    const buttons = document.querySelectorAll("#cyber-theme-switcher, #cyber-theme-switcher-mobile");
+    buttons.forEach(btn => {
+      btn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isRuby = document.documentElement.classList.contains("theme-ruby");
+        const nextTheme = isRuby ? "cyan" : "ruby";
+        localStorage.setItem(COLOR_THEME_KEY, nextTheme);
+        applyColorTheme(nextTheme);
+      };
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bindThemeSwitcher);
+  } else {
+    bindThemeSwitcher();
+  }
+
+  // Guard against Blowfish appearance switcher or any external script stripping dark class
+  const observer = new MutationObserver(() => {
+    if (!document.documentElement.classList.contains("dark")) {
+      document.documentElement.classList.add("dark");
+    }
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+})();
+</script>
 

@@ -10,23 +10,18 @@
     {{ partial "header/components/a11y.html" (dict "prefix" "desktop-") }}
   {{ end }}
 
-  {{ if .Site.Params.footer.showAppearanceSwitcher | default false }}
-    <div class="flex items-center">
-      <button
-        id="appearance-switcher"
-        aria-label="{{ i18n "footer.dark_appearance" }}"
-        type="button"
-        class="text-sm bf-icon-color-hover"
-        title="{{ i18n "footer.dark_appearance" }}">
-        <div class="flex items-center justify-center dark:hidden">
-          {{ partial "icon.html" "moon" }}
-        </div>
-        <div class="items-center justify-center hidden dark:flex">
-          {{ partial "icon.html" "sun" }}
-        </div>
-      </button>
-    </div>
-  {{ end }}
+  <!-- Cyber Theme Color Switcher: Cyan Jade ⮂ Ruby Red -->
+  <div class="flex items-center">
+    <button
+      id="cyber-theme-switcher"
+      type="button"
+      class="cyber-theme-btn notranslate"
+      translate="no"
+      title="Đổi màu: Xanh Ngọc ⮂ Đỏ Ngọc"
+      aria-label="Toggle Theme: Cyan Jade / Ruby Red">
+      <span class="cyber-gem-orb"></span>
+    </button>
+  </div>
 
   {{ if .Site.Params.enableSearch | default false }}
     <button

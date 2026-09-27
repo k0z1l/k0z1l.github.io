@@ -9,41 +9,41 @@
     }
   </style>
 
-  <!-- macOS / iTerm2 Styled Terminal Window (k0z1l Cyber Cyan Style) -->
-  <div class="rounded-xl overflow-hidden shadow-2xl border border-[#132a32] bg-[#071217d9] backdrop-blur-md transition-all duration-300 hover:border-[#00f2fe]/50" style="box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7), 0 0 32px rgba(0, 242, 254, 0.12); animation: neon-breathing 4.5s ease-in-out infinite;">
+  <!-- macOS / iTerm2 Styled Terminal Window (Adaptive Cyan / Ruby Theme) -->
+  <div class="rounded-xl overflow-hidden shadow-2xl backdrop-blur-md transition-all duration-300" style="border: 1px solid var(--border); background-color: var(--panel); box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7), 0 0 32px var(--accent-glow); animation: neon-breathing 4.5s ease-in-out infinite;">
     
     <!-- macOS Terminal Header Bar -->
-    <div style="height: 38px; min-height: 38px; background-color: #0c1d22; border-bottom: 1px solid #132a32;" class="relative flex items-center px-4 select-none">
-      <!-- 3 Mac Window Control Buttons (Red, Yellow, Cyan - 11px diameter) -->
+    <div style="height: 38px; min-height: 38px; background-color: var(--line); border-bottom: 1px solid var(--border);" class="relative flex items-center px-4 select-none transition-colors duration-300">
+      <!-- 3 Mac Window Control Buttons (Red, Yellow, Accent - 11px diameter) -->
       <div style="display: flex; align-items: center; gap: 7px;" class="z-10">
         <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: #ff5f56; border-radius: 50%; display: inline-block;"></span>
         <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: #ffbd2e; border-radius: 50%; display: inline-block;"></span>
-        <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: #00f2fe; border-radius: 50%; display: inline-block;"></span>
+        <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: var(--accent); border-radius: 50%; display: inline-block; transition: background-color 0.3s ease;"></span>
       </div>
 
       <!-- Pure Text Centered Title (13px) -->
-      <div style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; color: #88a2ab; font-family: 'JetBrains Mono', monospace; pointer-events: none;" class="whitespace-nowrap font-normal tracking-wide text-center">
+      <div style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; color: var(--muted); font-family: 'JetBrains Mono', monospace; pointer-events: none;" class="whitespace-nowrap font-normal tracking-wide text-center transition-colors duration-300">
         k0z1l@cybersec: ~ (zsh)
       </div>
     </div>
 
     <!-- Terminal Body -->
-    <div class="p-4 sm:p-6 text-left leading-relaxed overflow-x-auto bf-scrollbar font-mono bg-[#051014e6]">
+    <div class="p-4 sm:p-6 text-left leading-relaxed overflow-x-auto bf-scrollbar font-mono" style="background-color: rgba(4, 6, 8, 0.9);">
       
       <!-- Prompt 1 (Kali Linux prompt) -->
       <div class="leading-snug">
-        <span class="text-[#3b82f6]">┌──(</span><span class="text-[#00f2fe] font-bold">k0z1l@cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
+        <span class="text-[#3b82f6]">┌──(</span><span style="color: var(--accent); font-weight: bold; transition: color 0.3s ease;">k0z1l@cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
       </div>
       <div class="leading-snug mt-0.5 flex items-center">
         <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
         <span id="cmd-typing" class="text-[#f8fafc] font-medium"></span>
-        <span id="cmd-cursor" class="inline-block w-2.5 h-4 bg-[#00f2fe] term-cursor-blink ms-0.5"></span>
+        <span id="cmd-cursor" class="inline-block w-2.5 h-4 term-cursor-blink ms-0.5" style="background-color: var(--accent); transition: background-color 0.3s ease;"></span>
       </div>
 
       <!-- welcome_to_my_blog.txt Output Area -->
       <div id="motd-output" class="hidden opacity-0 transition-opacity duration-500 ease-out">
-        <!-- ASCII Art Banner: 0xDTK in Electric Cyan Neon -->
-        <pre class="my-3 text-[#00f2fe] font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all" style="text-shadow: 0 0 12px rgba(0, 242, 254, 0.45);">
+        <!-- ASCII Art Banner: 0xDTK with Dynamic Accent Glow -->
+        <pre class="my-3 font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all transition-all duration-300" style="color: var(--accent); text-shadow: 0 0 12px var(--accent-glow);">
    ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
@@ -54,13 +54,13 @@
         <!-- Information Block -->
         <div class="space-y-1.5 text-xs sm:text-sm mt-2 text-[#e2e8f0]">
           <div>
-            <span class="text-[#00f2fe] font-bold">[+]</span> <span class="text-[#88a2ab]">Author :</span> <span class="text-[#f8fafc] font-semibold">k0z1l</span>
+            <span style="color: var(--accent); font-weight: bold; transition: color 0.3s ease;">[+]</span> <span style="color: var(--muted);">Author :</span> <span class="text-[#f8fafc] font-semibold">k0z1l</span>
           </div>
           <div>
-            <span class="text-[#00f2fe] font-bold">[+]</span> <span class="text-[#88a2ab]">Focus  :</span> <span class="text-[#f8fafc] font-semibold">Security Research &amp; Web Exploitation</span>
+            <span style="color: var(--accent); font-weight: bold; transition: color 0.3s ease;">[+]</span> <span style="color: var(--muted);">Focus  :</span> <span class="text-[#f8fafc] font-semibold">Security Research &amp; Web Exploitation</span>
           </div>
           <div>
-            <span class="text-[#4facfe] font-bold">[*]</span> <span class="text-[#88a2ab]">Notice :</span> <span class="text-[#00f2fe] font-semibold">Grab a cup of coffee and enjoy the reads.</span>
+            <span style="color: var(--accent-blue); font-weight: bold; transition: color 0.3s ease;">[*]</span> <span style="color: var(--muted);">Notice :</span> <span style="color: var(--accent); font-weight: 600; transition: color 0.3s ease;">Grab a cup of coffee and enjoy the reads.</span>
           </div>
         </div>
       </div>
@@ -68,17 +68,17 @@
       <!-- Prompt 2 (Final waiting prompt with blinking cursor) -->
       <div id="prompt-final" class="hidden opacity-0 transition-opacity duration-300 ease-out mt-4">
         <div class="leading-snug">
-          <span class="text-[#3b82f6]">┌──(</span><span class="text-[#00f2fe] font-bold">k0z1l@cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
+          <span class="text-[#3b82f6]">┌──(</span><span style="color: var(--accent); font-weight: bold; transition: color 0.3s ease;">k0z1l@cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
         </div>
         <div class="leading-snug mt-0.5 flex items-center">
           <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
-          <span class="inline-block w-2.5 h-4 bg-[#00f2fe] term-cursor-blink ms-1"></span>
+          <span class="inline-block w-2.5 h-4 term-cursor-blink ms-1" style="background-color: var(--accent); transition: background-color 0.3s ease;"></span>
         </div>
       </div>
 
       <!-- Fallback for browsers without JS -->
       <noscript>
-        <pre class="my-3 text-[#00f2fe] font-mono text-xs font-bold leading-tight">
+        <pre class="my-3 font-mono text-xs font-bold leading-tight" style="color: var(--accent);">
    ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
@@ -86,16 +86,16 @@
 \____//_/|_/_____/ /_/  /_/ |_|  
         </pre>
         <div class="space-y-1 text-xs text-[#e2e8f0]">
-          <div><span class="text-[#00f2fe] font-bold">[+]</span> Author : k0z1l</div>
-          <div><span class="text-[#00f2fe] font-bold">[+]</span> Focus  : Security Research &amp; Web Exploitation</div>
-          <div><span class="text-[#4facfe] font-bold">[*]</span> Notice : Grab a cup of coffee and enjoy the reads.</div>
+          <div><span style="color: var(--accent); font-weight: bold;">[+]</span> Author : k0z1l</div>
+          <div><span style="color: var(--accent); font-weight: bold;">[+]</span> Focus  : Security Research &amp; Web Exploitation</div>
+          <div><span style="color: var(--accent-blue); font-weight: bold;">[*]</span> Notice : Grab a cup of coffee and enjoy the reads.</div>
         </div>
         <div class="mt-4 leading-snug">
-          <span class="text-[#3b82f6]">┌──(</span><span class="text-[#00f2fe] font-bold">k0z1l@cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
+          <span class="text-[#3b82f6]">┌──(</span><span style="color: var(--accent); font-weight: bold;">k0z1l@cybersec</span><span class="text-[#3b82f6]">)-[</span><span class="text-[#cbd5e1] font-semibold">~</span><span class="text-[#3b82f6]">]</span>
         </div>
         <div class="leading-snug mt-0.5 flex items-center">
           <span class="text-[#3b82f6]">└─</span><span class="text-[#3b82f6] font-bold me-2">$</span>
-          <span class="inline-block w-2.5 h-4 bg-[#00f2fe] term-cursor-blink ms-1"></span>
+          <span class="inline-block w-2.5 h-4 term-cursor-blink ms-1" style="background-color: var(--accent);"></span>
         </div>
       </noscript>
 

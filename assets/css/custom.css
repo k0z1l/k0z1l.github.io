@@ -1,32 +1,15 @@
 /* ==========================================================================
-   k0z1l Cybersec Theme: Light & Dark Modes
+   k0z1l Cybersec Theme: Cyan Jade (Xanh Ngọc) & Ruby Red (Đỏ Ngọc)
    ========================================================================== */
 
-/* 1. Light Cyber Mode (Clean Tech Silver & Deep Charcoal) */
-:root {
-  --bg: #f2f7f9;            /* Clean Tech Silver White */
-  --top: #e5f0f4;           /* Soft Icy Slate */
-  --accent: #007f96;        /* High-contrast Tech Cyan */
-  --accent-dim: #006b7d;
-  --accent-blue: #0284c7;   /* Sky Blue */
-  --text: #0b1a20;          /* Deep Charcoal Black (100% Crisp) */
-  --muted: #425f6b;         /* Readable Slate */
-  --faint: #7a98a3;         /* Subtle Slate */
-  --panel: rgba(255, 255, 255, 0.92);
-  --border: #cadfe7;        /* Clean Border */
-  --line: #d8eaef;
-  --red: #ff5f56;
-  --yellow: #ffbd2e;
-  --window: #007f96;
-}
-
-/* 2. Dark Cyberpunk Mode (Deep Obsidian & Radiant Cyan) */
-html.dark {
+/* 1. Default Mode: Cyan Jade (Xanh Ngọc) */
+:root, html {
   --bg: #040809;            /* Deep Obsidian */
   --top: #071318;           /* Cyan Slate Navy */
   --accent: #00f2fe;        /* Electric Cyan Neon */
   --accent-dim: #00bcd4;    /* Deep Teal */
   --accent-blue: #4facfe;   /* Neon Sky Blue */
+  --accent-glow: rgba(0, 242, 254, 0.35);
   --text: #d6e5ea;          /* Icy Silver Text */
   --muted: #88a2ab;         /* Cyan Muted */
   --faint: #546e78;         /* Dark Slate */
@@ -38,6 +21,25 @@ html.dark {
   --window: #00f2fe;
 }
 
+/* 2. Alternative Mode: Ruby Red / Crimson Jade (Đỏ Ngọc) */
+html.theme-ruby {
+  --bg: #060305;            /* Deepest Obsidian with Crimson Undertone */
+  --top: #15060a;           /* Dark Wine Slate */
+  --accent: #ff1744;        /* Radiant Ruby Red Neon */
+  --accent-dim: #d50032;    /* Deep Crimson Jade */
+  --accent-blue: #ff5252;   /* Coral Flame */
+  --accent-glow: rgba(255, 23, 68, 0.45);
+  --text: #f6e6e8;          /* Pale Icy Rose Silver */
+  --muted: #ab868d;         /* Dusty Rose Slate */
+  --faint: #694a50;         /* Dark Wine Border */
+  --panel: #13060ac7;       /* Frosted Dark Ruby Glass */
+  --border: #381219;        /* Dark Crimson Border */
+  --line: #270c12;          /* Ruby Separator */
+  --red: #ff1744;
+  --yellow: #ffbd2e;
+  --window: #ff1744;
+}
+
 /* Global Font Settings */
 html, body, button, input, select, textarea {
   font-family: 'Inconsolata', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
@@ -47,7 +49,7 @@ code, pre, kbd, samp, .font-mono {
   font-family: 'JetBrains Mono', 'Inconsolata', monospace !important;
 }
 
-/* Base Body Styling & Background */
+/* Base Body Styling & Background (Always Deep Obsidian Dark) */
 body {
   min-height: 100vh !important;
   height: auto !important;
@@ -56,7 +58,7 @@ body {
   color: var(--text) !important;
   line-height: 1.55;
   isolation: isolate;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 @media (min-width: 768px) {
@@ -73,7 +75,7 @@ body {
   }
 }
 
-/* Typography & Text Contrast Protection (Fixes black text on dark background) */
+/* Typography & Text Contrast */
 body, 
 .prose, 
 .prose p, 
@@ -83,7 +85,8 @@ body,
 .prose span:not(.notranslate),
 .text-neutral-900, 
 .text-neutral-800, 
-.text-neutral-700 {
+.text-neutral-700,
+.dark\:.text-neutral {
   color: var(--text) !important;
 }
 
@@ -125,9 +128,8 @@ body,
   background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0, 242, 254, 0.016) 3px, transparent 4px) !important;
 }
 
-html:not(.dark) .scanlines {
-  opacity: 0.35 !important;
-  background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0, 127, 150, 0.02) 3px, transparent 4px) !important;
+html.theme-ruby .scanlines {
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(255, 23, 68, 0.018) 3px, transparent 4px) !important;
 }
 
 /* Ensure all page content sits cleanly above the canvas and scanlines */
@@ -143,27 +145,52 @@ body > footer,
 /* Neon Breathing Keyframe Animation */
 @keyframes neon-breathing {
   0%, 100% {
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 16px -2px rgba(0, 242, 254, 0.12);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 16px -2px var(--accent-glow);
     border-color: var(--border);
   }
   50% {
-    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.65), 0 0 28px 2px rgba(0, 242, 254, 0.28);
-    border-color: #1a3c48;
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.65), 0 0 28px 2px var(--accent-glow);
+    border-color: var(--accent-dim);
   }
 }
 
-html:not(.dark) @keyframes neon-breathing {
-  0%, 100% {
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06), 0 0 12px rgba(0, 127, 150, 0.08);
-    border-color: var(--border);
-  }
-  50% {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 0 20px rgba(0, 127, 150, 0.16);
-    border-color: #89b7c7;
-  }
+/* Cyber Gem Theme Color Switcher Button */
+.cyber-theme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
-/* Header styling: Glass panel matching light/dark mode */
+.cyber-theme-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+  transform: scale(1.06);
+}
+
+.cyber-gem-orb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, var(--accent) 55%, var(--accent-dim) 100%);
+  box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent-glow);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+.cyber-theme-btn:hover .cyber-gem-orb {
+  transform: scale(1.18);
+}
+
+/* Header styling: Glass panel with subtle neon glow */
 header {
   background-color: var(--panel) !important;
   backdrop-filter: blur(10px) !important;
@@ -173,11 +200,8 @@ header {
   padding: 0.35rem 1.25rem !important;
   margin-top: 1rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.06), 0 0 16px -3px var(--border) !important;
-}
-
-html.dark header {
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px rgba(0, 242, 254, 0.12) !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px var(--accent-glow) !important;
+  transition: all 0.3s ease;
 }
 
 /* Footer styling: Glass panel matching header */
@@ -190,11 +214,8 @@ footer#site-footer {
   padding: 1.25rem 1.75rem !important;
   margin-top: 3rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.06), 0 0 16px -3px var(--border) !important;
-}
-
-html.dark footer#site-footer {
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px rgba(0, 242, 254, 0.12) !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px var(--accent-glow) !important;
+  transition: all 0.3s ease;
 }
 
 footer#site-footer .flex.items-center.justify-between {
@@ -214,6 +235,7 @@ main > header {
   width: 100% !important;
   padding: 1.35rem 1.75rem !important;
   animation: neon-breathing 4s ease-in-out infinite;
+  transition: all 0.3s ease;
 }
 
 header#single_header ol,
@@ -228,13 +250,8 @@ main > header h1 {
   margin-bottom: 0.6rem !important;
   line-height: 1.25 !important;
   color: var(--accent) !important;
-  text-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
-}
-
-html:not(.dark) header#single_header h1,
-html:not(.dark) main > header h1 {
-  text-shadow: none !important;
-  color: var(--accent) !important;
+  text-shadow: 0 0 16px var(--accent-glow);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 header#single_header .mb-6,
@@ -259,13 +276,8 @@ article header img.rounded-full {
   object-fit: cover !important;
   object-position: center 10% !important;
   border: 2px solid var(--accent) !important;
-  box-shadow: 0 0 22px rgba(0, 242, 254, 0.35) !important;
-}
-
-html:not(.dark) .author img,
-html:not(.dark) header img.rounded-full,
-html:not(.dark) article header img.rounded-full {
-  box-shadow: 0 0 15px rgba(0, 127, 150, 0.25) !important;
+  box-shadow: 0 0 22px var(--accent-glow) !important;
+  transition: all 0.3s ease;
 }
 
 .author .place-self-center div:last-child {
@@ -279,6 +291,7 @@ html:not(.dark) article header img.rounded-full {
   padding-left: 1.5rem !important;
   max-width: 100% !important;
   width: 100% !important;
+  transition: border-color 0.3s ease;
 }
 
 @media (max-width: 640px) {
@@ -366,15 +379,10 @@ article footer.max-w-prose {
 #TableOfContents > ul > li > a:hover,
 #TableOfContents > ul > li > a.active {
   color: var(--accent) !important;
-  text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
+  text-shadow: 0 0 10px var(--accent-glow);
 }
 
-html:not(.dark) #TableOfContents > ul > li > a:hover,
-html:not(.dark) #TableOfContents > ul > li > a.active {
-  text-shadow: none !important;
-}
-
-/* Headings */
+/* Headings with Accent Glow */
 h1, h2, h3, h4, h5, h6 {
   color: var(--text) !important;
   letter-spacing: -0.02em;
@@ -382,10 +390,8 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 strong, h2 strong, .heading-accent, .text-primary-500, .text-primary-600, .dark\:.text-primary-400 {
   color: var(--accent) !important;
-}
-
-html.dark h1 strong, html.dark h2 strong, html.dark .heading-accent {
-  text-shadow: 0 0 14px rgba(0, 242, 254, 0.4);
+  text-shadow: 0 0 14px var(--accent-glow);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 /* Links & Accents */
@@ -396,13 +402,10 @@ a {
 
 a:hover {
   color: var(--accent) !important;
+  text-shadow: 0 0 8px var(--accent-glow);
 }
 
-html.dark a:hover {
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
-}
-
-/* Code Blocks & Pre styling (Sleek dark look in both modes for optimal syntax readability) */
+/* Code Blocks & Pre styling with Neon Breathing */
 pre, .highlight {
   background-color: #061116f5 !important;
   border: 1px solid var(--border) !important;
@@ -410,6 +413,11 @@ pre, .highlight {
   backdrop-filter: blur(5px) !important;
   color: #e2f1f7 !important;
   animation: neon-breathing 5s ease-in-out infinite;
+  transition: border-color 0.3s ease;
+}
+
+html.theme-ruby pre, html.theme-ruby .highlight {
+  background-color: #0e0508f5 !important;
 }
 
 pre code, .highlight code {
@@ -421,13 +429,13 @@ code:not(pre code) {
   color: var(--accent) !important;
   padding: 0.15rem 0.35rem !important;
   border-radius: 4px !important;
-  border: 1px solid rgba(0, 242, 254, 0.22) !important;
+  border: 1px solid rgba(0, 242, 254, 0.25) !important;
+  transition: all 0.3s ease;
 }
 
-html:not(.dark) code:not(pre code) {
-  background-color: rgba(0, 127, 150, 0.08) !important;
-  color: #006b7d !important;
-  border: 1px solid rgba(0, 127, 150, 0.22) !important;
+html.theme-ruby code:not(pre code) {
+  background-color: rgba(255, 23, 68, 0.1) !important;
+  border: 1px solid rgba(255, 23, 68, 0.3) !important;
 }
 
 /* Cards & Articles */
@@ -436,9 +444,10 @@ html:not(.dark) code:not(pre code) {
   background-color: var(--panel) !important;
   backdrop-filter: blur(5px) !important;
   color: var(--text) !important;
+  transition: all 0.3s ease;
 }
 
-/* Show More Button */
+/* Show More Button (Cyan / Ruby Dual-Conic Border Beam) */
 .show-more-glow-btn {
   position: relative;
   display: inline-flex;
@@ -448,13 +457,13 @@ html:not(.dark) code:not(pre code) {
   overflow: hidden;
   border-radius: 12px;
   text-decoration: none !important;
-  box-shadow: 0 0 16px -3px rgba(0, 242, 254, 0.4);
+  box-shadow: 0 0 16px -3px var(--accent-glow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .show-more-glow-btn:hover {
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 0 32px 4px rgba(0, 242, 254, 0.7);
+  box-shadow: 0 0 32px 4px var(--accent-glow);
 }
 
 .show-more-glow-beam {
@@ -467,8 +476,8 @@ html:not(.dark) code:not(pre code) {
     from 0deg,
     transparent 0deg,
     transparent 240deg,
-    rgba(79, 172, 254, 0.7) 290deg,
-    #00f2fe 360deg
+    var(--accent-blue) 290deg,
+    var(--accent) 360deg
   );
   animation: border-beam-rotate 2.6s linear infinite;
   border-radius: 50%;
@@ -488,7 +497,7 @@ html:not(.dark) code:not(pre code) {
   gap: 0.5rem;
   padding: 0.65rem 1.85rem;
   border-radius: 10px;
-  background-color: #071217e0 !important;
+  background-color: var(--panel) !important;
   color: var(--accent) !important;
   font-family: 'JetBrains Mono', 'Inconsolata', monospace;
   font-size: 0.95rem;
@@ -498,19 +507,14 @@ html:not(.dark) code:not(pre code) {
   transition: all 0.3s ease;
 }
 
-html:not(.dark) .show-more-inner {
-  background-color: #ffffff !important;
-  color: #007f96 !important;
-}
-
 .show-more-glow-btn:hover .show-more-inner {
   background-color: #0c1f26 !important;
   color: #ffffff !important;
 }
 
-html:not(.dark) .show-more-glow-btn:hover .show-more-inner {
-  background-color: #f0f7fa !important;
-  color: #005f70 !important;
+html.theme-ruby .show-more-glow-btn:hover .show-more-inner {
+  background-color: #270a12 !important;
+  color: #ffffff !important;
 }
 
 /* Custom Scrollbar */
@@ -576,11 +580,12 @@ body > .skiptranslate {
   padding: 2px 5px;
   gap: 2px;
   backdrop-filter: blur(8px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
   font-family: 'JetBrains Mono', 'Inconsolata', monospace;
   user-select: none;
   margin-left: 0.35rem;
   margin-right: 0.35rem;
+  transition: all 0.3s ease;
 }
 
 .lang-btn {
@@ -599,28 +604,23 @@ body > .skiptranslate {
 
 .lang-btn:hover {
   color: var(--accent);
-}
-
-html.dark .lang-btn:hover {
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+  text-shadow: 0 0 8px var(--accent-glow);
 }
 
 .lang-btn.active {
   background: rgba(0, 242, 254, 0.16);
   color: var(--accent);
   border: 1px solid rgba(0, 242, 254, 0.4);
-  box-shadow: 0 0 10px rgba(0, 242, 254, 0.25);
+  text-shadow: 0 0 8px var(--accent-glow);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
-html.dark .lang-btn.active {
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.7);
-}
-
-html:not(.dark) .lang-btn.active {
-  background: rgba(0, 127, 150, 0.12);
-  color: #007f96;
-  border: 1px solid rgba(0, 127, 150, 0.35);
-  box-shadow: 0 0 8px rgba(0, 127, 150, 0.15);
+html.theme-ruby .lang-btn.active {
+  background: rgba(255, 23, 68, 0.18);
+  color: #ff1744;
+  border: 1px solid rgba(255, 23, 68, 0.4);
+  text-shadow: 0 0 8px rgba(255, 23, 68, 0.7);
+  box-shadow: 0 0 10px rgba(255, 23, 68, 0.3);
 }
 
 .lang-divider {
