@@ -28,12 +28,12 @@ code, pre, kbd, samp, .font-mono {
   font-family: 'JetBrains Mono', 'Inconsolata', monospace !important;
 }
 
-/* Base Body Styling & Background */
+/* Base Body Styling & Background (Uniform Obsidian Black) */
 body {
   min-height: 100vh !important;
   height: auto !important;
   background-color: var(--bg) !important;
-  background: radial-gradient(ellipse 80% 30% at 50% 0, var(--top), var(--bg) 72%) !important;
+  background: var(--bg) !important;
   color: var(--text) !important;
   line-height: 1.55;
   isolation: isolate;
