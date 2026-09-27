@@ -88,7 +88,9 @@
       }
     }
 
-    // Draw lines between nearby particles in Electric Cyan
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // Draw lines between nearby particles
     for (let e = 0; e < a.length; e += 1) {
       for (let v = e + 1; v < a.length; v += 1) {
         const h = a[e], m = a[v];
@@ -97,7 +99,9 @@
           t.beginPath();
           t.moveTo(h.x, h.y);
           t.lineTo(m.x, m.y);
-          t.strokeStyle = "rgba(0, 242, 254, " + ((1 - x / s) * 0.3) + ")";
+          t.strokeStyle = isDark
+            ? "rgba(0, 242, 254, " + ((1 - x / s) * 0.3) + ")"
+            : "rgba(0, 127, 150, " + ((1 - x / s) * 0.22) + ")";
           t.lineWidth = 0.8;
           t.stroke();
         }
@@ -112,7 +116,9 @@
           t.beginPath();
           t.moveTo(e.x, e.y);
           t.lineTo(mouse.x, mouse.y);
-          t.strokeStyle = "rgba(0, 242, 254, " + ((1 - dMouse / mouse.radius) * 0.45) + ")";
+          t.strokeStyle = isDark
+            ? "rgba(0, 242, 254, " + ((1 - dMouse / mouse.radius) * 0.45) + ")"
+            : "rgba(0, 127, 150, " + ((1 - dMouse / mouse.radius) * 0.35) + ")";
           t.lineWidth = 1;
           t.stroke();
         }
@@ -123,7 +129,9 @@
     for (const e of a) {
       t.beginPath();
       t.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-      t.fillStyle = "rgba(0, 242, 254, " + e.alpha + ")";
+      t.fillStyle = isDark
+        ? "rgba(0, 242, 254, " + e.alpha + ")"
+        : "rgba(0, 127, 150, " + (e.alpha * 0.85) + ")";
       t.fill();
     }
   };
@@ -215,6 +223,8 @@
     n.textAlign = "center";
     n.textBaseline = "middle";
 
+    const isDark = document.documentElement.classList.contains("dark");
+
     for (const e of f) {
       for (let t = 0; t < e.trail; t += 1) {
         const s = e.head - t;
@@ -224,13 +234,23 @@
         const o = 1 - t / e.trail;
         const L = e.glyphs[(s + t) % e.glyphs.length];
 
-        // Head is radiant white-cyan; trail transitions to electric cyan and deep teal
-        if (t === 0) {
-          n.fillStyle = "rgba(220, 252, 255, " + (0.95 * o) + ")";
-        } else if (t < 3) {
-          n.fillStyle = "rgba(0, 242, 254, " + (0.75 * o) + ")";
+        if (isDark) {
+          if (t === 0) {
+            n.fillStyle = "rgba(220, 252, 255, " + (0.95 * o) + ")";
+          } else if (t < 3) {
+            n.fillStyle = "rgba(0, 242, 254, " + (0.75 * o) + ")";
+          } else {
+            n.fillStyle = "rgba(0, 188, 212, " + (0.45 * o * o) + ")";
+          }
         } else {
-          n.fillStyle = "rgba(0, 188, 212, " + (0.45 * o * o) + ")";
+          // Light Mode Colors (Deep Cyan & Slate Teal)
+          if (t === 0) {
+            n.fillStyle = "rgba(0, 85, 105, " + (0.9 * o) + ")";
+          } else if (t < 3) {
+            n.fillStyle = "rgba(0, 127, 150, " + (0.65 * o) + ")";
+          } else {
+            n.fillStyle = "rgba(75, 160, 180, " + (0.35 * o * o) + ")";
+          }
         }
         n.fillText(L, e.x, l);
       }
