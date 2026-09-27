@@ -1,18 +1,18 @@
 ---
 title: "Writeups"
-description: "Tổng hợp các bài giải chi tiết các thử thách CTF và bảo mật (Web, Pwn, Reverse, Crypto, Forensics) từ các giải đấu trong nước và quốc tế."
+description: "A comprehensive collection of in-depth CTF and security challenge writeups (Web, Pwn, Reverse, Crypto, Forensics) from national and international competitions."
 showAuthor: false
 showTableOfContents: false
 ---
 
-Chào mừng bạn đến với **Writeups** của mình, đây sẽ là nơi lưu lại các bài lab và các challenge CTF mà mình đã solve.
+Welcome to my **Writeups** repository, where I document my technical solutions and research for solved security labs and CTF challenges.
 
-Mỗi bài viết đều được ghi chép theo cấu trúc chuẩn:
-1. **Kiến thức nền tảng**
-2. **Mô hình tấn công**
-3. **Khai thác lỗ hổng**
-4. **Biện pháp khắc phục**
+Each writeup is structured into standardized sections:
+1. **Core Fundamentals**
+2. **Attack Vector & Vulnerability Architecture**
+3. **Exploitation & Step-by-Step PoC**
+4. **Mitigation & Remediation Strategies**
 
-Bạn có thể lọc bài viết theo [Categories](/categories/).
+You can filter articles by [Categories](/categories/).
 
-Bạn có thể tìm hiểu thêm về mình ở [About Me](/about/).
+Learn more about my background and research in [About Me](/about/).

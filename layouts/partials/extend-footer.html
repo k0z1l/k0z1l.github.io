@@ -306,7 +306,7 @@
 (function() {
   const STORAGE_KEY = "k0z1l_site_lang";
 
-  function setTransCookie(targetLang) {
+  function clearTransCookies() {
     const host = window.location.hostname;
     const exp = "expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "googtrans=; " + exp;
@@ -318,8 +318,14 @@
         document.cookie = "googtrans=; " + exp + " domain=" + rootDomain + ";";
       }
     }
+  }
 
-    const primary = "/auto/" + targetLang;
+  function setTransCookie(targetLang) {
+    clearTransCookies();
+    if (targetLang === "en") return;
+
+    const host = window.location.hostname;
+    const primary = "/en/" + targetLang;
     document.cookie = "googtrans=" + primary + "; path=/;";
     if (host && host !== "localhost") {
       document.cookie = "googtrans=" + primary + "; path=/; domain=" + host + ";";
@@ -352,6 +358,7 @@
   }
 
   function applyLanguageToCombo(lang) {
+    if (lang === "en") return;
     let attempts = 0;
     const timer = setInterval(() => {
       attempts++;
@@ -370,23 +377,39 @@
   window.k0z1lSwitchLanguage = function(targetLang) {
     localStorage.setItem(STORAGE_KEY, targetLang);
     updateUI(targetLang);
-    setTransCookie(targetLang);
 
-    const combo = document.querySelector(".goog-te-combo");
-    if (combo) {
-      combo.value = targetLang;
-      combo.dispatchEvent(new Event("change"));
-    } else {
+    if (targetLang === "en") {
+      clearTransCookies();
+      const combo = document.querySelector(".goog-te-combo");
+      if (combo) {
+        combo.value = "en";
+        combo.dispatchEvent(new Event("change"));
+      }
+      // Reload to restore original pure static English without any artifacts
       window.location.reload();
+    } else {
+      setTransCookie("vi");
+      const combo = document.querySelector(".goog-te-combo");
+      if (combo) {
+        combo.value = "vi";
+        combo.dispatchEvent(new Event("change"));
+      } else {
+        window.location.reload();
+      }
     }
   };
 
   let activeLang = localStorage.getItem(STORAGE_KEY);
   if (!activeLang) {
-    activeLang = "en"; // Default is English
+    activeLang = "en"; // Default is English (hardcoded static)
     localStorage.setItem(STORAGE_KEY, "en");
   }
-  setTransCookie(activeLang);
+
+  if (activeLang === "en") {
+    clearTransCookies();
+  } else {
+    setTransCookie(activeLang);
+  }
 
   function bindButtons() {
     updateUI(activeLang);
@@ -404,22 +427,29 @@
     document.addEventListener("DOMContentLoaded", () => {
       protectElements();
       bindButtons();
-      applyLanguageToCombo(activeLang);
+      if (activeLang !== "en") {
+        applyLanguageToCombo(activeLang);
+      }
     });
   } else {
     bindButtons();
-    applyLanguageToCombo(activeLang);
+    if (activeLang !== "en") {
+      applyLanguageToCombo(activeLang);
+    }
   }
 
   window.googleTranslateElementInit = function() {
     new google.translate.TranslateElement({
-      pageLanguage: "auto",
+      pageLanguage: "en",
       includedLanguages: "en,vi",
       autoDisplay: false
     }, "google_translate_element");
-    applyLanguageToCombo(activeLang);
+    if (activeLang !== "en") {
+      applyLanguageToCombo(activeLang);
+    }
   };
 })();
+</script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
 
 <!-- ==========================================================================

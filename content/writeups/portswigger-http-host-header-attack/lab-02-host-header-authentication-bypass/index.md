@@ -1,7 +1,7 @@
 ---
 title: "[PortSwigger] Lab 2: Host Header Authentication Bypass"
 date: 2026-09-14
-description: "Vượt qua cơ chế kiểm soát truy cập trang quản trị nội bộ thông qua việc giả mạo header Host thành localhost."
+description: "Bypass internal administrative access controls by spoofing the HTTP Host header to localhost."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
 series_order: 2
@@ -9,28 +9,28 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## Thông tin bài Lab
-* **Tên bài Lab**: Host header authentication bypass
-* **Chuyên đề**: HTTP Host Header attacks / Access Control Bypass
-* **Mức độ**: Apprentice
-* **Mục tiêu**: Bypass cơ chế xác thực trang quản trị `/admin` và xóa tài khoản người dùng `carlos`.
+## Challenge Overview
+* **Challenge name**: Host header authentication bypass
+* **Category**: HTTP Host Header attacks / Access Control Bypass
+* **Level**: Apprentice
+* **Objective**: Bypass the administrative authentication controls at `/admin` and delete user account `carlos`.
 
 ---
 
-## 1. Kiến thức nền tảng
+## 1. Core Fundamentals
 
-Trong các hệ thống phân quyền web, trang quản trị thường được thiết lập rào cản truy cập chỉ cho phép các yêu cầu xuất phát từ mạng nội bộ hoặc máy chủ cục bộ. Vấn đề nảy sinh khi hệ thống xác định danh tính và quyền hạn của client dựa vào dữ liệu tầng ứng dụng thay vì kiểm tra ở tầng kết nối mạng.
+In web application authorization architectures, administrative panels are frequently protected by perimeter-style access barriers designed to restrict access exclusively to internal networks or local host environments. Vulnerabilities emerge when systems determine client identity and privilege levels based on application-layer metadata rather than verifying network-layer connection properties.
 
-### 1.1. Bản chất của header Host trong giao thức HTTP
+### 1.1. Nature of the Host Header in HTTP
 
-Header Host được chuẩn hóa từ phiên bản HTTP/1.1 nhằm phục vụ cơ chế Virtual Hosting, cho phép một máy chủ vật lý lưu trữ và phân phối nhiều tên miền trên cùng một địa chỉ IP. Header này hoàn toàn nằm ở tầng ứng dụng và do client toàn quyền kiểm soát.
+Standardized in HTTP/1.1 to facilitate Virtual Hosting, the `Host` request header allows a single physical server and IP address to host and serve multiple distinct domain names. Crucially, this header resides entirely at the application layer and remains completely under the client's control.
 
-### 1.2. Sai lầm trong kiến trúc xác thực và phân quyền
+### 1.2. Architectural Flaw in Authentication and Access Control
 
-Để xác định client có phải là người dùng cục bộ hay không, quy trình chuẩn đòi hỏi máy chủ phải kiểm tra địa chỉ IP ở tầng kết nối mạng thông qua Socket TCP. Tuy nhiên, lập trình viên thường mắc lỗi sử dụng giá trị chuỗi của header Host để đối chiếu:
+To determine whether an incoming request originates from a trusted local user, secure engineering standards require inspecting the client's source IP address at the transport layer via the underlying TCP socket. However, developers frequently make the fatal mistake of evaluating the string value provided in the HTTP `Host` header instead:
 
 ```javascript
-// Mã nguồn xử lý sai lầm phổ biến
+// Common vulnerable implementation
 if (request.headers['host'] === 'localhost' || request.headers['host'] === '127.0.0.1') {
     allowAdminAccess();
 } else {
@@ -38,84 +38,84 @@ if (request.headers['host'] === 'localhost' || request.headers['host'] === '127.
 }
 ```
 
-Vì gói tin TCP từ Internet vẫn được định tuyến đến đúng địa chỉ IP máy chủ, khi vào đến tầng xử lý của ứng dụng, chuỗi `Host: localhost` khiến hệ thống lầm tưởng request bắt nguồn từ chính máy chủ.
+Because external TCP packets from the public Internet are routed directly to the server's public IP address, once they reach the application processing layer, the presence of `Host: localhost` tricks the authorization logic into assuming the request originated internally from the host itself.
 
 ---
 
-## 2. Mô hình tấn công
+## 2. Attack Architecture / Threat Model
 
-### 2.1. Nguyên nhân và điều kiện phát sinh lỗ hổng
+### 2.1. Root Cause and Vulnerability Preconditions
 
-- **Thiếu sót xác thực:** Ứng dụng đưa ra giả định về mức đặc quyền của người dùng chỉ dựa vào giá trị chuỗi của header Host.
-- **Cấu hình Web Server lỏng lẻo:** Hệ thống tiếp nhận và chuyển tiếp các request có giá trị Host khác với tên miền chính thức mà không kiểm tra hay từ chối gói tin.
-- **Bỏ qua kiểm tra phiên đăng nhập:** Chức năng quản trị không yêu cầu xác thực bằng Session Token hợp lệ mà chỉ kiểm tra định danh giả mạo từ header.
+- **Flawed Trust Assumption:** The application infers user privilege and network locality solely from client-supplied string values in the `Host` header.
+- **Permissive Web Server Routing:** The upstream web server accepts and proxies requests with mismatched or arbitrary `Host` values without validating against canonical server names.
+- **Bypassed Session Authentication:** The administrative interface relies on superficial header checks rather than enforcing robust, cryptographically validated administrator session tokens.
 
-### 2.2. Sơ đồ luồng dữ liệu tấn công
+### 2.2. Attack Flow Diagram
 
 ```text
-[ Attacker từ Internet ]
+[ Attacker via Internet ]
        │
-       │  Gửi request đến IP Public của server:
+       │  Sends request to Server Public IP:
        │  GET /admin HTTP/2
-       │  Host: localhost             <── Giả mạo định danh nội bộ
+       │  Host: localhost             <── Spoofs internal identity
        ▼
 [ Web Server ]
        │
-       │  Tiếp nhận gói tin TCP và chuyển vào ứng dụng xử lý
+       │  Accepts TCP stream and forwards to application layer
        ▼
-[ Bộ lọc Access Control ]
+[ Access Control Filter ]
        │
-       │  Đọc Host header == 'localhost' ──► Xác thực hợp lệ!
+       │  Inspects Host header == 'localhost' ──► Authorized!
        ▼
-[ Giao diện Quản trị /admin ]
+[ Admin Panel Interface /admin ]
        │
-       │  Trả về quyền quản trị và thực thi lệnh xóa người dùng
+       │  Grants administrative rights & executes user deletion
        ▼
-[ Trả về 200 OK / 302 Found cho Attacker ]
+[ Returns 200 OK / 302 Found to Attacker ]
 ```
 
 > [!NOTE]
-> **Question:** Trong thực tế, nếu đổi `Host: localhost` mà bị lỗi `504 Gateway Timeout` hoặc `404 Not Found` thì do đâu?
+> **Question:** In real-world environments, why might modifying `Host: localhost` trigger a `504 Gateway Timeout` or `404 Not Found`?
 > 
 > **Answer:**  
-> Trường hợp này xảy ra khi Reverse Proxy (Nginx, HAProxy) dùng chính header `Host` để định tuyến nội bộ. Khi đổi thành `localhost`, proxy tìm máy chủ tên là `localhost` trong cụm upstream nhưng không tồn tại, dẫn đến lỗi 404 hoặc timeout. Để khắc phục và tìm hướng bypass khác, pentester thường áp dụng:
-> - **Giữ nguyên `Host: victim.com` và chèn các header ghi đè IP nguồn:**
+> This behavior occurs when an intermediate Reverse Proxy (e.g., Nginx, HAProxy) utilizes the `Host` header itself to route upstream traffic. When changed to `localhost`, the proxy attempts to route to an upstream named `localhost` that may not exist in the routing table, resulting in connection timeouts or 404 responses. To bypass this, penetration testers explore alternative strategies:
+> - **Retaining `Host: victim.com` while injecting source IP override headers:**
 >   - `X-Forwarded-For: 127.0.0.1`
 >   - `X-Real-IP: 127.0.0.1`
 >   - `X-Custom-IP-Authorization: 127.0.0.1`
-> - **Thử các biến thể của localhost:** `127.0.0.1`, `[::1]`, `127.1`, `localhost:80`, `localhost:443`.
-> - **Kỹ thuật Duplicate Host:** Gửi 2 header `Host` trong cùng một request.
+> - **Testing localhost representations and variants:** `127.0.0.1`, `[::1]`, `127.1`, `localhost:80`, `localhost:443`.
+> - **Duplicate Host Headers:** Providing two conflicting `Host` headers within the same HTTP request.
 
 ---
 
-## 3. Khai thác lỗ hổng
+## 3. Vulnerability Exploitation
 
-Quá trình thực nghiệm được triển khai tuần tự theo 5 bước:
+The vulnerability exploitation procedure is carried out across five sequential steps:
 
-### Bước 1: Thu thập thông tin từ robots.txt
+### Step 1: Information Gathering via robots.txt
 
-Gửi request kiểm tra file cấu hình `GET /robots.txt HTTP/2` trên Burp Suite Repeater. Phản hồi xác định đường dẫn quản trị bị ẩn:
+Dispatch a request to inspect `GET /robots.txt HTTP/2` via Burp Suite Repeater. The response reveals a restricted administrative endpoint:
 
 ```text
 User-agent: *
 Disallow: /admin
 ```
 
-![Hình 1: Kiểm tra robots.txt xác định đường dẫn /admin](extracted_images/image1.png)
+![Figure 1: Inspecting robots.txt identifying the /admin path](extracted_images/image1.png)
 
 ---
 
-### Bước 2: Xác nhận cơ chế phòng thủ tại /admin
+### Step 2: Confirming Access Controls on /admin
 
-Truy cập trực tiếp vào đường dẫn vừa phát hiện: `GET /admin HTTP/2` với header Host mặc định của bài lab. Hệ thống từ chối truy cập:
+Directly request the discovered administrative endpoint `GET /admin HTTP/2` utilizing the default lab `Host` header. Access is denied with an authorization error:
 
-![Hình 2: Truy cập /admin thông thường bị chặn với mã lỗi 401 Unauthorized](extracted_images/image2.png)
+![Figure 2: Standard access to /admin blocked with 401 Unauthorized](extracted_images/image2.png)
 
 ---
 
-### Bước 3: Thay đổi Host header để bypass Access Control
+### Step 3: Modifying the Host Header to Bypass Access Control
 
-Trong tab Repeater, thay đổi giá trị của header Host thành `localhost`:
+Within Burp Repeater, tamper with the request by replacing the `Host` header value with `localhost`:
 
 ```http
 GET /admin HTTP/2
@@ -124,15 +124,15 @@ Cookie: session=bvTBP6Fu9K0cjcZJqJbpxfhkNPCiTMCd; ...
 User-Agent: Mozilla/5.0...
 ```
 
-Kết quả: Máy chủ phản hồi mã `HTTP/2 200 OK`, vượt qua bước kiểm soát quyền hạn thành công.
+Result: The server responds with `HTTP/2 200 OK`, successfully bypassing the access control validation.
 
-![Hình 3: Thay đổi Host thành localhost truy cập thành công giao diện quản trị với mã 200 OK](extracted_images/image3.png)
+![Figure 3: Changing Host to localhost successfully grants administrative access with 200 OK](extracted_images/image3.png)
 
 ---
 
-### Bước 4: Phân tích mã nguồn trang quản trị
+### Step 4: Analyzing the Administrative Source Code
 
-Kiểm tra nội dung HTML trả về ở Bước 3, xác định cấu trúc danh sách tài khoản và liên kết xóa người dùng:
+Inspect the returned HTML response from Step 3 to identify user management endpoints and deletion links:
 
 ```html
 <section>
@@ -148,13 +148,13 @@ Kiểm tra nội dung HTML trả về ở Bước 3, xác định cấu trúc da
 </section>
 ```
 
-![Hình 4: Cấu trúc HTML của trang quản trị hiển thị liên kết xóa tài khoản carlos](extracted_images/image4.png)
+![Figure 4: Administrative HTML structure revealing the user deletion endpoint for carlos](extracted_images/image4.png)
 
 ---
 
-### Bước 5: Thực thi xóa tài khoản carlos và hoàn thành mục tiêu
+### Step 5: Deleting Carlos's Account and Achieving Objective
 
-Gửi request xóa người dùng carlos, tiếp tục giữ nguyên header `Host: localhost`:
+Issue a deletion request targeting user `carlos`, retaining the `Host: localhost` header:
 
 ```http
 GET /admin/delete?username=carlos HTTP/2
@@ -162,34 +162,34 @@ Host: localhost
 Cookie: session=bvTBP6Fu9K0cjcZJqJbpxfhkNPCiTMCd; ...
 ```
 
-Máy chủ xử lý thành công, trả về phản hồi chuyển hướng `HTTP/2 302 Found` với tiêu đề `Location: /admin`. Tài khoản carlos đã bị xóa khỏi hệ thống.
+The application executes the deletion successfully, issuing an `HTTP/2 302 Found` redirection header to `Location: /admin`. Carlos's account is permanently deleted.
 
-![Hình 5: Request xóa người dùng carlos trả về 302 Found](extracted_images/image5.png)
+![Figure 5: User deletion request for carlos returning 302 Found](extracted_images/image5.png)
 
-Kiểm tra lại trang web trên trình duyệt, thông báo giải quyết bài lab xuất hiện.
+Refresh the application interface in the browser to confirm challenge completion.
 
-![Hình 6: Bài lab được giải quyết thành công](extracted_images/image6.png)
+![Figure 6: Lab challenge successfully solved](extracted_images/image6.png)
 
 ---
 
-## 4. Biện pháp khắc phục
+## 4. Remediation Strategies
 
-### 4.1. Khắc phục tại tầng Ứng dụng
+### 4.1. Application-Layer Remediation
 
-- **Không sử dụng Host header để phân quyền:** Tuyệt đối không dựa vào bất kỳ trường HTTP header nào do client gửi lên để đưa ra quyết định cấp quyền.
-- **Triển khai Role-Based Access Control:** Trang quản trị bắt buộc phải được bảo vệ bằng cơ chế xác thực phiên đăng nhập của tài khoản có vai trò quản trị viên.
-- **Xác thực IP qua Socket mạng:** Trường hợp bắt buộc giới hạn truy cập theo mạng nội bộ, chỉ sử dụng địa chỉ IP lấy từ kết nối TCP thực tế.
+- **Decouple Access Control from Host Headers:** Never base access control or authorization decisions on client-supplied HTTP request headers.
+- **Implement Role-Based Access Control (RBAC):** Administrative interfaces must strictly require authenticated session contexts associated with privileged administrative roles.
+- **Verify IP via Socket Connection:** When restricting functionality to local networks, inspect the remote client IP directly through the underlying network socket rather than relying on HTTP headers.
 
-### 4.2. Cấu hình bảo vệ tại Web Server và Reverse Proxy
+### 4.2. Web Server and Reverse Proxy Hardening
 
-- **Thiết lập Virtual Host mặc định:** Cấu hình Web Server chặn hoặc đóng kết nối ngay lập tức đối với các request chứa Host header lạ không nằm trong danh sách tên miền hợp lệ.
-- **Cấu hình an toàn cho Nginx:** Sử dụng server block mặc định để từ chối các yêu cầu không khớp tên miền:
+- **Define Default Virtual Host Catch-Alls:** Configure web servers to immediately reject or drop connections presenting unfamiliar or unrecognized `Host` headers that do not match canonical domains.
+- **Nginx Hardening Configuration:** Implement a default server block to drop non-matching hostname requests:
 
 ```nginx
 server {
     listen 80 default_server;
     listen 443 ssl default_server;
     server_name _;
-    return 444; # Đóng kết nối không phản hồi
+    return 444; # Terminate connection without response
 }
 ```

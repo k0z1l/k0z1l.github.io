@@ -1,37 +1,37 @@
 ---
 title: "[PortSwigger] HTTP Request Smuggling Series"
 date: 2026-09-22
-description: "Tổng hợp các bài giải chi tiết và phân tích chuyên sâu về lỗ hổng HTTP Request Smuggling trên PortSwigger Web Security Academy: kiến thức nền tảng, mô hình tấn công, kỹ thuật khai thác và biện pháp khắc phục."
+description: "Comprehensive technical analysis and walk-throughs of HTTP Request Smuggling vulnerabilities on PortSwigger Web Security Academy: core concepts, attack architecture, exploitation tradecraft, and defense-in-depth remediations."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Request Smuggling"]
 showAuthor: false
 showTableOfContents: true
 ---
 
-Chào mừng bạn đến với chuyên đề **HTTP Request Smuggling** thuộc chuỗi bài giải lab **PortSwigger Web Security Academy**.
+Welcome to the **HTTP Request Smuggling** series covering the practical labs from the **PortSwigger Web Security Academy**.
 
-HTTP Request Smuggling là một kỹ thuật tấn công can thiệp vào cách chuỗi các máy chủ HTTP (chẳng hạn như Front-end Reverse Proxy / Load Balancer và Back-end Server) xử lý luồng dữ liệu HTTP được gửi đến qua cùng một kết nối TCP dùng chung (HTTP Keep-Alive / Pipelining). 
+HTTP Request Smuggling is a high-impact attack vector that targets how chains of HTTP servers (such as front-end reverse proxies, CDNs, or load balancers, and back-end application servers) parse and process sequences of HTTP requests transmitted over shared, persistent TCP connections (HTTP Keep-Alive / Pipelining).
 
-Lỗ hổng phát sinh khi Front-end và Back-end không thống nhất về ranh giới giữa các request liên tiếp, chủ yếu do sự bất đồng bộ trong việc xử lý hai header xác định độ dài gói tin: `Content-Length` và `Transfer-Encoding`. Kẻ tấn công có thể "buộc" máy chủ xử lý một phần request của mình như là phần mở đầu của request tiếp theo đến từ người dùng khác, dẫn đến các hậu quả nghiêm trọng: bypass kiểm soát truy cập, đánh cắp phiên làm việc của người dùng khác, Web Cache Poisoning, hoặc thực thi mã độc XSS.
-
----
-
-## Cấu trúc phân tích chuẩn cho mỗi bài viết
-
-Tất cả các bài giải trong series đều tuân thủ cấu trúc 4 phần chuẩn hóa:
-1. **Kiến thức nền tảng**: Cơ chế hoạt động của giao thức, cách phân tích cú pháp header và ranh giới thông điệp HTTP.
-2. **Mô hình tấn công**: Sơ đồ luồng dữ liệu, phân tích sự bất đồng bộ giữa Front-end và Back-end.
-3. **Khai thác lỗ hổng**: Chi tiết các bước thực nghiệm, phân tích request/response bằng Burp Suite (Repeater, Turbo Intruder, HTTP/2).
-4. **Biện pháp khắc phục**: Hướng dẫn cấu hình an toàn cho máy chủ chuyển tiếp và máy chủ backend, chuẩn hóa giao thức HTTP/2 từ đầu cuối đến đầu cuối (end-to-end).
+The vulnerability arises when front-end and back-end servers disagree on message boundaries, primarily due to discrepancies in handling the two length-determining headers: `Content-Length` and `Transfer-Encoding`. An attacker can manipulate request formatting to cause a server to interpret part of an attacker's request as the start of the next incoming request from a victim, resulting in critical impacts: access control bypass, session hijacking, cache poisoning, and cross-site scripting (XSS).
 
 ---
 
-## Danh sách các bài Lab trong Series
+## Standardized Analysis Framework
 
-| Lab | Tên bài Lab | Mức độ | Kỹ thuật khai thác chính |
+Each writeup in this series adheres to a rigorous four-part framework:
+1. **Core Fundamentals**: Protocol specifications, header parsing mechanisms, and HTTP message boundary rules.
+2. **Attack Architecture**: Data-flow modeling and differential parsing analysis between front-end and back-end components.
+3. **Exploitation & Step-by-Step PoC**: Detailed experimental steps, request/response tampering using Burp Suite (Repeater, Turbo Intruder, HTTP/2).
+4. **Remediation Strategies**: Secure configuration guidelines for intermediate proxies and backend servers, promoting end-to-end HTTP/2 adoption.
+
+---
+
+## Series Challenge Index
+
+| Lab | Challenge name | Level | Primary Exploit Technique |
 | :---: | :--- | :---: | :--- |
-| **01** | [HTTP request smuggling, basic CL.TE vulnerability](lab-01-HTTP%20request%20smuggling-basic%20CL.TE%20vulnerability/) | Practitioner | Khai thác bất đồng bộ CL.TE làm biến dạng phương thức yêu cầu tiếp theo thành `GPOST` |
-| **02** | [HTTP request smuggling, basic TE.CL vulnerability](lab-02-HTTP%20request%20smuggling-basic%20TE.CL%20vulnerability/) | Practitioner | Khai thác bất đồng bộ TE.CL tuồn request qua chunk dữ liệu làm biến dạng phương thức thành `GPOST` |
-| **03** | [HTTP request smuggling, obfuscating the TE header](lab-03-HTTP%20request%20smuggling-obfuscating%20the%20TE%20header/) | Practitioner | Làm mờ tiêu đề Transfer-Encoding (TE.TE) đưa hệ thống về trạng thái bất đồng bộ |
+| **01** | [HTTP request smuggling, basic CL.TE vulnerability](lab-01-HTTP%20request%20smuggling-basic%20CL.TE%20vulnerability/) | Practitioner | CL.TE desync distorting the victim's subsequent request into `GPOST` |
+| **02** | [HTTP request smuggling, basic TE.CL vulnerability](lab-02-HTTP%20request%20smuggling-basic%20TE.CL%20vulnerability/) | Practitioner | TE.CL desync smuggling request fragments via chunked payloads mutating method into `GPOST` |
+| **03** | [HTTP request smuggling, obfuscating the TE header](lab-03-HTTP%20request%20smuggling-obfuscating%20the%20TE%20header/) | Practitioner | Transfer-Encoding obfuscation (TE.TE) inducing parser discrepancy |
 
-*Các bài lab tiếp theo sẽ liên tục được cập nhật tại đây.*
+*Upcoming challenges will be continuously documented here.*

