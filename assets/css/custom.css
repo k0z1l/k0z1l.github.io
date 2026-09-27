@@ -474,6 +474,139 @@ pre code, .highlight code {
   color: #e2f1f7 !important;
 }
 
+/* ==========================================================================
+   Code Blocks & Line Numbers Table (Consistent Width, Centered, Spaced)
+   ========================================================================== */
+
+/* 1. Highlight Container & Table Reset */
+.highlight-wrapper {
+  overflow: hidden !important;
+}
+
+.highlight-wrapper .chroma .lntable,
+.chroma .lntable,
+table.lntable {
+  display: table !important;
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-spacing: 0 !important;
+  border-collapse: collapse !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+.chroma .lntable tr,
+table.lntable tr {
+  display: table-row !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* 2. Column 1 (Line Number Gutter): Fixed uniform width across all boxes */
+.chroma .lntd:first-child,
+table.lntable td.lntd:first-child {
+  width: 3.5rem !important;
+  min-width: 3.5rem !important;
+  max-width: 3.5rem !important;
+  vertical-align: top !important;
+  text-align: center !important;
+  padding: 0.85rem 0 !important;
+  margin: 0 !important;
+  border-right: 1px solid var(--border) !important;
+  background-color: rgba(0, 0, 0, 0.28) !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+html.theme-ruby .chroma .lntd:first-child,
+html.theme-ruby table.lntable td.lntd:first-child {
+  border-right: 1px solid rgba(255, 23, 68, 0.35) !important;
+  background-color: rgba(25, 4, 8, 0.4) !important;
+}
+
+/* 3. Centered Line Numbers */
+.chroma .lntd:first-child pre,
+table.lntable td.lntd:first-child pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.chroma .lntd:first-child code,
+table.lntable td.lntd:first-child code {
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.chroma .lnt,
+span.lnt {
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--muted) !important;
+  opacity: 0.65 !important;
+  font-family: 'JetBrains Mono', 'Inconsolata', monospace !important;
+  font-size: 0.85rem !important;
+  line-height: 1.65 !important;
+}
+
+/* 4. Column 2 (Code Content): Spaced out comfortably from divider line */
+.chroma .lntd:last-child,
+table.lntable td.lntd:last-child {
+  vertical-align: top !important;
+  padding: 0.85rem 1.25rem !important; /* Comfortably spaced away from the divider */
+  margin: 0 !important;
+  width: calc(100% - 3.5rem) !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.chroma .lntd:last-child pre,
+table.lntable td.lntd:last-child pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  overflow-x: auto !important;
+}
+
+.chroma .lntd:last-child code,
+table.lntable td.lntd:last-child code {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  font-family: 'JetBrains Mono', 'Inconsolata', monospace !important;
+  font-size: 0.85rem !important;
+  line-height: 1.65 !important;
+  white-space: pre !important;
+}
+
+.chroma .line,
+table.lntable .line {
+  line-height: 1.65 !important;
+}
+
 code:not(pre code) {
   background-color: rgba(0, 242, 254, 0.08) !important;
   color: var(--accent) !important;
