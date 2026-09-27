@@ -280,9 +280,11 @@ article header img.rounded-full {
   transition: all 0.3s ease;
 }
 
-.author .place-self-center div:last-child {
+.author .place-self-center div:last-child,
+.author div:last-child {
   text-align: left !important;
-  max-width: 570px !important;
+  max-width: 100% !important;
+  width: 100% !important;
 }
 
 /* Article layout and dotted left guide border */

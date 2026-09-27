@@ -1,5 +1,5 @@
 {{ $disableImageOptimization := .Site.Params.disableImageOptimization | default false }}
-<div class="flex author w-full">
+<div class="flex author w-full items-center">
   {{ with .Site.Params.Author.image }}
     {{ $authorImage := "" }}
     {{ if or (strings.HasPrefix . "http:") (strings.HasPrefix . "https:") }}
@@ -15,7 +15,7 @@
         {{ $squareImage = $authorImage.Resize "800x" }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0 self-center object-cover"
+        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-5 shrink-0 self-center object-cover"
         style="object-position: center 10%;"
         width="96"
         height="96"
@@ -31,7 +31,7 @@
         {{ $squareImage = $authorImage.Resize "800x" }}
       {{ end }}
       <img
-        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-4 shrink-0 self-center object-cover"
+        class="!mt-0 !mb-0 h-24 w-24 rounded-full me-5 shrink-0 self-center object-cover"
         style="object-position: center 10%;"
         width="96"
         height="96"
@@ -40,14 +40,14 @@
         data-zoom-src="{{ $squareImage.RelPermalink }}">
     {{ end }}
   {{ end }}
-  <div class="place-self-center flex-1 min-w-0">
+  <div class="flex-1 min-w-0">
     {{ with .Site.Params.Author.name | markdownify }}
-      <div class="font-semibold leading-6 text-neutral-800 dark:text-neutral-300">
+      <div class="text-base sm:text-lg font-bold leading-6 text-neutral-800 dark:text-neutral-200">
         {{ . }}
       </div>
     {{ end }}
     {{ with .Site.Params.Author.bio | markdownify }}
-      <div class="text-sm text-neutral-700 dark:text-neutral-400 mt-1 max-w-[570px] text-left" style="text-align: left; max-width: 570px;">{{ . }}</div>
+      <div class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300 mt-1.5 leading-relaxed text-left w-full max-w-full">{{ . }}</div>
     {{ end }}
   </div>
 </div>
