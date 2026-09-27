@@ -278,8 +278,8 @@ header#single_header .author {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 2.25rem !important;
-  padding-left: 1.5rem !important;
+  gap: 2rem !important;
+  padding-left: 0.25rem !important;
   width: 100% !important;
 }
 
@@ -295,8 +295,8 @@ article header img.rounded-full {
   object-position: center 10% !important;
   border: 2px solid var(--accent) !important;
   box-shadow: 0 0 22px var(--accent-glow) !important;
-  margin-left: 0.5rem !important;
-  margin-right: 2rem !important;
+  margin-left: 0 !important;
+  margin-right: 1.75rem !important;
   margin-bottom: 0 !important;
   flex-shrink: 0 !important;
   transition: all 0.3s ease;
@@ -307,11 +307,13 @@ article header img.rounded-full {
 .author > div:last-child {
   flex: 1 1 0% !important;
   min-width: 0 !important;
-  padding-left: 0.5rem !important;
+  padding-left: 0 !important;
+  padding-right: 1.25rem !important;
 }
 
 .author-name {
   text-align: left !important;
+  margin-bottom: 0.65rem !important;
 }
 
 .author-bio,
