@@ -382,6 +382,56 @@ article footer.max-w-prose {
   text-shadow: 0 0 10px var(--accent-glow);
 }
 
+/* ==========================================================================
+   Series Box & Details Summary (Adaptive Cyan Jade ⮂ Ruby Red)
+   ========================================================================== */
+details summary::marker,
+details summary::-webkit-details-marker {
+  color: var(--accent) !important;
+}
+
+summary.series-summary,
+details summary.bg-primary-200,
+details summary.dark\:bg-primary-800,
+details summary[class*="bg-primary"],
+summary[class*="bg-primary"] {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.22) 0%, rgba(0, 188, 212, 0.14) 100%) !important;
+  color: var(--accent) !important;
+  border: 1px solid rgba(0, 242, 254, 0.4) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 16px -2px var(--accent-glow) !important;
+  text-shadow: 0 0 10px var(--accent-glow) !important;
+  transition: all 0.3s ease !important;
+}
+
+summary.series-summary:hover,
+details summary.bg-primary-200:hover,
+details summary.dark\:bg-primary-800:hover,
+details summary[class*="bg-primary"]:hover {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.32) 0%, rgba(0, 188, 212, 0.22) 100%) !important;
+  box-shadow: 0 0 24px 2px var(--accent-glow) !important;
+}
+
+html.theme-ruby summary.series-summary,
+html.theme-ruby details summary.bg-primary-200,
+html.theme-ruby details summary.dark\:bg-primary-800,
+html.theme-ruby details summary[class*="bg-primary"],
+html.theme-ruby summary[class*="bg-primary"] {
+  background: linear-gradient(135deg, rgba(255, 23, 68, 0.26) 0%, rgba(213, 0, 50, 0.16) 100%) !important;
+  color: #ff1744 !important;
+  border: 1px solid rgba(255, 23, 68, 0.5) !important;
+  box-shadow: 0 0 18px -2px rgba(255, 23, 68, 0.45) !important;
+  text-shadow: 0 0 10px rgba(255, 23, 68, 0.7) !important;
+}
+
+html.theme-ruby summary.series-summary:hover,
+html.theme-ruby details summary.bg-primary-200:hover,
+html.theme-ruby details summary.dark\:bg-primary-800:hover,
+html.theme-ruby details summary[class*="bg-primary"]:hover {
+  background: linear-gradient(135deg, rgba(255, 23, 68, 0.38) 0%, rgba(213, 0, 50, 0.24) 100%) !important;
+  box-shadow: 0 0 28px 2px rgba(255, 23, 68, 0.6) !important;
+}
+
 /* Headings with Accent Glow */
 h1, h2, h3, h4, h5, h6 {
   color: var(--text) !important;

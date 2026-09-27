@@ -42,14 +42,16 @@
 
       <!-- welcome_to_my_blog.txt Output Area -->
       <div id="motd-output" class="hidden opacity-0 transition-opacity duration-500 ease-out">
-        <!-- ASCII Art Banner: 0xDTK with Dynamic Accent Glow -->
-        <pre class="my-3 font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all transition-all duration-300" style="color: var(--accent); text-shadow: 0 0 12px var(--accent-glow);">
+        <!-- ASCII Art Banner: 0xDTK Centered with Dynamic Accent Glow -->
+        <div class="w-full flex justify-center my-3">
+          <pre class="font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all transition-all duration-300 text-left" style="color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); display: table; margin: 0 auto;">
    ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
 / /_/ /|   // /_/ / / /  / /| |  
 \____//_/|_/_____/ /_/  /_/ |_|  
-        </pre>
+          </pre>
+        </div>
 
         <!-- Information Block -->
         <div class="space-y-1.5 text-xs sm:text-sm mt-2 text-[#e2e8f0]">
@@ -78,13 +80,15 @@
 
       <!-- Fallback for browsers without JS -->
       <noscript>
-        <pre class="my-3 font-mono text-xs font-bold leading-tight" style="color: var(--accent);">
+        <div class="w-full flex justify-center my-3">
+          <pre class="font-mono text-xs font-bold leading-tight text-left" style="color: var(--accent); display: table; margin: 0 auto;">
    ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
 / /_/ /|   // /_/ / / /  / /| |  
 \____//_/|_/_____/ /_/  /_/ |_|  
-        </pre>
+          </pre>
+        </div>
         <div class="space-y-1 text-xs text-[#e2e8f0]">
           <div><span style="color: var(--accent); font-weight: bold;">[+]</span> Author : k0z1l</div>
           <div><span style="color: var(--accent); font-weight: bold;">[+]</span> Focus  : Security Research &amp; Web Exploitation</div>
