@@ -14,11 +14,11 @@
     
     <!-- macOS Terminal Header Bar -->
     <div style="height: 38px; min-height: 38px; background-color: var(--line); border-bottom: 1px solid var(--border);" class="relative flex items-center px-4 select-none transition-colors duration-300">
-      <!-- 3 Mac Window Control Buttons (Red, Yellow, Accent - 11px diameter) -->
+      <!-- 3 Mac Window Control Buttons (Fixed Red, Yellow, Green - 11px diameter) -->
       <div style="display: flex; align-items: center; gap: 7px;" class="z-10">
         <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: #ff5f56; border-radius: 50%; display: inline-block;"></span>
         <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: #ffbd2e; border-radius: 50%; display: inline-block;"></span>
-        <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: var(--accent); border-radius: 50%; display: inline-block; transition: background-color 0.3s ease;"></span>
+        <span style="width: 11px; height: 11px; min-width: 11px; min-height: 11px; background-color: #27c93f; border-radius: 50%; display: inline-block;"></span>
       </div>
 
       <!-- Pure Text Centered Title (13px) -->
@@ -42,15 +42,13 @@
 
       <!-- welcome_to_my_blog.txt Output Area -->
       <div id="motd-output" class="hidden opacity-0 transition-opacity duration-500 ease-out">
-        <!-- ASCII Art Banner: 0xDTK Centered with Dynamic Accent Glow -->
-        <div class="w-full flex justify-center my-3">
-          <pre class="font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all transition-all duration-300 text-left" style="color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); display: table; margin: 0 auto;">
-   ____        ____  ______ __ __
+        <!-- ASCII Art Banner: 0xDTK Full Width Box with Centered Art & Dynamic Accent Glow -->
+        <div class="w-full my-3">
+          <pre class="w-full font-mono text-[10px] sm:text-xs md:text-sm font-bold leading-tight select-all transition-all duration-300 text-center py-3.5 px-4 overflow-x-auto" style="color: var(--accent); text-shadow: 0 0 12px var(--accent-glow);"><span class="inline-block text-left">   ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
 / /_/ /|   // /_/ / / /  / /| |  
-\____//_/|_/_____/ /_/  /_/ |_|  
-          </pre>
+\____//_/|_/_____/ /_/  /_/ |_|  </span></pre>
         </div>
 
         <!-- Information Block -->
@@ -80,14 +78,12 @@
 
       <!-- Fallback for browsers without JS -->
       <noscript>
-        <div class="w-full flex justify-center my-3">
-          <pre class="font-mono text-xs font-bold leading-tight text-left" style="color: var(--accent); display: table; margin: 0 auto;">
-   ____        ____  ______ __ __
+        <div class="w-full my-3">
+          <pre class="w-full font-mono text-xs font-bold leading-tight text-center py-3.5 px-4 overflow-x-auto" style="color: var(--accent);"><span class="inline-block text-left">   ____        ____  ______ __ __
   / __ \_  __ / __ \/_  __// //_/
  / / / / |/ // / / / / /  / ,&lt;   
 / /_/ /|   // /_/ / / /  / /| |  
-\____//_/|_/_____/ /_/  /_/ |_|  
-          </pre>
+\____//_/|_/_____/ /_/  /_/ |_|  </span></pre>
         </div>
         <div class="space-y-1 text-xs text-[#e2e8f0]">
           <div><span style="color: var(--accent); font-weight: bold;">[+]</span> Author : k0z1l</div>

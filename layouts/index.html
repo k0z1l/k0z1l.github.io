@@ -13,7 +13,7 @@
   {{ partial "home/terminal-box.html" . }}
 
   <div class="my-10 flex justify-center">
-    <a href="{{ .Site.Params.homepage.showMoreLinkDest | default `/writeups/` | relLangURL }}" class="show-more-glow-btn group" aria-label="Show More">
+    <a href="{{ .Site.Params.homepage.showMoreLinkDest | default `/about/` | relLangURL }}" class="show-more-glow-btn group" aria-label="Show More">
       <span class="show-more-glow-beam"></span>
       <span class="show-more-inner">
         <span>{{ i18n "recent.show_more" | default "Show More" | markdownify }}</span>
