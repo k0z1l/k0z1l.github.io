@@ -1,13 +1,21 @@
-<!-- Background Canvases & Scanlines (w0rkd4tt Theme) -->
-<canvas class="constellation-canvas" aria-hidden="true"></canvas>
-<canvas class="binary-canvas" aria-hidden="true"></canvas>
-<div class="scanlines" aria-hidden="true"></div>
-
-<!-- Constellation Particle Animation Script -->
+<!-- Constellation Particle Animation Script (w0rkd4tt Theme) -->
 <script>
 (function() {
-  const r = document.querySelector(".constellation-canvas");
-  if (!r) return;
+  let r = document.querySelector(".constellation-canvas");
+  if (!r) {
+    r = document.createElement("canvas");
+    r.className = "constellation-canvas";
+    r.setAttribute("aria-hidden", "true");
+    document.body.prepend(r);
+  } else if (r.parentElement !== document.body) {
+    document.body.prepend(r);
+  }
+
+  const s_div = document.querySelector(".scanlines");
+  if (s_div && s_div.parentElement !== document.body) {
+    document.body.prepend(s_div);
+  }
+
   const t = r.getContext("2d");
   const o = matchMedia("(prefers-reduced-motion: reduce)");
   let i = 0, c = !document.hidden, a = [];
@@ -95,11 +103,19 @@
 })();
 </script>
 
-<!-- Binary Rain Animation Script -->
+<!-- Binary Rain Animation Script (w0rkd4tt Theme) -->
 <script>
 (function() {
-  const c = document.querySelector(".binary-canvas");
-  if (!c) return;
+  let c = document.querySelector(".binary-canvas");
+  if (!c) {
+    c = document.createElement("canvas");
+    c.className = "binary-canvas";
+    c.setAttribute("aria-hidden", "true");
+    document.body.prepend(c);
+  } else if (c.parentElement !== document.body) {
+    document.body.prepend(c);
+  }
+
   const n = c.getContext("2d");
   const r = matchMedia("(prefers-reduced-motion: reduce)");
   const w = 90;
