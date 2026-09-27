@@ -1,21 +1,22 @@
 /* ==========================================================================
-   w0rkd4tt Theme & Cyberpunk Background Styles
+   k0z1l Cybersec Cyan & Electric Teal Theme
    ========================================================================== */
 
 :root {
-  --bg: #050807;
-  --top: #0b100f;
-  --accent: #00ff7f;        /* Spring / Terminal Neon Green */
-  --accent-dim: #00b35a;
-  --text: #d7ded9;
-  --muted: #8fa39b;
-  --faint: #5b6f68;
-  --panel: #0a0f0ebd;
-  --border: #1d2b26;
-  --line: #16211d;
+  --bg: #040809;            /* Deep Obsidian */
+  --top: #071318;           /* Cyan Slate Navy */
+  --accent: #00f2fe;        /* Electric Cyan Neon */
+  --accent-dim: #00bcd4;    /* Deep Teal */
+  --accent-blue: #4facfe;   /* Neon Sky Blue */
+  --text: #d6e5ea;          /* Icy Silver Text */
+  --muted: #88a2ab;         /* Cyan Muted */
+  --faint: #546e78;         /* Dark Slate */
+  --panel: #071217c7;       /* Frosted Obsidian Glass */
+  --border: #132a32;        /* Dark Teal Border */
+  --line: #0f2228;          /* Header Separator */
   --red: #ff5f56;
   --yellow: #ffbd2e;
-  --window: #27c93f;
+  --window: #00f2fe;
 }
 
 /* Global Font Settings */
@@ -71,7 +72,7 @@ body {
 
 .constellation-canvas {
   z-index: 0 !important;
-  opacity: 0.55 !important;
+  opacity: 0.65 !important;
 }
 
 .binary-canvas {
@@ -81,7 +82,7 @@ body {
 .scanlines {
   z-index: 1 !important;
   opacity: 1 !important;
-  background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0, 255, 127, 0.016) 3px, transparent 4px) !important;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0, 242, 254, 0.016) 3px, transparent 4px) !important;
 }
 
 /* Ensure all page content sits cleanly above the canvas and scanlines */
@@ -94,9 +95,21 @@ body > footer,
   z-index: 2;
 }
 
-/* Header styling: Glass panel with subtle neon glow */
+/* Neon Breathing Keyframe Animation */
+@keyframes neon-breathing {
+  0%, 100% {
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 16px -2px rgba(0, 242, 254, 0.12);
+    border-color: #132a32;
+  }
+  50% {
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.65), 0 0 28px 2px rgba(0, 242, 254, 0.28);
+    border-color: #1a3c48;
+  }
+}
+
+/* Header styling: Glass panel with subtle cyan neon glow */
 header {
-  background-color: #060b0ad1 !important;
+  background-color: #061116d1 !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
   border: 1px solid var(--border) !important;
@@ -104,12 +117,12 @@ header {
   padding: 0.35rem 1.25rem !important;
   margin-top: 1rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 15px -3px rgba(0, 255, 127, 0.08) !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px rgba(0, 242, 254, 0.12) !important;
 }
 
 /* Footer styling: Glass panel matching header */
 footer#site-footer {
-  background-color: #060b0ad1 !important;
+  background-color: #061116d1 !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
   border: 1px solid var(--border) !important;
@@ -117,7 +130,7 @@ footer#site-footer {
   padding: 1.25rem 1.75rem !important;
   margin-top: 3rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 15px -3px rgba(0, 255, 127, 0.08) !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px rgba(0, 242, 254, 0.12) !important;
 }
 
 footer#site-footer .flex.items-center.justify-between {
@@ -125,7 +138,7 @@ footer#site-footer .flex.items-center.justify-between {
   text-align: center !important;
 }
 
-/* Header title boxes (Single Article & List Overview) */
+/* Header title boxes (Single Article & List Overview) with Neon Breathing */
 header#single_header,
 main > header {
   background-color: var(--panel) !important;
@@ -136,7 +149,7 @@ main > header {
   max-width: 880px !important;
   width: 100% !important;
   padding: 1.35rem 1.75rem !important;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5), 0 0 24px -4px rgba(0, 255, 127, 0.06) !important;
+  animation: neon-breathing 4s ease-in-out infinite;
 }
 
 header#single_header ol,
@@ -151,7 +164,7 @@ main > header h1 {
   margin-bottom: 0.6rem !important;
   line-height: 1.25 !important;
   color: var(--accent) !important;
-  text-shadow: 0 0 16px rgba(0, 255, 127, 0.35);
+  text-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
 }
 
 header#single_header .mb-6,
@@ -169,14 +182,14 @@ header#single_header .author {
   margin-top: 1rem !important;
 }
 
-/* Avatar styling with subtle neon border */
+/* Avatar styling with Electric Cyan neon border & glow */
 .author img,
 header img.rounded-full,
 article header img.rounded-full {
   object-fit: cover !important;
   object-position: center 10% !important;
   border: 2px solid var(--accent) !important;
-  box-shadow: 0 0 20px rgba(0, 255, 127, 0.25) !important;
+  box-shadow: 0 0 22px rgba(0, 242, 254, 0.35) !important;
 }
 
 .author .place-self-center div:last-child {
@@ -277,7 +290,7 @@ article footer.max-w-prose {
 #TableOfContents > ul > li > a:hover,
 #TableOfContents > ul > li > a.active {
   color: var(--accent) !important;
-  text-shadow: 0 0 10px rgba(0, 255, 127, 0.6);
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.7);
 }
 
 /* Headings with Neon Accent Glow */
@@ -288,7 +301,7 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 strong, h2 strong, .heading-accent, .text-primary-500, .text-primary-600, .dark\:.text-primary-400 {
   color: var(--accent) !important;
-  text-shadow: 0 0 12px rgba(0, 255, 127, 0.35);
+  text-shadow: 0 0 14px rgba(0, 242, 254, 0.4);
 }
 
 /* Links & Accents */
@@ -299,34 +312,34 @@ a {
 
 a:hover {
   color: var(--accent) !important;
-  text-shadow: 0 0 8px rgba(0, 255, 127, 0.5);
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
 }
 
-/* Code Blocks & Pre styling (w0rkd4tt Hacker Card Look) */
+/* Code Blocks & Pre styling with Neon Breathing */
 pre, .highlight {
-  background-color: #08100ebb !important;
+  background-color: #061116d1 !important;
   border: 1px solid var(--border) !important;
   border-radius: 10px !important;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(5px) !important;
+  animation: neon-breathing 5s ease-in-out infinite;
 }
 
 code:not(pre code) {
-  background-color: rgba(0, 255, 127, 0.08) !important;
+  background-color: rgba(0, 242, 254, 0.08) !important;
   color: var(--accent) !important;
   padding: 0.15rem 0.35rem !important;
   border-radius: 4px !important;
-  border: 1px solid rgba(0, 255, 127, 0.2) !important;
+  border: 1px solid rgba(0, 242, 254, 0.22) !important;
 }
 
 /* Cards & Articles */
 .card, .border-neutral-200, .dark\:.border-neutral-700 {
   border-color: var(--border) !important;
-  background-color: #08100ebb !important;
+  background-color: #061116d1 !important;
   backdrop-filter: blur(5px) !important;
 }
 
-/* Show More Button (Neon Green Beam Animation) */
+/* Show More Button (Cyan & Electric Blue Beam Animation) */
 .show-more-glow-btn {
   position: relative;
   display: inline-flex;
@@ -336,13 +349,13 @@ code:not(pre code) {
   overflow: hidden;
   border-radius: 12px;
   text-decoration: none !important;
-  box-shadow: 0 0 15px -3px rgba(0, 255, 127, 0.35);
+  box-shadow: 0 0 16px -3px rgba(0, 242, 254, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .show-more-glow-btn:hover {
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 0 30px 4px rgba(0, 255, 127, 0.65);
+  box-shadow: 0 0 32px 4px rgba(0, 242, 254, 0.7);
 }
 
 .show-more-glow-beam {
@@ -355,8 +368,8 @@ code:not(pre code) {
     from 0deg,
     transparent 0deg,
     transparent 240deg,
-    rgba(0, 255, 127, 0.7) 290deg,
-    #00ff7f 360deg
+    rgba(79, 172, 254, 0.7) 290deg,
+    #00f2fe 360deg
   );
   animation: border-beam-rotate 2.6s linear infinite;
   border-radius: 50%;
@@ -376,7 +389,7 @@ code:not(pre code) {
   gap: 0.5rem;
   padding: 0.65rem 1.85rem;
   border-radius: 10px;
-  background-color: #08100ebd !important;
+  background-color: #071217e0 !important;
   color: var(--accent) !important;
   font-family: 'JetBrains Mono', 'Inconsolata', monospace;
   font-size: 0.95rem;
@@ -387,7 +400,7 @@ code:not(pre code) {
 }
 
 .show-more-glow-btn:hover .show-more-inner {
-  background-color: #0d1a15 !important;
+  background-color: #0c1f26 !important;
   color: #ffffff !important;
 }
 

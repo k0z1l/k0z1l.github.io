@@ -1,4 +1,4 @@
-<!-- Constellation Particle Animation Script (w0rkd4tt Theme) -->
+<!-- Constellation Particle Animation Script (Interactive Mouse Tether & Repulsion) -->
 <script>
 (function() {
   let r = document.querySelector(".constellation-canvas");
@@ -19,22 +19,35 @@
   const t = r.getContext("2d");
   const o = matchMedia("(prefers-reduced-motion: reduce)");
   let i = 0, c = !document.hidden, a = [];
-  const M = () => innerWidth <= 480 ? 22 : innerWidth <= 900 ? 35 : 48;
-  const p = () => 200;
+  const M = () => innerWidth <= 480 ? 24 : innerWidth <= 900 ? 38 : 52;
+  const p = () => 180;
+
+  // Track mouse coordinates for interactive repulsion & tethering
+  const mouse = { x: null, y: null, radius: 140 };
+  window.addEventListener("mousemove", e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  }, { passive: true });
+  window.addEventListener("mouseleave", () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
   const b = () => {
     a = Array.from({ length: M() }, () => {
-      const n = 0.1 + Math.random() * 0.18;
+      const n = 0.12 + Math.random() * 0.22;
       const s = Math.random() * Math.PI * 2;
       return {
         x: Math.random() * innerWidth,
         y: Math.random() * innerHeight,
         vx: Math.cos(s) * n,
         vy: Math.sin(s) * n,
-        radius: 1 + Math.random(),
-        alpha: 0.5 + Math.random() * 0.2
+        radius: 1 + Math.random() * 1.4,
+        alpha: 0.45 + Math.random() * 0.35
       };
     });
   };
+
   const l = () => {
     const n = Math.min(window.devicePixelRatio || 1, 2);
     r.width = Math.round(innerWidth * n);
@@ -45,12 +58,27 @@
     b();
     u(false);
   };
+
   const u = n => {
     if (!t) return;
     t.clearRect(0, 0, innerWidth, innerHeight);
     const s = p();
+
+    // Particle movement and mouse repulsion
     for (const e of a) {
       if (n) {
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = e.x - mouse.x;
+          const dy = e.y - mouse.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < mouse.radius && dist > 0) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            const dirX = dx / dist;
+            const dirY = dy / dist;
+            e.x += dirX * force * 3.2;
+            e.y += dirY * force * 3.2;
+          }
+        }
         e.x += e.vx;
         e.y += e.vy;
         if (e.x <= 0 || e.x >= innerWidth) e.vx *= -1;
@@ -59,6 +87,8 @@
         e.y = Math.max(0, Math.min(innerHeight, e.y));
       }
     }
+
+    // Draw lines between nearby particles in Electric Cyan
     for (let e = 0; e < a.length; e += 1) {
       for (let v = e + 1; v < a.length; v += 1) {
         const h = a[e], m = a[v];
@@ -67,19 +97,37 @@
           t.beginPath();
           t.moveTo(h.x, h.y);
           t.lineTo(m.x, m.y);
-          t.strokeStyle = "rgba(0, 255, 127, " + ((1 - x / s) * 0.32) + ")";
+          t.strokeStyle = "rgba(0, 242, 254, " + ((1 - x / s) * 0.3) + ")";
           t.lineWidth = 0.8;
           t.stroke();
         }
       }
     }
+
+    // Draw interactive tether line from mouse to nearby particles
+    if (mouse.x !== null && mouse.y !== null) {
+      for (const e of a) {
+        const dMouse = Math.hypot(e.x - mouse.x, e.y - mouse.y);
+        if (dMouse < mouse.radius) {
+          t.beginPath();
+          t.moveTo(e.x, e.y);
+          t.lineTo(mouse.x, mouse.y);
+          t.strokeStyle = "rgba(0, 242, 254, " + ((1 - dMouse / mouse.radius) * 0.45) + ")";
+          t.lineWidth = 1;
+          t.stroke();
+        }
+      }
+    }
+
+    // Draw particle glowing dots
     for (const e of a) {
       t.beginPath();
       t.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-      t.fillStyle = "rgba(0, 255, 127, " + e.alpha + ")";
+      t.fillStyle = "rgba(0, 242, 254, " + e.alpha + ")";
       t.fill();
     }
   };
+
   const d = () => {
     if (!c || o.matches) return;
     u(true);
@@ -95,6 +143,7 @@
     u(false);
     if (!o.matches && c) i = requestAnimationFrame(d);
   };
+
   l();
   if (!o.matches) i = requestAnimationFrame(d);
   window.addEventListener("resize", l, { passive: true });
@@ -103,7 +152,7 @@
 })();
 </script>
 
-<!-- Binary Rain Animation Script (w0rkd4tt Theme) -->
+<!-- Cybersec & Hex Matrix Rain Script (Cyan & Teal Glow) -->
 <script>
 (function() {
   let c = document.querySelector(".binary-canvas");
@@ -118,14 +167,22 @@
 
   const n = c.getContext("2d");
   const r = matchMedia("(prefers-reduced-motion: reduce)");
-  const w = 90;
+  const w = 85;
   let i = 0, p = 0, h = !document.hidden;
-  let m = 14, a = 18, f = [];
-  const v = () => Math.random() < 0.5 ? "0" : "1";
-  const A = () => innerWidth <= 480 ? 14 : 18;
+  let m = 13, a = 18, f = [];
+
+  // Security research & Hexadecimal character set
+  const cyberTokens = [
+    "0", "1", "0x", "root", "sh", "flag", "uid", "x86", "asm",
+    "ret", "pop", "hex", "bin", "cve", "sys", "443", "80",
+    "A", "B", "C", "D", "E", "F", "NULL", "SSH", "TCP", "POST", "GET"
+  ];
+  const v = () => cyberTokens[Math.floor(Math.random() * cyberTokens.length)];
+  const A = () => innerWidth <= 480 ? 16 : 22;
+
   const b = () => {
     m = innerWidth <= 480 ? 11 : 13;
-    a = m + 5;
+    a = m + 6;
     const e = A();
     const t = Math.ceil(innerHeight / a) + 2;
     f = Array.from({ length: Math.ceil(innerWidth / e) }, (s, l) => {
@@ -133,12 +190,13 @@
       return {
         x: l * e + e / 2,
         head: Math.floor(Math.random() * (t + o)) - Math.floor(t * 0.15),
-        speed: Math.random() < 0.3 ? 2 : 1,
+        speed: Math.random() < 0.28 ? 2 : 1,
         trail: o,
         glyphs: Array.from({ length: t + o }, v)
       };
     });
   };
+
   const u = () => {
     const e = Math.min(window.devicePixelRatio || 1, 2);
     c.width = Math.round(innerWidth * e);
@@ -149,12 +207,14 @@
     b();
     g();
   };
+
   const g = () => {
     if (!n) return;
     n.clearRect(0, 0, innerWidth, innerHeight);
     n.font = m + 'px "JetBrains Mono", "Inconsolata", monospace';
     n.textAlign = "center";
     n.textBaseline = "middle";
+
     for (const e of f) {
       for (let t = 0; t < e.trail; t += 1) {
         const s = e.head - t;
@@ -163,11 +223,20 @@
         if (l > innerHeight + a) continue;
         const o = 1 - t / e.trail;
         const L = e.glyphs[(s + t) % e.glyphs.length];
-        n.fillStyle = t === 0 ? "rgba(186, 255, 219, " + (0.85 * o) + ")" : "rgba(0, 255, 127, " + (0.5 * o * o) + ")";
+
+        // Head is radiant white-cyan; trail transitions to electric cyan and deep teal
+        if (t === 0) {
+          n.fillStyle = "rgba(220, 252, 255, " + (0.95 * o) + ")";
+        } else if (t < 3) {
+          n.fillStyle = "rgba(0, 242, 254, " + (0.75 * o) + ")";
+        } else {
+          n.fillStyle = "rgba(0, 188, 212, " + (0.45 * o * o) + ")";
+        }
         n.fillText(L, e.x, l);
       }
     }
   };
+
   const E = () => {
     const e = Math.ceil(innerHeight / a) + 2;
     for (const t of f) {
@@ -178,6 +247,7 @@
       }
     }
   };
+
   const d = e => {
     if (!h || r.matches) return;
     if (e - p >= w) {
@@ -187,6 +257,7 @@
     }
     i = requestAnimationFrame(d);
   };
+
   const M = () => {
     h = !document.hidden;
     cancelAnimationFrame(i);
@@ -197,6 +268,7 @@
     g();
     if (!r.matches && h) i = requestAnimationFrame(d);
   };
+
   u();
   if (!r.matches) i = requestAnimationFrame(d);
   window.addEventListener("resize", u, { passive: true });
