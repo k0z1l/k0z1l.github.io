@@ -1,32 +1,41 @@
-/* Custom styling for Table of Contents (bảng tóm tắt bên tay phải) */
-#TableOfContents ul {
-  padding-left: 0 !important;
+/* ==========================================================================
+   w0rkd4tt Theme & Cyberpunk Background Styles
+   ========================================================================== */
+
+:root {
+  --bg: #050807;
+  --top: #0b100f;
+  --accent: #00ff7f;        /* Spring / Terminal Neon Green */
+  --accent-dim: #00b35a;
+  --text: #d7ded9;
+  --muted: #8fa39b;
+  --faint: #5b6f68;
+  --panel: #0a0f0ebd;
+  --border: #1d2b26;
+  --line: #16211d;
+  --red: #ff5f56;
+  --yellow: #ffbd2e;
+  --window: #27c93f;
 }
 
-/* Chỉ hiển thị các mục chính (H2), ẩn các mục con H3/H4 */
-#TableOfContents ul ul {
-  display: none !important;
+/* Global Font Settings */
+html, body, button, input, select, textarea {
+  font-family: 'Inconsolata', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
-/* Cách đều các mục trong bảng tóm tắt */
-#TableOfContents > ul > li {
-  margin-top: 1.1rem !important;
-  margin-bottom: 1.1rem !important;
-  list-style: none !important;
+code, pre, kbd, samp, .font-mono {
+  font-family: 'JetBrains Mono', 'Inconsolata', monospace !important;
 }
 
-/* Tô đậm các mục trong bảng tóm tắt */
-#TableOfContents > ul > li > a {
-  font-weight: 700 !important;
-  font-size: 0.95rem !important;
-  line-height: 1.4 !important;
-  display: block;
-}
-
-/* Tối ưu lề trang: Dời toàn bộ nội dung sang trái, mở rộng khoảng không sang phải */
+/* Base Body Styling & Background */
 body {
   min-height: 100vh !important;
   height: auto !important;
+  background-color: var(--bg) !important;
+  background: radial-gradient(ellipse 80% 30% at 50% 0, var(--top), var(--bg) 72%) !important;
+  color: var(--text) !important;
+  line-height: 1.55;
+  isolation: isolate;
 }
 
 @media (min-width: 768px) {
@@ -43,41 +52,88 @@ body {
   }
 }
 
-/* Đường kẻ dọc đồng bộ tuyệt đối cho phần nội dung bên trái */
-.article-content {
-  border-left: 1px dotted rgba(var(--color-neutral-600), 1) !important;
-  padding-left: 1.5rem !important;
-  max-width: 100% !important;
-  width: 100% !important;
+/* Canvases & CRT Scanlines Layer */
+.constellation-canvas,
+.binary-canvas,
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
 }
 
-html:not(.dark) .article-content {
-  border-left-color: rgba(var(--color-neutral-300), 1) !important;
+.constellation-canvas {
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
 }
 
-@media (max-width: 640px) {
-  .article-content {
-    padding-left: 1rem !important;
-  }
+.binary-canvas {
+  z-index: 0;
+  width: 100%;
+  height: 100%;
 }
 
-/* Header styling: Khác màu body, bo góc, viền tinh tế */
+.scanlines {
+  z-index: 1;
+  opacity: 1;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0, 255, 127, 0.016) 3px, transparent 4px);
+}
+
+/* Ensure all page content sits cleanly above the canvas and scanlines */
+body > div,
+body > header,
+body > main,
+body > footer,
+#the-top,
+.relative.flex.flex-col.grow {
+  position: relative;
+  z-index: 2;
+}
+
+/* Header styling: Glass panel with subtle neon glow */
 header {
-  background-color: #0c2016 !important;
-  border: 1px solid #1a4330 !important;
+  background-color: #060b0ad1 !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 12px !important;
   padding: 0.35rem 1.25rem !important;
   margin-top: 1rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 15px -3px rgba(0, 255, 127, 0.08) !important;
 }
 
-/* Mở rộng và căn đều trên-dưới cho box header tiêu đề bài viết / About Me / List */
+/* Footer styling: Glass panel matching header */
+footer#site-footer {
+  background-color: #060b0ad1 !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  padding: 1.25rem 1.75rem !important;
+  margin-top: 3rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 15px -3px rgba(0, 255, 127, 0.08) !important;
+}
+
+footer#site-footer .flex.items-center.justify-between {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Header title boxes (Single Article & List Overview) */
 header#single_header,
 main > header {
+  background-color: var(--panel) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
   max-width: 880px !important;
   width: 100% !important;
   padding: 1.35rem 1.75rem !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5), 0 0 24px -4px rgba(0, 255, 127, 0.06) !important;
 }
 
 header#single_header ol,
@@ -91,9 +147,10 @@ main > header h1 {
   margin-top: 0 !important;
   margin-bottom: 0.6rem !important;
   line-height: 1.25 !important;
+  color: var(--accent) !important;
+  text-shadow: 0 0 16px rgba(0, 255, 127, 0.35);
 }
 
-/* Triệt tiêu margin-bottom thừa của metadata để khoảng cách trên - dưới cách đều tuyệt đối */
 header#single_header .mb-6,
 main > header .mb-2 {
   margin-bottom: 0 !important;
@@ -105,12 +162,39 @@ header#single_header .mb-10 {
   display: none !important;
 }
 
-/* Khi có thông tin tác giả (ví dụ trang About Me) */
 header#single_header .author {
   margin-top: 1rem !important;
 }
 
-/* Bố cục trang bài viết (Single Post) & Chuyên đề (List/Series): Mở rộng nội dung chính, đẩy TOC sang phải */
+/* Avatar styling with subtle neon border */
+.author img,
+header img.rounded-full,
+article header img.rounded-full {
+  object-fit: cover !important;
+  object-position: center 10% !important;
+  border: 2px solid var(--accent) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 127, 0.25) !important;
+}
+
+.author .place-self-center div:last-child {
+  text-align: left !important;
+  max-width: 570px !important;
+}
+
+/* Article layout and dotted left guide border */
+.article-content {
+  border-left: 1px dotted var(--border) !important;
+  padding-left: 1.5rem !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  .article-content {
+    padding-left: 1rem !important;
+  }
+}
+
 article {
   width: 100% !important;
   max-width: 100% !important;
@@ -122,7 +206,6 @@ article footer.max-w-prose {
 }
 
 @media (min-width: 1024px) {
-  /* Áp dụng cho cả Single Post (article section) và List/Series Overview (main > section.prose) */
   article section,
   main > section.prose {
     width: 100% !important;
@@ -134,7 +217,6 @@ article footer.max-w-prose {
     gap: 2rem !important;
   }
 
-  /* Khối nội dung chính: Mở rộng sang phải đạt 880px như các bài lab con */
   article section > div:not(.order-first),
   main > section.prose > div:not(.order-first) {
     flex: 1 1 0% !important;
@@ -148,15 +230,14 @@ article footer.max-w-prose {
     width: 100% !important;
   }
 
-  /* Đảm bảo table chiếm toàn bộ chiều rộng 880px */
   article section table,
   main > section.prose table {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 880px !important;
     display: table !important;
+    border-color: var(--border) !important;
   }
 
-  /* Bảng mục lục Table of Contents: Đẩy sang bên phải */
   article section > div.order-first,
   main > section.prose > div.order-first {
     flex-shrink: 0 !important;
@@ -166,45 +247,83 @@ article footer.max-w-prose {
   }
 }
 
-/* Footer styling: Khác màu body, bo góc, viền tinh tế */
-footer#site-footer {
-  background-color: #0c2016 !important;
-  border: 1px solid #1a4330 !important;
-  border-radius: 12px !important;
-  padding: 1.25rem 1.75rem !important;
-  margin-top: 3rem !important;
-  margin-bottom: 2rem !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+/* Custom styling for Table of Contents */
+#TableOfContents ul {
+  padding-left: 0 !important;
 }
 
-footer#site-footer .flex.items-center.justify-between {
-  justify-content: center !important;
-  text-align: center !important;
+#TableOfContents ul ul {
+  display: none !important;
 }
 
-/* Light mode support cho Header & Footer */
-html:not(.dark) header,
-html:not(.dark) footer#site-footer {
-  background-color: #f1f5f9 !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.05) !important;
+#TableOfContents > ul > li {
+  margin-top: 1.1rem !important;
+  margin-bottom: 1.1rem !important;
+  list-style: none !important;
 }
 
-/* Avatar object-position để căn chỉnh ảnh chân dung */
-.author img,
-header img.rounded-full,
-article header img.rounded-full {
-  object-fit: cover !important;
-  object-position: center 10% !important;
+#TableOfContents > ul > li > a {
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.4 !important;
+  display: block;
+  color: var(--muted) !important;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-/* Căn lề trái và giữ chuẩn 4 dòng cho nội dung mô tả tác giả */
-.author .place-self-center div:last-child {
-  text-align: left !important;
-  max-width: 570px !important;
+#TableOfContents > ul > li > a:hover,
+#TableOfContents > ul > li > a.active {
+  color: var(--accent) !important;
+  text-shadow: 0 0 10px rgba(0, 255, 127, 0.6);
 }
 
-/* Nút Show More với hiệu ứng ánh sáng neon tự động chạy quanh viền (Border Beam) */
+/* Headings with Neon Accent Glow */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text) !important;
+  letter-spacing: -0.02em;
+}
+
+h1 strong, h2 strong, .heading-accent, .text-primary-500, .text-primary-600, .dark\:.text-primary-400 {
+  color: var(--accent) !important;
+  text-shadow: 0 0 12px rgba(0, 255, 127, 0.35);
+}
+
+/* Links & Accents */
+a {
+  color: inherit;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+a:hover {
+  color: var(--accent) !important;
+  text-shadow: 0 0 8px rgba(0, 255, 127, 0.5);
+}
+
+/* Code Blocks & Pre styling (w0rkd4tt Hacker Card Look) */
+pre, .highlight {
+  background-color: #08100ebb !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+code:not(pre code) {
+  background-color: rgba(0, 255, 127, 0.08) !important;
+  color: var(--accent) !important;
+  padding: 0.15rem 0.35rem !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(0, 255, 127, 0.2) !important;
+}
+
+/* Cards & Articles */
+.card, .border-neutral-200, .dark\:.border-neutral-700 {
+  border-color: var(--border) !important;
+  background-color: #08100ebb !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+/* Show More Button (Neon Green Beam Animation) */
 .show-more-glow-btn {
   position: relative;
   display: inline-flex;
@@ -214,13 +333,13 @@ article header img.rounded-full {
   overflow: hidden;
   border-radius: 12px;
   text-decoration: none !important;
-  box-shadow: 0 0 15px -3px rgba(0, 255, 102, 0.3);
+  box-shadow: 0 0 15px -3px rgba(0, 255, 127, 0.35);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .show-more-glow-btn:hover {
   transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 0 30px 4px rgba(0, 255, 102, 0.55);
+  box-shadow: 0 0 30px 4px rgba(0, 255, 127, 0.65);
 }
 
 .show-more-glow-beam {
@@ -233,8 +352,8 @@ article header img.rounded-full {
     from 0deg,
     transparent 0deg,
     transparent 240deg,
-    rgba(56, 189, 248, 0.7) 290deg,
-    #00ff66 360deg
+    rgba(0, 255, 127, 0.7) 290deg,
+    #00ff7f 360deg
   );
   animation: border-beam-rotate 2.6s linear infinite;
   border-radius: 50%;
@@ -242,12 +361,8 @@ article header img.rounded-full {
 }
 
 @keyframes border-beam-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .show-more-inner {
@@ -258,27 +373,33 @@ article header img.rounded-full {
   gap: 0.5rem;
   padding: 0.65rem 1.85rem;
   border-radius: 10px;
-  background-color: #0c1017;
-  color: #00ff66;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background-color: #08100ebd !important;
+  color: var(--accent) !important;
+  font-family: 'JetBrains Mono', 'Inconsolata', monospace;
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.03em;
+  border: 1px solid var(--border) !important;
   transition: all 0.3s ease;
 }
 
-html:not(.dark) .show-more-inner {
-  background-color: #ffffff;
-  color: #16a34a;
-}
-
 .show-more-glow-btn:hover .show-more-inner {
-  background-color: #131d27;
-  color: #ffffff;
+  background-color: #0d1a15 !important;
+  color: #ffffff !important;
 }
 
-html:not(.dark) .show-more-glow-btn:hover .show-more-inner {
-  background-color: #f1f5f9;
-  color: #15803d;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
 }
-
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-dim);
+}

@@ -1,0 +1,190 @@
+<!-- Background Canvases & Scanlines (w0rkd4tt Theme) -->
+<canvas class="constellation-canvas" aria-hidden="true"></canvas>
+<canvas class="binary-canvas" aria-hidden="true"></canvas>
+<div class="scanlines" aria-hidden="true"></div>
+
+<!-- Constellation Particle Animation Script -->
+<script>
+(function() {
+  const r = document.querySelector(".constellation-canvas");
+  if (!r) return;
+  const t = r.getContext("2d");
+  const o = matchMedia("(prefers-reduced-motion: reduce)");
+  let i = 0, c = !document.hidden, a = [];
+  const M = () => innerWidth <= 480 ? 22 : innerWidth <= 900 ? 35 : 48;
+  const p = () => 200;
+  const b = () => {
+    a = Array.from({ length: M() }, () => {
+      const n = 0.1 + Math.random() * 0.18;
+      const s = Math.random() * Math.PI * 2;
+      return {
+        x: Math.random() * innerWidth,
+        y: Math.random() * innerHeight,
+        vx: Math.cos(s) * n,
+        vy: Math.sin(s) * n,
+        radius: 1 + Math.random(),
+        alpha: 0.5 + Math.random() * 0.2
+      };
+    });
+  };
+  const l = () => {
+    const n = Math.min(window.devicePixelRatio || 1, 2);
+    r.width = Math.round(innerWidth * n);
+    r.height = Math.round(innerHeight * n);
+    r.style.width = innerWidth + "px";
+    r.style.height = innerHeight + "px";
+    if (t) t.setTransform(n, 0, 0, n, 0, 0);
+    b();
+    u(false);
+  };
+  const u = n => {
+    if (!t) return;
+    t.clearRect(0, 0, innerWidth, innerHeight);
+    const s = p();
+    for (const e of a) {
+      if (n) {
+        e.x += e.vx;
+        e.y += e.vy;
+        if (e.x <= 0 || e.x >= innerWidth) e.vx *= -1;
+        if (e.y <= 0 || e.y >= innerHeight) e.vy *= -1;
+        e.x = Math.max(0, Math.min(innerWidth, e.x));
+        e.y = Math.max(0, Math.min(innerHeight, e.y));
+      }
+    }
+    for (let e = 0; e < a.length; e += 1) {
+      for (let v = e + 1; v < a.length; v += 1) {
+        const h = a[e], m = a[v];
+        const x = Math.hypot(h.x - m.x, h.y - m.y);
+        if (x <= s) {
+          t.beginPath();
+          t.moveTo(h.x, h.y);
+          t.lineTo(m.x, m.y);
+          t.strokeStyle = "rgba(0, 255, 127, " + ((1 - x / s) * 0.32) + ")";
+          t.lineWidth = 0.8;
+          t.stroke();
+        }
+      }
+    }
+    for (const e of a) {
+      t.beginPath();
+      t.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+      t.fillStyle = "rgba(0, 255, 127, " + e.alpha + ")";
+      t.fill();
+    }
+  };
+  const d = () => {
+    if (!c || o.matches) return;
+    u(true);
+    i = requestAnimationFrame(d);
+  };
+  const f = () => {
+    c = !document.hidden;
+    cancelAnimationFrame(i);
+    if (c && !o.matches) i = requestAnimationFrame(d);
+  };
+  const y = () => {
+    cancelAnimationFrame(i);
+    u(false);
+    if (!o.matches && c) i = requestAnimationFrame(d);
+  };
+  l();
+  if (!o.matches) i = requestAnimationFrame(d);
+  window.addEventListener("resize", l, { passive: true });
+  document.addEventListener("visibilitychange", f);
+  if (o.addEventListener) o.addEventListener("change", y);
+})();
+</script>
+
+<!-- Binary Rain Animation Script -->
+<script>
+(function() {
+  const c = document.querySelector(".binary-canvas");
+  if (!c) return;
+  const n = c.getContext("2d");
+  const r = matchMedia("(prefers-reduced-motion: reduce)");
+  const w = 90;
+  let i = 0, p = 0, h = !document.hidden;
+  let m = 14, a = 18, f = [];
+  const v = () => Math.random() < 0.5 ? "0" : "1";
+  const A = () => innerWidth <= 480 ? 14 : 18;
+  const b = () => {
+    m = innerWidth <= 480 ? 11 : 13;
+    a = m + 5;
+    const e = A();
+    const t = Math.ceil(innerHeight / a) + 2;
+    f = Array.from({ length: Math.ceil(innerWidth / e) }, (s, l) => {
+      const o = 8 + Math.floor(Math.random() * 12);
+      return {
+        x: l * e + e / 2,
+        head: Math.floor(Math.random() * (t + o)) - Math.floor(t * 0.15),
+        speed: Math.random() < 0.3 ? 2 : 1,
+        trail: o,
+        glyphs: Array.from({ length: t + o }, v)
+      };
+    });
+  };
+  const u = () => {
+    const e = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = Math.round(innerWidth * e);
+    c.height = Math.round(innerHeight * e);
+    c.style.width = innerWidth + "px";
+    c.style.height = innerHeight + "px";
+    if (n) n.setTransform(e, 0, 0, e, 0, 0);
+    b();
+    g();
+  };
+  const g = () => {
+    if (!n) return;
+    n.clearRect(0, 0, innerWidth, innerHeight);
+    n.font = m + 'px "JetBrains Mono", "Inconsolata", monospace';
+    n.textAlign = "center";
+    n.textBaseline = "middle";
+    for (const e of f) {
+      for (let t = 0; t < e.trail; t += 1) {
+        const s = e.head - t;
+        if (s < 0) continue;
+        const l = s * a + a / 2;
+        if (l > innerHeight + a) continue;
+        const o = 1 - t / e.trail;
+        const L = e.glyphs[(s + t) % e.glyphs.length];
+        n.fillStyle = t === 0 ? "rgba(186, 255, 219, " + (0.85 * o) + ")" : "rgba(0, 255, 127, " + (0.5 * o * o) + ")";
+        n.fillText(L, e.x, l);
+      }
+    }
+  };
+  const E = () => {
+    const e = Math.ceil(innerHeight / a) + 2;
+    for (const t of f) {
+      t.head += t.speed;
+      if (t.head - t.trail > e) {
+        t.head = -Math.floor(Math.random() * e * 0.6);
+        t.glyphs = t.glyphs.map(s => Math.random() < 0.35 ? v() : s);
+      }
+    }
+  };
+  const d = e => {
+    if (!h || r.matches) return;
+    if (e - p >= w) {
+      p = e;
+      E();
+      g();
+    }
+    i = requestAnimationFrame(d);
+  };
+  const M = () => {
+    h = !document.hidden;
+    cancelAnimationFrame(i);
+    if (h && !r.matches) i = requestAnimationFrame(d);
+  };
+  const y = () => {
+    cancelAnimationFrame(i);
+    g();
+    if (!r.matches && h) i = requestAnimationFrame(d);
+  };
+  u();
+  if (!r.matches) i = requestAnimationFrame(d);
+  window.addEventListener("resize", u, { passive: true });
+  document.addEventListener("visibilitychange", M);
+  if (r.addEventListener) r.addEventListener("change", y);
+})();
+</script>
