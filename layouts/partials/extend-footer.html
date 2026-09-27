@@ -374,6 +374,84 @@
     }, 100);
   }
 
+  function getFirstTextNode(node) {
+    if (!node) return null;
+    if (node.nodeType === Node.TEXT_NODE) return node;
+    if (node.childNodes) {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        let res = getFirstTextNode(node.childNodes[i]);
+        if (res) return res;
+      }
+    }
+    return null;
+  }
+
+  function getLastTextNode(node) {
+    if (!node) return null;
+    if (node.nodeType === Node.TEXT_NODE) return node;
+    if (node.childNodes) {
+      for (let i = node.childNodes.length - 1; i >= 0; i--) {
+        let res = getLastTextNode(node.childNodes[i]);
+        if (res) return res;
+      }
+    }
+    return null;
+  }
+
+  function fixTranslateSpacing() {
+    const isVietnamese = localStorage.getItem(STORAGE_KEY) === "vi" ||
+                         document.documentElement.classList.contains("translated-ltr");
+    if (!isVietnamese) return;
+
+    const codeElements = document.querySelectorAll("article code, .article-content code, .prose code, main code");
+    codeElements.forEach(code => {
+      if (code.closest("pre")) return;
+
+      // 1. Spacing before inline code
+      const prev = code.previousSibling;
+      if (prev) {
+        const prevText = getLastTextNode(prev);
+        if (prevText && prevText.nodeValue) {
+          let val = prevText.nodeValue;
+          if (/[a-zA-Z0-9\u00C0-\u1EF9]$/.test(val)) {
+            prevText.nodeValue = val + " ";
+          }
+          if (/\(\s+$/.test(val)) {
+            prevText.nodeValue = val.replace(/\(\s+$/, "(");
+          }
+        }
+      }
+
+      // 2. Spacing after inline code
+      const next = code.nextSibling;
+      if (next) {
+        const nextText = getFirstTextNode(next);
+        if (nextText && nextText.nodeValue) {
+          let val = nextText.nodeValue;
+          // Strip space before punctuation
+          if (/^\s+([,.:;?!])/.test(val)) {
+            val = val.replace(/^\s+([,.:;?!])/, "$1");
+          }
+          // Strip space before closing parenthesis
+          if (/^\s+\)/.test(val)) {
+            val = val.replace(/^\s+\)/, ")");
+          }
+          // Add space before word characters
+          if (/^[a-zA-Z0-9\u00C0-\u1EF9]/.test(val)) {
+            val = " " + val;
+          }
+          nextText.nodeValue = val;
+        }
+      }
+    });
+  }
+
+  let spacingDebounce = null;
+  function scheduleSpacingFix() {
+    clearTimeout(spacingDebounce);
+    spacingDebounce = setTimeout(fixTranslateSpacing, 120);
+  }
+
   window.k0z1lSwitchLanguage = function(targetLang) {
     localStorage.setItem(STORAGE_KEY, targetLang);
     updateUI(targetLang);
@@ -393,6 +471,7 @@
       if (combo) {
         combo.value = "vi";
         combo.dispatchEvent(new Event("change"));
+        scheduleSpacingFix();
       } else {
         window.location.reload();
       }
@@ -429,13 +508,31 @@
       bindButtons();
       if (activeLang !== "en") {
         applyLanguageToCombo(activeLang);
+        setTimeout(scheduleSpacingFix, 600);
+        setTimeout(scheduleSpacingFix, 1500);
       }
     });
   } else {
     bindButtons();
     if (activeLang !== "en") {
       applyLanguageToCombo(activeLang);
+      setTimeout(scheduleSpacingFix, 600);
+      setTimeout(scheduleSpacingFix, 1500);
     }
+  }
+
+  // Observe DOM changes from Google Translate to auto-clean spacing
+  const transObserver = new MutationObserver(() => {
+    if (localStorage.getItem(STORAGE_KEY) === "vi" || document.documentElement.classList.contains("translated-ltr")) {
+      scheduleSpacingFix();
+    }
+  });
+  if (document.body) {
+    transObserver.observe(document.body, { childList: true, subtree: true });
+  } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      transObserver.observe(document.body, { childList: true, subtree: true });
+    });
   }
 
   window.googleTranslateElementInit = function() {
@@ -446,6 +543,8 @@
     }, "google_translate_element");
     if (activeLang !== "en") {
       applyLanguageToCombo(activeLang);
+      setTimeout(scheduleSpacingFix, 600);
+      setTimeout(scheduleSpacingFix, 1500);
     }
   };
 })();
