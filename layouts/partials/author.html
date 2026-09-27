@@ -1,5 +1,5 @@
 {{ $disableImageOptimization := .Site.Params.disableImageOptimization | default false }}
-<div class="flex author w-full items-center gap-7 sm:gap-9">
+<div class="flex author w-full items-center" style="display: flex; align-items: center; gap: 2rem;">
   {{ with .Site.Params.Author.image }}
     {{ $authorImage := "" }}
     {{ if or (strings.HasPrefix . "http:") (strings.HasPrefix . "https:") }}
@@ -16,7 +16,7 @@
       {{ end }}
       <img
         class="!mt-0 !mb-0 h-24 w-24 rounded-full shrink-0 self-center object-cover"
-        style="object-position: center 10%;"
+        style="object-position: center 10%; margin-right: 1.75rem;"
         width="96"
         height="96"
         alt="{{ $.Site.Params.Author.name | default "Author" }}"
@@ -32,7 +32,7 @@
       {{ end }}
       <img
         class="!mt-0 !mb-0 h-24 w-24 rounded-full shrink-0 self-center object-cover"
-        style="object-position: center 10%;"
+        style="object-position: center 10%; margin-right: 1.75rem;"
         width="96"
         height="96"
         alt="{{ $.Site.Params.Author.name | default "Author" }}"
@@ -40,7 +40,7 @@
         data-zoom-src="{{ $squareImage.RelPermalink }}">
     {{ end }}
   {{ end }}
-  <div class="flex-1 min-w-0 pe-2 sm:pe-3">
+  <div class="flex-1 min-w-0 pe-2 sm:pe-3" style="padding-left: 0.5rem;">
     {{ with .Site.Params.Author.name | markdownify }}
       <div class="text-base sm:text-lg font-bold leading-6 text-neutral-800 dark:text-neutral-200">
         {{ . }}
