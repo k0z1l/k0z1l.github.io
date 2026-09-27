@@ -1053,3 +1053,46 @@ html.theme-ruby .admonition[data-type=note] code:not(pre code) {
   border: 1px solid rgba(34, 197, 94, 0.4) !important;
 }
 
+/* ==========================================================================
+   Mobile Navigation Menu: Cyber Aesthetics & Top Layer (z-index)
+   ========================================================================== */
+body > header,
+header:not(#single_header) {
+  position: relative !important;
+  z-index: 99999 !important;
+}
+
+#mobile-menu-dialog {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  background-color: var(--panel) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), inset 0 0 25px var(--line) !important;
+}
+
+html.theme-ruby #mobile-menu-dialog {
+  background-color: rgba(25, 4, 8, 0.96) !important;
+}
+
+#mobile-menu-dialog label[for="mobile-menu-toggle"] {
+  background-color: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--accent) !important;
+  box-shadow: 0 0 14px var(--accent-glow) !important;
+  z-index: 1000000 !important;
+}
+
+#mobile-menu-dialog a {
+  color: #f1f5f9 !important;
+  transition: all 0.25s ease;
+}
+
+#mobile-menu-dialog a:hover,
+#mobile-menu-dialog a:active {
+  color: var(--accent) !important;
+  text-shadow: 0 0 12px var(--accent-glow) !important;
+}
+
+

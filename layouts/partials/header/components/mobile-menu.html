@@ -45,12 +45,12 @@
       role="dialog"
       aria-modal="true"
       aria-label="{{ i18n "nav.main_menu" }}"
-      style="scrollbar-gutter: stable;"
-      class="z-50 invisible overflow-y-auto opacity-0 transition-[opacity,visibility] duration-300 peer-checked:visible peer-checked:opacity-100 notranslate
+      style="scrollbar-gutter: stable; background-color: var(--panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 999999;"
+      class="invisible overflow-y-auto opacity-0 transition-[opacity,visibility] duration-300 peer-checked:visible peer-checked:opacity-100 notranslate
       {{ if eq $mobileMenuStyle "dropdown" }}
-        mobile-menu-style-dropdown absolute end-0 top-[calc(100%+0.75rem)] z-10 w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-neutral-200/80 bg-neutral/95 p-5 shadow-2xl shadow-neutral-900/20 dark:border-neutral-700/80 dark:bg-neutral-800/95
+        mobile-menu-style-dropdown absolute end-0 top-[calc(100%+0.75rem)] w-[min(22rem,calc(100vw-1.5rem))] rounded-2xl border border-neutral-200/80 p-5 shadow-2xl
       {{ else }}
-        fixed inset-0 px-6 py-20 bg-neutral-50/97 dark:bg-neutral-900/99
+        fixed inset-0 px-6 py-20
       {{ end }}
       {{ if site.Params.enableStyledScrollbar | default true }}bf-scrollbar{{ end }}"
       translate="no">
@@ -60,7 +60,8 @@
         role="button"
         aria-expanded="false"
         aria-controls="mobile-menu-dialog"
-        class="{{ if eq $mobileMenuStyle "dropdown" }}absolute end-3 top-3 h-10 w-10 rounded-xl{{ else }}fixed end-8 top-5 z-50 h-12 w-12 rounded-full{{ end }} flex items-center justify-center cursor-pointer select-none bf-icon-color-hover border bf-border-color bf-border-color-hover bg-neutral-50 dark:bg-neutral-900">
+        style="background-color: var(--panel); border: 1px solid var(--border); color: var(--accent); box-shadow: 0 0 14px var(--accent-glow); z-index: 1000000;"
+        class="{{ if eq $mobileMenuStyle "dropdown" }}absolute end-3 top-3 h-10 w-10 rounded-xl{{ else }}fixed end-8 top-5 h-12 w-12 rounded-full{{ end }} flex items-center justify-center cursor-pointer select-none bf-icon-color-hover border">
         <span class="sr-only">{{ i18n "nav.close_menu" }}</span>
         {{ partial "icon.html" "xmark" }}
       </label>
