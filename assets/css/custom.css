@@ -282,7 +282,8 @@ article header img.rounded-full {
 
 .author .place-self-center div:last-child,
 .author div:last-child {
-  text-align: left !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   max-width: 100% !important;
   width: 100% !important;
 }
