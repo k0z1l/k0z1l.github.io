@@ -195,18 +195,15 @@ sequenceDiagram
 
 ## 6. Core Principles in Secure Architecture & Testing
 
-> [!CAUTION]
-> ### 1. "Never Trust the Client"
+> [!CAUTION] 1. "Never Trust the Client"
 > Every client-side validation check — such as input length (`maxlength`), HTML form constraints (`required`), disabled buttons (`disabled`), or hidden DOM nodes (`display: none`, `*ngIf`) — **can be bypassed with a single keystroke in Burp Suite or DevTools**. All critical security enforcement must reside authoritatively on the server.
 
-> [!TIP]
-> ### 2. Defense in Depth
+> [!TIP] 2. Defense in Depth
 > Resilient web applications never rely on a single defensive layer:
 > * Do not rely solely on a WAF to stop SQL Injection; enforce **Parameterized Prepared Statements** at the data access layer.
 > * Do not rely only on input filtering for XSS; combine **Context-Aware Output Encoding**, strict **Content Security Policy (CSP)**, and the **`HttpOnly`** cookie flag.
 
-> [!IMPORTANT]
-> ### 3. Segregation of Engineering Responsibilities
+> [!IMPORTANT] 3. Segregation of Engineering Responsibilities
 > * **Frontend Engineers:** Responsible for secure DOM manipulation, context-aware output encoding, avoiding dangerous sinks (`innerHTML`, `eval`), safe state handling, and secure iframe framing.
 > * **Backend Engineers:** Responsible for identity authentication, fine-grained object ownership authorization (BOLA defense), parameterized database queries, strict file upload sanitization, server resource isolation, and secure infrastructure configuration.
 

@@ -1140,5 +1140,14 @@ html.theme-ruby #mobile-menu-dialog {
   }
 }
 
+/* ==========================================================================
+   Admonitions: Hide icons (flame, lightbulb, star, info, etc.)
+   ========================================================================== */
+.admonition .shrink-0.h-5.w-5,
+.admonition svg:not(.group-open\:rotate-0) {
+  display: none !important;
+}
+
+
 
 
