@@ -1096,42 +1096,47 @@ html.theme-ruby #mobile-menu-dialog {
 }
 
 /* ==========================================================================
-   Navigation Bar Logo: Cyber Aesthetic & Home Link
+   Navigation Bar Logo: Transparent Golden Cannon & Home Link
    ========================================================================== */
 .nav-logo-link {
   display: inline-flex !important;
   align-items: center !important;
   text-decoration: none !important;
   line-height: 1 !important;
-  transition: transform 0.25s ease, filter 0.25s ease;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-logo-link:hover {
-  transform: translateY(-1px) scale(1.05);
+  transform: translateY(-1px) scale(1.08);
 }
 
 .cyber-nav-logo {
-  height: 38px !important;
-  max-height: 38px !important;
+  height: 36px !important;
+  max-height: 36px !important;
   width: auto !important;
-  max-width: 90px !important;
+  max-width: 95px !important;
   object-fit: contain !important;
-  border-radius: 8px !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6), 0 0 8px var(--accent-glow) !important;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  transition: filter 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .nav-logo-link:hover .cyber-nav-logo {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 16px var(--accent-glow), 0 0 24px var(--accent-glow) !important;
+  filter: drop-shadow(0 0 8px var(--accent-glow)) drop-shadow(0 0 16px var(--accent-glow)) brightness(1.15) !important;
 }
 
 @media (max-width: 640px) {
   .cyber-nav-logo {
-    height: 32px !important;
-    max-height: 32px !important;
-    max-width: 75px !important;
+    height: 30px !important;
+    max-height: 30px !important;
+    max-width: 80px !important;
   }
 }
 
