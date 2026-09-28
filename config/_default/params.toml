@@ -8,7 +8,7 @@ enableSearch = true
 enableCodeCopy = true
 enableStructuredBreadcrumbs = true
 
-mainSections = ["writeups", "posts"]
+mainSections = ["writeups", "notes", "posts"]
 disableTextInHeader = true
 logo = "logo.png"
 
