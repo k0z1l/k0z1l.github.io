@@ -31,12 +31,14 @@
       {{ .Site.Params.Author.name | default .Site.Title }}
     </h1>
     <div class="profile-aka-wrapper text-base sm:text-lg font-mono font-medium text-neutral-400 dark:text-neutral-300 mt-1 mb-1 text-center w-full">
-      <span>{{ .Site.Params.Author.aka | default "Hi, i'm k0z1l aka 0xDTK" }}</span>
-      <span class="profile-flag notranslate ms-1" translate="no" title="Vietnam">
-        <svg class="rounded-xs shadow-xs" style="width: 1.35em; height: 0.9em; border-radius: 2px; display: inline-block; vertical-align: middle;" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
-          <rect width="30" height="20" fill="#da251d"/>
-          <polygon points="15,4 11.47,14.85 20.71,8.15 9.29,8.15 18.53,14.85" fill="#ff0"/>
-        </svg>
+      <span class="profile-aka-inner">
+        <span class="profile-aka-text">{{ .Site.Params.Author.aka | default "Hi, i'm k0z1l aka 0xDTK" }}</span>
+        <span class="profile-flag notranslate" translate="no" title="Vietnam">
+          <svg class="rounded-xs shadow-xs" style="width: 1.3em; height: 0.85em; border-radius: 2px; display: block;" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
+            <rect width="30" height="20" fill="#da251d"/>
+            <polygon points="15,4 11.47,14.85 20.71,8.15 9.29,8.15 18.53,14.85" fill="#ff0"/>
+          </svg>
+        </span>
       </span>
     </div>
     {{ with .Site.Params.Author.headline }}

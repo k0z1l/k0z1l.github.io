@@ -374,21 +374,39 @@ article header img.rounded-full {
   }
 }
 
-/* Home Profile AKA & Flag inline flow (Never detached on mobile wrap) */
+/* Home Profile AKA & Flag inline flow (Never detached on mobile wrap, optical vertical alignment) */
 .profile-aka-wrapper {
   display: block !important;
   text-align: center !important;
   width: 100% !important;
+  line-height: 1.4 !important;
 }
 
-.profile-aka-wrapper span {
-  display: inline !important;
+.profile-aka-inner {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  vertical-align: middle !important;
 }
 
-.profile-aka-wrapper .profile-flag {
+.profile-aka-text {
   display: inline-block !important;
-  vertical-align: -0.05em !important;
-  white-space: nowrap !important;
+  line-height: 1.4 !important;
+}
+
+.profile-flag {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+
+.profile-flag svg {
+  display: block !important;
+  margin: 0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* Article layout and dotted left guide border */
