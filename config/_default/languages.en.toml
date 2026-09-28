@@ -8,6 +8,7 @@ title = "Dinh Tuan Kiet"
   displayName = "EN"
   isoCode = "en"
   rtl = false
+  logo = "logo.jpg"
   dateFormat = "2 January 2006"
   description = "Dinh Tuan Kiet - Offensive Security Engineer | AI & Security Researcher"
   copyright = "© 2026 Dinh Tuan Kiet. All rights reserved."

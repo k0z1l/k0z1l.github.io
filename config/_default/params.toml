@@ -10,9 +10,11 @@ enableStructuredBreadcrumbs = true
 
 mainSections = ["writeups", "posts"]
 disableTextInHeader = true
+logo = "logo.jpg"
 
 [header]
   layout = "basic"
+  logo = "logo.jpg"
 
 [footer]
   showMenu = false

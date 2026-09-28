@@ -1095,4 +1095,45 @@ html.theme-ruby #mobile-menu-dialog {
   text-shadow: 0 0 12px var(--accent-glow) !important;
 }
 
+/* ==========================================================================
+   Navigation Bar Logo: Cyber Aesthetic & Home Link
+   ========================================================================== */
+.nav-logo-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  line-height: 1 !important;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.nav-logo-link:hover {
+  transform: translateY(-1px) scale(1.05);
+}
+
+.cyber-nav-logo {
+  height: 38px !important;
+  max-height: 38px !important;
+  width: auto !important;
+  max-width: 90px !important;
+  object-fit: contain !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6), 0 0 8px var(--accent-glow) !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease !important;
+}
+
+.nav-logo-link:hover .cyber-nav-logo {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 16px var(--accent-glow), 0 0 24px var(--accent-glow) !important;
+}
+
+@media (max-width: 640px) {
+  .cyber-nav-logo {
+    height: 32px !important;
+    max-height: 32px !important;
+    max-width: 75px !important;
+  }
+}
+
+
 

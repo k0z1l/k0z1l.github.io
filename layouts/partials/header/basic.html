@@ -2,11 +2,11 @@
   {{ if .Site.Params.Logo }}
     {{ $logo := resources.Get .Site.Params.Logo }}
     {{ if $logo }}
-      <div>
-        <a href="{{ "" | relLangURL }}" class="flex notranslate" translate="no">
+      <div class="flex items-center">
+        <a href="{{ "" | relLangURL }}" class="flex items-center notranslate nav-logo-link" translate="no" title="{{ .Site.Title | markdownify }}">
           <span class="sr-only">{{ .Site.Title | markdownify }}</span>
           {{ if eq $logo.MediaType.SubType "svg" }}
-            <span class="logo object-scale-down object-left nozoom">
+            <span class="logo cyber-nav-logo object-scale-down object-left nozoom">
               {{ $logo.Content | safeHTML }}
             </span>
           {{ else }}
@@ -14,9 +14,19 @@
               src="{{ $logo.RelPermalink }}"
               width="{{ div $logo.Width 2 }}"
               height="{{ div $logo.Height 2 }}"
-              class="logo max-h-20 max-w-20 object-scale-down object-left nozoom"
-              alt="">
+              class="logo cyber-nav-logo object-scale-down object-left nozoom"
+              alt="{{ .Site.Title | markdownify }}">
           {{ end }}
+        </a>
+      </div>
+    {{ else }}
+      <div class="flex items-center">
+        <a href="{{ "" | relLangURL }}" class="flex items-center notranslate nav-logo-link" translate="no" title="{{ .Site.Title | markdownify }}">
+          <span class="sr-only">{{ .Site.Title | markdownify }}</span>
+          <img
+            src="{{ .Site.Params.Logo | relURL }}"
+            class="logo cyber-nav-logo object-scale-down object-left nozoom"
+            alt="{{ .Site.Title | markdownify }}">
         </a>
       </div>
     {{ end }}
