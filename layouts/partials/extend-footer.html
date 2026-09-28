@@ -235,19 +235,15 @@
         const L = e.glyphs[(s + t) % e.glyphs.length];
 
         if (isRuby) {
-          if (t === 0) {
-            n.fillStyle = "rgba(255, 235, 240, " + (0.95 * o) + ")";
-          } else if (t < 3) {
-            n.fillStyle = "rgba(255, 23, 68, " + (0.75 * o) + ")";
+          if (t < 2) {
+            n.fillStyle = "rgba(255, 23, 68, " + (0.85 * o) + ")";
           } else {
             n.fillStyle = "rgba(213, 0, 50, " + (0.45 * o * o) + ")";
           }
         } else {
           // Cyan Jade Mode
-          if (t === 0) {
-            n.fillStyle = "rgba(220, 252, 255, " + (0.95 * o) + ")";
-          } else if (t < 3) {
-            n.fillStyle = "rgba(0, 242, 254, " + (0.75 * o) + ")";
+          if (t < 2) {
+            n.fillStyle = "rgba(0, 242, 254, " + (0.85 * o) + ")";
           } else {
             n.fillStyle = "rgba(0, 188, 212, " + (0.45 * o * o) + ")";
           }
