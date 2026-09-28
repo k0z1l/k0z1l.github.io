@@ -1148,6 +1148,156 @@ html.theme-ruby #mobile-menu-dialog {
   display: none !important;
 }
 
+/* ==========================================================================
+   Adaptive Elements: Cyan Jade (Xanh Ngọc) ⮂ Ruby Red (Đỏ Ngọc)
+   ========================================================================== */
+
+/* 1. Blockquotes (Markdown Quotes) */
+blockquote,
+.prose blockquote,
+article blockquote {
+  border-inline-start-width: 4px !important;
+  border-inline-start-style: solid !important;
+  border-inline-start-color: var(--accent) !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--accent) !important;
+  background: rgba(0, 242, 254, 0.04) !important;
+  padding: 0.85rem 1.25rem !important;
+  margin: 1.5rem 0 !important;
+  border-radius: 0 8px 8px 0 !important;
+  color: var(--text) !important;
+  box-shadow: -4px 0 14px -2px var(--accent-glow) !important;
+  transition: all 0.3s ease !important;
+}
+
+html.theme-ruby blockquote,
+html.theme-ruby .prose blockquote,
+html.theme-ruby article blockquote {
+  border-inline-start-color: #ff1744 !important;
+  border-left-color: #ff1744 !important;
+  background: rgba(255, 23, 68, 0.05) !important;
+  box-shadow: -4px 0 16px -2px rgba(255, 23, 68, 0.45) !important;
+}
+
+blockquote p,
+.prose blockquote p {
+  color: var(--text) !important;
+}
+
+/* 2. Horizontal Rules (<hr>) */
+hr,
+.prose hr,
+article hr {
+  border: 0 !important;
+  border-top: 1px solid var(--border) !important;
+  margin: 2.2rem 0 !important;
+  opacity: 0.75 !important;
+  transition: border-color 0.3s ease !important;
+}
+
+html.theme-ruby hr,
+html.theme-ruby .prose hr,
+html.theme-ruby article hr {
+  border-top: 1px solid rgba(255, 23, 68, 0.35) !important;
+}
+
+/* 3. Code Block Copy Button (Hover & Focus States) */
+.copy-button {
+  background-color: rgba(7, 19, 24, 0.85) !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--border) !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+  border-top: none !important;
+  border-right: none !important;
+  backdrop-filter: blur(6px) !important;
+  font-family: 'JetBrains Mono', 'Inconsolata', monospace !important;
+  font-weight: 600 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.3rem 0.75rem !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  opacity: 0.95 !important;
+  transition: all 0.25s ease !important;
+}
+
+.copy-button:hover,
+.copy-button:focus,
+.copy-button:active,
+.copy-button:active:hover {
+  background-color: var(--accent) !important;
+  color: #040809 !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 16px var(--accent-glow) !important;
+}
+
+html.theme-ruby .copy-button {
+  background-color: rgba(21, 6, 10, 0.88) !important;
+  color: #ff1744 !important;
+  border-color: #381219 !important;
+}
+
+html.theme-ruby .copy-button:hover,
+html.theme-ruby .copy-button:focus,
+html.theme-ruby .copy-button:active,
+html.theme-ruby .copy-button:active:hover {
+  background-color: #ff1744 !important;
+  color: #ffffff !important;
+  border-color: #ff1744 !important;
+  box-shadow: 0 0 18px rgba(255, 23, 68, 0.65) !important;
+}
+
+/* 4. Link Underlines & Decoration (Prose, Article Lists, Series Headers) */
+.decoration-primary-500,
+.decoration-primary-400,
+.decoration-primary-300,
+.decoration-primary-600,
+.hover\:decoration-primary-400:hover,
+.prose a,
+article a,
+.article-link--simple header a {
+  text-decoration-color: var(--accent) !important;
+}
+
+html.theme-ruby .decoration-primary-500,
+html.theme-ruby .decoration-primary-400,
+html.theme-ruby .decoration-primary-300,
+html.theme-ruby .decoration-primary-600,
+html.theme-ruby .hover\:decoration-primary-400:hover,
+html.theme-ruby .prose a,
+html.theme-ruby article a,
+html.theme-ruby .article-link--simple header a {
+  text-decoration-color: #ff1744 !important;
+}
+
+/* 5. Article Guides & Borders */
+html.theme-ruby .article-content {
+  border-left: 1px dotted rgba(255, 23, 68, 0.4) !important;
+}
+
+/* 6. Tables & Table Rows */
+table th, table td {
+  border-color: var(--border) !important;
+}
+thead tr {
+  border-bottom: 2px solid var(--border) !important;
+}
+tbody tr:hover {
+  background-color: rgba(0, 242, 254, 0.03) !important;
+}
+html.theme-ruby tbody tr:hover {
+  background-color: rgba(255, 23, 68, 0.04) !important;
+}
+html.theme-ruby table th,
+html.theme-ruby table td {
+  border-color: rgba(255, 23, 68, 0.25) !important;
+}
+html.theme-ruby thead tr {
+  border-bottom: 2px solid rgba(255, 23, 68, 0.35) !important;
+}
+
+
 
 
 
