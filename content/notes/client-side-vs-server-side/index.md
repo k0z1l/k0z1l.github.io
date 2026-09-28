@@ -2,7 +2,6 @@
 title: "Distinguishing Client-Side vs Server-Side Vulnerabilities"
 date: 2026-09-28
 description: "Comprehensive security engineering guide: Analyzing web architecture trust boundaries, client vs. server vulnerability taxonomy, defense-in-depth, and exploit chaining methodology."
-categories: ["Notes", "Web Security"]
 tags: ["Web Security", "Fundamentals", "Client-Side", "Server-Side", "Methodology", "Chaining"]
 showAuthor: false
 showTableOfContents: true
