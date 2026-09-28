@@ -601,3 +601,20 @@
 })();
 </script>
 
+<!-- Ensure Search Modal sits at root level of <body> so it is never clipped or occluded -->
+<script>
+(function() {
+  function hoistSearchWrapper() {
+    const sw = document.getElementById("search-wrapper");
+    if (sw && sw.parentElement !== document.body) {
+      document.body.appendChild(sw);
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", hoistSearchWrapper);
+  } else {
+    hoistSearchWrapper();
+  }
+})();
+</script>
+
