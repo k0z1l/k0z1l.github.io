@@ -34,5 +34,6 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **02** | [HTTP request smuggling, basic TE.CL vulnerability](lab-02-HTTP%20request%20smuggling-basic%20TE.CL%20vulnerability/) | Practitioner | TE.CL desync smuggling request fragments via chunked payloads mutating method into `GPOST` |
 | **03** | [HTTP request smuggling, obfuscating the TE header](lab-03-HTTP%20request%20smuggling-obfuscating%20the%20TE%20header/) | Practitioner | Transfer-Encoding obfuscation (TE.TE) inducing parser discrepancy |
 | **04** | [HTTP request smuggling, confirming a CL.TE vulnerability via differential responses](lab-04-HTTP%20request%20smuggling-confirming%20a%20CL.TE%20vulnerability%20via%20differential%20responses/) | Practitioner | Confirming CL.TE desynchronization via differential responses (404 trigger) |
+| **05** | [HTTP request smuggling, confirming a TE.CL vulnerability via differential responses](lab-05-HTTP%20request%20smuggling-confirming%20a%20TE.CL%20vulnerability%20via%20differential%20responses/) | Practitioner | Confirming TE.CL desynchronization via differential responses (404 trigger) |
 
 *Upcoming challenges will be continuously documented here.*
