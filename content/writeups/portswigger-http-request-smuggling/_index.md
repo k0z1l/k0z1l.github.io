@@ -36,5 +36,6 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **04** | [HTTP request smuggling, confirming a CL.TE vulnerability via differential responses](lab-04-HTTP%20request%20smuggling-confirming%20a%20CL.TE%20vulnerability%20via%20differential%20responses/) | Practitioner | Confirming CL.TE desynchronization via differential responses (404 trigger) |
 | **05** | [HTTP request smuggling, confirming a TE.CL vulnerability via differential responses](lab-05-HTTP%20request%20smuggling-confirming%20a%20TE.CL%20vulnerability%20via%20differential%20responses/) | Practitioner | Confirming TE.CL desynchronization via differential responses (404 trigger) |
 | **06** | [HTTP request smuggling, bypassing front-end security controls, CL.TE vulnerability](lab-06-HTTP%20request%20smuggling-bypassing%20front-end%20security%20controls,%20CL.TE%20vulnerability/) | Practitioner | Bypassing perimeter `/admin` access control and localhost restriction via CL.TE smuggling |
+| **07** | [HTTP request smuggling, bypassing front-end security controls, TE.CL vulnerability](lab-07-HTTP%20request%20smuggling-bypassing%20front-end%20security%20controls,%20TE.CL%20vulnerability/) | Practitioner | Bypassing perimeter `/admin` access control and localhost restriction via TE.CL smuggling |
 
 *Upcoming challenges will be continuously documented here.*
