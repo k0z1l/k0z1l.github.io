@@ -483,18 +483,20 @@ article footer.max-w-prose {
 
 @media (min-width: 1024px) {
   article section,
-  main > section.prose {
+  main > section.prose,
+  section.prose {
     width: 100% !important;
     max-width: 100% !important;
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
-    align-items: flex-start !important;
+    align-items: stretch !important; /* Stretches columns to full article height so sticky TOC works */
     gap: 2rem !important;
   }
 
   article section > div:not(.order-first),
-  main > section.prose > div:not(.order-first) {
+  main > section.prose > div:not(.order-first),
+  section.prose > div:not(.order-first) {
     flex: 1 1 0% !important;
     max-width: 880px !important;
     min-width: 0 !important;
@@ -515,11 +517,16 @@ article footer.max-w-prose {
   }
 
   article section > div.order-first,
-  main > section.prose > div.order-first {
+  main > section.prose > div.order-first,
+  section.prose > div.order-first,
+  div.order-first.lg\:order-last {
     flex-shrink: 0 !important;
     width: 250px !important;
     max-width: 280px !important;
     margin-left: auto !important;
+    align-self: stretch !important; /* Full height of article content */
+    position: relative !important;
+    height: auto !important;
   }
 }
 
@@ -556,8 +563,16 @@ article footer.max-w-prose {
 /* Table of Contents sticky position: offset below sticky navigation bar */
 .toc,
 div.toc,
-.toc.lg\:sticky {
+.toc.lg\:sticky,
+aside.toc,
+#TOCView {
+  position: -webkit-sticky !important;
+  position: sticky !important;
   top: 5.5rem !important;
+  max-height: calc(100vh - 6.5rem) !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  z-index: 40 !important;
 }
 
 /* Headings scroll offset: prevent sticky navbar from obscuring titles when clicking TOC/anchors */
