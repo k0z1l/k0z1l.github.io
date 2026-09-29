@@ -190,18 +190,34 @@ body > footer,
   transform: scale(1.18);
 }
 
-/* Header styling: Glass panel with subtle neon glow */
-header {
+/* Header styling: Sticky Glass panel with cyber neon glow */
+body > header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0.75rem !important;
+  z-index: 99999 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
   background-color: var(--panel) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid var(--border) !important;
   border-radius: 12px !important;
   padding: 0.35rem 1.25rem !important;
-  margin-top: 1rem !important;
+  margin-top: 0.75rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6), 0 0 16px -3px var(--accent-glow) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75), 0 0 16px -2px var(--accent-glow) !important;
   transition: all 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  body > header {
+    top: 0.4rem !important;
+    margin-top: 0.4rem !important;
+    margin-bottom: 1.25rem !important;
+    padding: 0.25rem 0.85rem !important;
+    border-radius: 10px !important;
+  }
 }
 
 /* Footer styling: Glass panel matching header */
@@ -535,6 +551,19 @@ article footer.max-w-prose {
 #TableOfContents > ul > li > a.active {
   color: var(--accent) !important;
   text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Table of Contents sticky position: offset below sticky navigation bar */
+.toc,
+div.toc,
+.toc.lg\:sticky {
+  top: 5.5rem !important;
+}
+
+/* Headings scroll offset: prevent sticky navbar from obscuring titles when clicking TOC/anchors */
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
+.prose h1[id], .prose h2[id], .prose h3[id], .prose h4[id], .prose h5[id], .prose h6[id] {
+  scroll-margin-top: 5.5rem !important;
 }
 
 /* ==========================================================================
@@ -1074,9 +1103,10 @@ html.theme-ruby .admonition[data-type=note] code:not(pre code) {
 /* ==========================================================================
    Mobile Navigation Menu: Cyber Aesthetics & Top Layer (z-index)
    ========================================================================== */
-body > header,
-header:not(#single_header) {
-  position: relative !important;
+body > header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0.75rem !important;
   z-index: 99999 !important;
 }
 
