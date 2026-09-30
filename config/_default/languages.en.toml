@@ -15,7 +15,7 @@ title = "Dinh Tuan Kiet"
 
 [params.author]
   name = "Dinh Tuan Kiet"
-  aka = "Hi, i'm k0z1l aka 0xDTK"
+  aka = "k0z1l aka 0xDTK"
   image = "tk.jpg"
   headline = "Offensive Security Engineer | AI & Security Researcher"
   bio = "Offensive Security Engineer and Security Researcher specializing in manual web exploitation, binary analysis, and AI-driven cyber threat reconstruction. Strong background in network protocols, systems programming, and full-chain vulnerability assessment with 100+ solved PortSwigger Academy challenges. Dedicated to deconstructing complex adversary attack kill chains, authoring in-depth technical writeups, and bridging offensive tradecraft with intelligent defenses to safeguard critical infrastructure."

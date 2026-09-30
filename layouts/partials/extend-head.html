@@ -1,4 +1,18 @@
+<script>
+(function() {
+  try {
+    var COLOR_THEME_KEY = "k0z1l_color_theme_v2";
+    var savedTheme = localStorage.getItem(COLOR_THEME_KEY) || "ruby";
+    if (savedTheme !== "cyan") {
+      document.documentElement.classList.add("theme-ruby");
+    } else {
+      document.documentElement.classList.remove("theme-ruby");
+    }
+    document.documentElement.classList.add("dark");
+  } catch(e) {}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<meta name="theme-color" content="#040809">
+<meta name="theme-color" content="#060305">

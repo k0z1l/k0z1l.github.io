@@ -552,21 +552,21 @@
      ========================================================================== -->
 <script>
 (function() {
-  const COLOR_THEME_KEY = "k0z1l_color_theme";
+  const COLOR_THEME_KEY = "k0z1l_color_theme_v2";
 
   // Always force dark mode class on root so Blowfish light-mode black text is never triggered
   document.documentElement.classList.add("dark");
 
   function applyColorTheme(theme) {
-    if (theme === "ruby") {
-      document.documentElement.classList.add("theme-ruby");
-    } else {
+    if (theme === "cyan") {
       document.documentElement.classList.remove("theme-ruby");
+    } else {
+      document.documentElement.classList.add("theme-ruby");
     }
   }
 
-  // Load saved theme (default to cyan)
-  let savedTheme = localStorage.getItem(COLOR_THEME_KEY) || "cyan";
+  // Load saved theme (default to ruby - Đỏ Ngọc)
+  let savedTheme = localStorage.getItem(COLOR_THEME_KEY) || "ruby";
   applyColorTheme(savedTheme);
 
   function bindThemeSwitcher() {
