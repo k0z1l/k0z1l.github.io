@@ -40,5 +40,6 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **08** | [HTTP request smuggling, revealing front-end request rewriting](lab-08-HTTP%20request%20smuggling-revealing%20front-end%20request%20rewriting/) | Practitioner | Leaking internal front-end rewritten headers via search parameter reflection to bypass IP controls |
 | **09** | [HTTP request smuggling, capturing other users' requests](lab-09-HTTP%20request%20smuggling-capturing%20other%20users%20requests/) | Practitioner | Exfiltrating victim credentials and session cookies via storage sink smuggling into blog comments |
 | **10** | [HTTP request smuggling, delivering reflected XSS](lab-10-HTTP%20request%20smuggling-delivering%20reflected%20XSS/) | Practitioner | Weaponizing unexploitable User-Agent reflected XSS into unsolicited zero-click execution |
+| **11** | [Response queue poisoning via H2.TE request smuggling](lab-11-HTTP%20request%20smuggling-response%20queue%20poisoning%20via%20H2.TE%20request%20smuggling/) | Practitioner | Exploiting H2.TE HTTP/2 downgrading to poison the FIFO response queue and capture admin sessions |
 
 *Upcoming challenges will be continuously documented here.*
