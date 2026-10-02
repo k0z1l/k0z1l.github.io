@@ -106,7 +106,7 @@ contract Setup {
 
 ### 1.2. Background Fundamentals
 
-### 2.1 `tx.origin` vs `msg.sender`
+#### 1.2.1. `tx.origin` vs `msg.sender`
 
 - `msg.sender`: The immediate caller of the current execution frame (an EOA or a contract).
 - `tx.origin`: The original EOA that signed and initiated the transaction. Across all nested execution frames, it remains constant.
@@ -123,13 +123,13 @@ In a call chain `EOA -> A -> B`:
 
 This pattern is frequently used as a naive anti-bot or contract check, but is easily bypassed through contract indirection. Similar caller confusion historically enabled `tx.origin` phishing attacks.
 
-### 2.2 `receive()` / `fallback()`
+#### 1.2.2. `receive()` / `fallback()`
 
 - `receive()` executes when a contract receives plain Ether with empty calldata (via `address(g).call{value: x}("")` or standard transfer).
 - In this contract, `receive()` does not restrict `msg.sender` or `tx.origin`; any EOA or contract can invoke it. It only asserts `stepped == true` and `msg.value > 0`.
 - To transfer Ether from inside a contract, use `address(g).call{value: v}("")` with `require(ok)` rather than `transfer()`. The legacy `transfer()` primitive forwards a fixed 2,300 gas stipend, which reverts when the recipient executes storage operations. In `Gate.sol`, `receive()` executes a `require` check and updates a storage slot, requiring adequate gas.
 
-### 2.3 EVM Storage Layout — "private" Is Not Confidential
+#### 1.2.3. EVM Storage Layout — "private" Is Not Confidential
 
 - Every contract possesses a flat storage array consisting of 32-byte slots indexed from 0.
 - Statically sized variables (`uintN`, `address`, `bool`, `bytesN`) are packed sequentially into slots when adjacent items fit within 32 bytes. Values are aligned starting from the lowest-order byte (offset 0).
@@ -139,7 +139,7 @@ In this challenge, `password` is accessible via two vectors: reading slot 1 via 
 
 > **Note on Storage Layout:** The inline comments in `Gate.sol` indicate incorrect slot numbers (see Section 4.3).
 
-### 2.4 `keccak256(abi.encodePacked(x))` vs `keccak256(abi.encode(x))`
+#### 1.2.4. `keccak256(abi.encodePacked(x))` vs `keccak256(abi.encode(x))`
 
 - `abi.encodePacked("gateway to the flag")` concatenates raw UTF-8 bytes without padding or length prefixes:
   `keccak256(abi.encodePacked("gateway to the flag")) = 0x90cd83d75da724f03cbd4c1bd73dbfca4325ab5c4930082484b6f6aa9234d70b`
@@ -733,7 +733,7 @@ contract AttackAlt {
 
 Because `lot.random()` evaluates within the same transaction, it returns the exact value that `guess()` evaluates against.
 
-### Empirical Proof of EOA Infeasibility
+#### 2.5.1. Empirical Proof of EOA Infeasibility
 
 Attempting to predict targets from an EOA off-chain:
 
