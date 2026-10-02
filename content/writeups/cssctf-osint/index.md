@@ -22,7 +22,7 @@ showTableOfContents: true
 
 ---
 
-# 1. Server Juice
+## 1. Server Juice
 
 * **Category:** OSINT (SOCMINT / Social Media)
 * **Flag:** `CSSCTF{premiumreserve}`
@@ -53,7 +53,7 @@ showTableOfContents: true
 
 ---
 
-# 2. Dead Faction Servers
+## 2. Dead Faction Servers
 
 * **Category:** OSINT / Git Forensics
 * **Starting Trace:** `bobdev508`

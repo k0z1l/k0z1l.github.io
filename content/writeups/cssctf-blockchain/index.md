@@ -9,7 +9,15 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-# CSS CTF — Blockchain: **Gateway** (Part 1)
+# [CSSCTF] Blockchain Challenges Writeup
+
+## Table of Contents
+1. [Gateway (Part 1)](#1-gateway-part-1)
+2. [Lottery (Part 2)](#2-lottery-part-2)
+
+---
+
+## 1. Gateway (Part 1)
 
 > This document covers **two CSS CTF blockchain challenges** (each maintaining dedicated numbered sections):
 > - **Part 1 — Gateway** (port `31337`) — detailed below.
@@ -28,7 +36,7 @@ showTableOfContents: true
 
 ---
 
-## 1. Challenge Description
+### 1.1. Challenge Description
 
 > "The reboot has awakened an abandoned UPDC checkpoint guarding access to the Quantum Nexus
 > Network. Its emergency gate still demands three proofs of clearance, but the officers who
@@ -96,7 +104,7 @@ contract Setup {
 
 ---
 
-## 2. Background Fundamentals
+### 1.2. Background Fundamentals
 
 ### 2.1 `tx.origin` vs `msg.sender`
 
@@ -151,7 +159,7 @@ The target runs on **Anvil** (`web3_clientVersion` -> `anvil/v1.8.3`): transacti
 
 ---
 
-## 3. Analysis: The Three Doors and Solutions
+### 1.3. Analysis: The Three Doors and Solutions
 
 | Door | Function | Requirement | Solution |
 |---|---|---|---|
@@ -167,7 +175,7 @@ The target runs on **Anvil** (`web3_clientVersion` -> `anvil/v1.8.3`): transacti
 
 ---
 
-## 4. Practical Reconnaissance and Verification
+### 1.4. Practical Reconnaissance and Verification
 
 ### 4.1 Instance Allocation
 
@@ -257,7 +265,7 @@ Relying on the source comments and inspecting `eth_getStorageAt(gate, 4)` to che
 
 ---
 
-## 5. Exploitation
+### 1.5. Exploitation
 
 ### 5.1 Path A — Single-Transaction Solve Across All Three Doors
 
@@ -345,7 +353,7 @@ Both paths succeed, demonstrating that only Door 1 actually restricts direct EOA
 
 ---
 
-## 6. Flag Capture
+### 1.6. Flag Capture
 
 With `isSolved() == true`:
 
@@ -365,7 +373,7 @@ CSSCTF{CSS{B451C_BL0CKCH41N_5K1LL5}}
 
 ---
 
-## 7. Pitfalls, Common Errors, and Lessons Learned
+### 1.7. Pitfalls, Common Errors, and Lessons Learned
 
 **Challenge Traps:**
 
@@ -394,7 +402,7 @@ CSSCTF{CSS{B451C_BL0CKCH41N_5K1LL5}}
 
 ---
 
-## 8. Appendix — Reproduction Files and Commands
+### 1.8. Appendix — Reproduction Files and Commands
 
 ```
 Downloads/CSSCTF/BLOCKCHAIN/
@@ -431,7 +439,7 @@ printf '3\n<TEAM_NAME>\n' | nc 34.116.80.78 31337
 
 ---
 
-# CSS CTF — Blockchain: **Lottery** (Part 2)
+## 2. Lottery (Part 2)
 
 > **Flag:** `CSSCTF{CSS{U5E_4_R4ND0M_FUNCT10N}}`  
 > (`nc 34.116.80.78 31338` -> action `3` returns `CSS{U5E_4_R4ND0M_FUNCT10N}`)
@@ -448,7 +456,7 @@ printf '3\n<TEAM_NAME>\n' | nc 34.116.80.78 31337
 
 ---
 
-## 1. Challenge Description
+### 2.1. Challenge Description
 
 > "Beyond the checkpoint, a Beltway Bandits gambling terminal has resumed broadcasting:
 > *Ten wins in a row. One fortune. No second chances.* Once used to distribute stolen credits,
@@ -534,7 +542,7 @@ All three values are **invariant for all calls executed within the same block**.
 
 ---
 
-## 2. Core Principles and Fundamentals
+### 2.2. Core Principles and Fundamentals
 
 ### 2.1 Block-Derived Randomness Is Deterministic to Smart Contracts
 
@@ -604,7 +612,7 @@ All 10 message calls execute within the **same transaction and same block**. Con
 
 ---
 
-## 3. Instance Reconnaissance
+### 2.3. Instance Reconnaissance
 
 ```bash
 $ printf '1\n<TEAM_NAME>\n' | nc 34.116.80.78 31338
@@ -638,7 +646,7 @@ print(lot.functions.winner().call())            # 0x0000...0000
 
 ---
 
-## 4. Exploitation — Path A: Internal Keccak Recomputation
+### 2.4. Exploitation — Path A: Internal Keccak Recomputation
 
 `Attack.sol`:
 
@@ -701,7 +709,7 @@ assert rc.status == 1
 
 ---
 
-## 5. Exploitation — Path B: Querying `lottery.random()` as an Oracle
+### 2.5. Exploitation — Path B: Querying `lottery.random()` as an Oracle
 
 Because `random()` is declared `public view`, an attacker contract can call the target contract directly to obtain the target number:
 
@@ -744,7 +752,7 @@ Observed block timestamp deltas in this instance were non-deterministic: `+5s, +
 
 ---
 
-## 6. Execution Results
+### 2.6. Execution Results
 
 Execution log on instance `f3ff3e06-...`:
 
@@ -781,7 +789,7 @@ CSSCTF{CSS{U5E_4_R4ND0M_FUNCT10N}}
 
 ---
 
-## 7. Reproduction Scripts and Instructions
+### 2.7. Reproduction Scripts and Instructions
 
 ```
 Downloads/CSSCTF/BLOCKCHAIN/
@@ -828,7 +836,7 @@ printf '3\n<TEAM_NAME>\n' | nc 34.116.80.78 31338
 
 ---
 
-## 8. Pitfalls, Common Errors, and Lessons Learned
+### 2.8. Pitfalls, Common Errors, and Lessons Learned
 
 **Challenge Traps:**
 
