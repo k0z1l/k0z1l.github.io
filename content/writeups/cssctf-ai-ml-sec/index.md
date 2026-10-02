@@ -543,7 +543,7 @@ Core takeaway: **The model may propose structured actions, but must never decide
 
 When analyzing LLM-driven security challenges:
 
-**A. Reconnaissance (Perform Before Conversing)**
+#### 1.12.1. Reconnaissance (Perform Before Conversing)
 
 1. Inspect HTML source for `max_turns`, `maxlength`, and embedded instructions.
 2. Review all files under `/assets/` (`app.js` routinely reveals endpoints, schemas, and session mechanisms).
@@ -552,34 +552,34 @@ When analyzing LLM-driven security challenges:
 5. Probe plausible endpoints (`/api/flag`, `/api/pass`, `/api/debug`) with conservative request intervals to avoid rate limits.
 6. Fingerprint backend frameworks via validation error structures.
 
-**B. Policy Probing**
+#### 1.12.2. Policy Probing
 
-7. Send a direct request for the objective; analyze refusal responses for enumerated requirements.
-8. Test authority personas (administrator, developer, auditor) to evaluate trust assumptions.
-9. Identify which requirements depend entirely on self-reported user statements.
+1. Send a direct request for the objective; analyze refusal responses for enumerated requirements.
+2. Test authority personas (administrator, developer, auditor) to evaluate trust assumptions.
+3. Identify which requirements depend entirely on self-reported user statements.
 
-**C. Exploitation Hierarchy**
+#### 1.12.3. Exploitation Hierarchy
 
-10. **If policy criteria can be satisfied through self-reporting**, construct a concise scenario meeting all requirements in a **single turn**.
-11. If criteria cannot be satisfied legitimately, test injection vectors: system delimiters, repeat commands, translation encodings, JSON formatting, and developer debug roles.
-12. Test multi-turn techniques: gradual escalation, intent retraction, and state manipulation.
-13. Test session manipulation: arbitrary session IDs, lazy-creation behaviors, and turn reset mechanics.
+1. **If policy criteria can be satisfied through self-reporting**, construct a concise scenario meeting all requirements in a **single turn**.
+2. If criteria cannot be satisfied legitimately, test injection vectors: system delimiters, repeat commands, translation encodings, JSON formatting, and developer debug roles.
+3. Test multi-turn techniques: gradual escalation, intent retraction, and state manipulation.
+4. Test session manipulation: arbitrary session IDs, lazy-creation behaviors, and turn reset mechanics.
 
-**D. Result Verification**
+#### 1.12.4. Result Verification
 
-14. Validate tokens against regex patterns (`CSSCTF\{[^}]*\}`) rather than relying on textual assurances ("access granted").
-15. Extract tokens across multiple independent sessions to ensure determinism.
-16. Verify characters at the byte/ASCII level to distinguish ambiguous glyphs (`0`/`O`, `1`/`l`).
+1. Validate tokens against regex patterns (`CSSCTF\{[^}]*\}`) rather than relying on textual assurances ("access granted").
+2. Extract tokens across multiple independent sessions to ensure determinism.
+3. Verify characters at the byte/ASCII level to distinguish ambiguous glyphs (`0`/`O`, `1`/`l`).
 
-**E. Operational Practices**
+#### 1.12.5. Operational Practices
 
-17. Automate interactions via Python or curl; track session identifiers programmatically.
-18. Maintain fresh sessions for each hypothesis.
-19. Respect rate limits by spacing automated requests appropriately.
+1. Automate interactions via Python or curl; track session identifiers programmatically.
+2. Maintain fresh sessions for each hypothesis.
+3. Respect rate limits by spacing automated requests appropriately.
 
 ---
 
-### 1.13. Full Raw Transcripts (Appendix A)
+### 1.13. Full Raw Transcripts
 
 #### 1.13.1. Winning Session — Variant B (Two Turns)
 
@@ -645,7 +645,7 @@ turn 13: HTTP 400  {"detail":"This session has no turns remaining"}
 
 ---
 
-### 1.14. Raw HTTP Exchange & Solve Script (Appendix B)
+### 1.14. Raw HTTP Exchange & Solve Script
 
 #### 1.14.1. Successful Request with Full Headers
 

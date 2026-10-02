@@ -1119,7 +1119,7 @@ os.write(fd, b'q'); time.sleep(0.3); os.kill(pid, 9)
 
 ### 3.10. Appendices
 
-**A. Landmark / Achievement Strings in Memory:**
+#### 3.10.1. Landmark / Achievement Strings in Memory
 
 ```console
 $ objdump -s -j .data.rel.ro prince_walk     # vaddr 0x16ba0, offset 0x15ba0
@@ -1134,7 +1134,7 @@ $ objdump -s -j .data.rel.ro prince_walk     # vaddr 0x16ba0, offset 0x15ba0
  16ca0 7f969800 7f969800 54480000 00000000   # (9999999,9999999) "THE REAL END OF THE WORLD"
 ```
 
-**B. Key Constants Reference:**
+#### 3.10.2. Key Constants Reference
 
 | Constant | Value | Usage |
 |---|---|---|
@@ -1151,7 +1151,7 @@ $ objdump -s -j .data.rel.ro prince_walk     # vaddr 0x16ba0, offset 0x15ba0
 | `mix32` Constants | `0x7FEB352D`, `0x846CA68B` | `gen_flag` |
 | `PR_SET_PTRACER` | `0x59616D61`, arg `-1` | Debugger attach authorization |
 
-**C. Procedural Terrain Palette (`0x4450`):**
+#### 3.10.3. Procedural Terrain Palette (`0x4450`)
 `"......,,TT~#"` (12 characters => `h % 12`):
 `'.'` x 6 grass; `','` x 2 dirt; `'T'` x 2 trees (impassable); `'~'` water; `'#'` rock.
 Overrides: `'O'` = player, `'*'` = beacon `(999999,999999)`, `','` = landmark site.
