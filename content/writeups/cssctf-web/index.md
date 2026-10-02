@@ -9,18 +9,53 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-# CTF Write-up: Secret Supernovas
+# [CSSCTF] Web Exploitation Challenges Writeup
 
-**Competition:** CSSCTF  
-**Category:** Web  
-**Challenge Name:** Secret Supernovas  
-**Flag:** `CSSCTF{we_l000ve_grafs}`  
-**Difficulty:** Medium  
-**Target:** http://34.116.80.78:9982/
+**Author:** k0z1l  
+**Category:** Web Exploitation  
+**Flag Format:** `CSSCTF{...}`  
 
 ---
 
-## Challenge Description
+## Table of Contents
+1. [Secret Supernovas](#1-secret-supernovas)
+   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
+   - [1.1. Challenge Description & Overview](#11-challenge-description--overview)
+   - [1.2. Reconnaissance](#12-reconnaissance)
+   - [1.3. Authentication and Session Analysis](#13-authentication-and-session-analysis)
+   - [1.4. JavaScript Bundle Analysis](#14-javascript-bundle-analysis)
+   - [1.5. GraphQL Exploitation & Flag Capture](#15-graphql-exploitation--flag-capture)
+   - [1.6. Attack Flowchart](#16-attack-flowchart)
+   - [1.7. Vulnerability Analysis & Remediation](#17-vulnerability-analysis--remediation)
+   - [1.8. Complete Exploit Script](#18-complete-exploit-script)
+   - [1.9. Key Takeaways](#19-key-takeaways)
+
+---
+
+## 1. Secret Supernovas
+
+> **Flag:** `CSSCTF{we_l000ve_grafs}`  
+> **Difficulty:** Medium  
+> **Target:** `http://34.116.80.78:9982/`  
+> **Category:** Web / GraphQL API Security  
+> **Vulnerability:** Broken Object Property Level Authorization (BOPLA / OWASP API3:2023)  
+
+---
+
+### 1.0. TL;DR & Exploitation Summary
+
+```text
+1. Reconnaissance     -> Inspect landing page; discover visitor credentials (cadet:star) and identify SvelteKit frontend.
+2. Authentication     -> POST /login with cadet:star -> Obtain authenticated session cookie.
+3. Bundle Analysis    -> Reverse compiled SvelteKit bundle (/nodes/2.C521ycad.js) -> Discover backend GraphQL endpoint (/graphql).
+4. Schema Discovery   -> Query __schema introspection -> Discover unexposed 'owner' field on Star and 'description' on Person.
+5. Exploitation       -> Issue GraphQL query: { stars { name owner { username description } } }.
+6. Flag Capture       -> Read flag from Laurel Lance's description: CSSCTF{we_l000ve_grafs}.
+```
+
+---
+
+### 1.1. Challenge Description & Overview
 
 > This is just a list of stars. Nothing else to see here...
 
@@ -28,9 +63,9 @@ The challenge statement is intentionally understated. In reality, the applicatio
 
 ---
 
-## Step 1: Reconnaissance
+### 1.2. Reconnaissance
 
-### 1.1 Inspecting the Landing Page
+#### 1.2.1. Inspecting the Landing Page
 
 Navigating to `http://34.116.80.78:9982/` displays the login interface:
 
@@ -58,9 +93,9 @@ Navigating to `http://34.116.80.78:9982/` displays the login interface:
 
 ---
 
-## Step 2: Authentication and Session Analysis
+### 1.3. Authentication and Session Analysis
 
-### 2.1 Authenticating as `cadet/star`
+#### 1.3.1. Authenticating as `cadet/star`
 
 ```python
 import requests
@@ -82,7 +117,7 @@ print('Body:', resp.text)
 
 **Result:** The endpoint responds with JSON redirect instructions rather than an HTTP 303 status code, typical of SvelteKit form actions. A session cookie is established with `HttpOnly; SameSite=Lax`.
 
-### 2.2 Accessing the Authenticated Dashboard
+#### 1.3.2. Accessing the Authenticated Dashboard
 
 ```python
 resp2 = session.get('http://34.116.80.78:9982/')
@@ -111,9 +146,9 @@ The page initially displays `"Aligning telescope…"`, showing that star records
 
 ---
 
-## Step 3: JavaScript Bundle Analysis
+### 1.4. JavaScript Bundle Analysis
 
-### 3.1 Inspecting Application Bundles
+#### 1.4.1. Inspecting Application Bundles
 
 The SvelteKit entry point enumerates route chunks:
 
@@ -142,7 +177,7 @@ var I = {
 };
 ```
 
-### 3.2 Analyzing Node 2 — The Stars Component
+#### 1.4.2. Analyzing Node 2 - The Stars Component
 
 Downloading `/_app/immutable/nodes/2.C521ycad.js` reveals the data retrieval logic:
 
@@ -169,9 +204,9 @@ m(async () => {
 
 ---
 
-## Step 4: GraphQL Exploitation
+### 1.5. GraphQL Exploitation & Flag Capture
 
-### 4.1 Schema Introspection
+#### 1.5.1. Schema Introspection
 
 GraphQL features an introspection system allowing clients to query schema definitions. With introspection enabled on the target, the complete schema structure can be recovered:
 
@@ -240,7 +275,7 @@ Query type: Query
 > [!WARNING]
 > **Identified Flaw:** Type `Star` contains an **`owner`** field returning a `Person` object that is not queried by the frontend. The `Person.description` field may hold sensitive data. This constitutes **Broken Object Property Level Authorization (BOPLA)**.
 
-### 4.2 Querying the Hidden `owner.description` Field
+#### 1.5.2. Querying the Hidden `owner.description` Field
 
 Constructing a query requesting the hidden owner properties:
 
@@ -266,7 +301,7 @@ query Stars {
 ''')
 ```
 
-### 4.3 Result — Flag Discovered
+#### 1.5.3. Flag Extraction & Verification
 
 Extract from the GraphQL response:
 
@@ -335,15 +370,12 @@ Extract from the GraphQL response:
 
 ---
 
-## Flag
+> **Captured Flag:** `CSSCTF{we_l000ve_grafs}`
 
-```
-CSSCTF{we_l000ve_grafs}
-```
 
 ---
 
-## Attack Flowchart
+### 1.6. Attack Flowchart
 
 ```
 [Browser / Exploit Script]
@@ -375,9 +407,9 @@ CSSCTF{we_l000ve_grafs}
 
 ---
 
-## Vulnerability Analysis
+### 1.7. Vulnerability Analysis & Remediation
 
-### Vulnerability Classification: BOPLA and Schema Exposure
+#### 1.7.1. Vulnerability Classification: BOPLA and Schema Exposure
 
 **OWASP API3:2023 — Broken Object Property Level Authorization**
 
@@ -388,13 +420,13 @@ CSSCTF{we_l000ve_grafs}
 | **Exposed Data** | Sensitive attributes within the `Person` type (`description`) |
 | **Root Cause** | Frontend requests only a safe subset of properties, but backend schema does not validate field-level permissions |
 
-### Root Causes
+#### 1.7.2. Root Causes
 
 1. **Client-side filtering assumption**: The UI only queries `stars { id name spectralClass magnitude classification galaxy { name } }`, omitting `owner`.
 2. **Missing field-level authorization**: Authenticated users can request `owner { description }` without restriction.
 3. **Active GraphQL Introspection**: Introspection enabled in production allows attackers to enumerate the complete data schema.
 
-### Remediation
+#### 1.7.3. Remediation
 
 ```javascript
 // Example remediation using graphql-shield (Node.js)
@@ -419,7 +451,7 @@ const server = new ApolloServer({
 
 ---
 
-## Complete Exploit Script
+### 1.8. Complete Exploit Script
 
 ```python
 #!/usr/bin/env python3
@@ -582,10 +614,11 @@ FLAG: CSSCTF{we_l000ve_grafs}
 
 ---
 
-## Key Takeaways
+### 1.9. Key Takeaways
 
 1. **Never rely on frontend filtering for sensitive data isolation**: Any data exposed by GraphQL types can be queried regardless of whether UI views render it.
 2. **Disable GraphQL introspection in production**: Open introspection reveals the schema architecture and assists attackers in locating unexposed fields.
 3. **Implement property-level authorization**: Secure individual schema fields and nested types, not merely top-level operations.
 4. **Eliminate exposed credentials from client code and markup**: Even low-privilege demo accounts provide an initial foothold for authorized API exploration.
 5. **Analyze client JavaScript bundles during assessments**: Single-page application bundles often disclose unpublished API paths and operational logic.
+
