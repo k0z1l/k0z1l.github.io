@@ -592,7 +592,7 @@ $$\mathbf{CSSCTF\{itr6G8jMTXbOjCmClmMElZxQLqSXqnf53z1Z73liVas3ypn5CJZ4ZGlqZo6Fkc
 > **Server:** `nc 34.116.80.78 7654`  
 > **Attached Archive:** Archive containing `nexus_core`, `Dockerfile`, `flag.txt`.
 
-#### Context & Clue Analysis
+#### 4.1.1. Context & Clue Analysis
 The narrative outlines several concrete technical requirements:
 1. *"The council's instruction consumes and rewrites its own memory"*: The custom virtual machine (VM) employs self-modifying code and dynamic permutation table mutation.
 2. *"Three rings of the Astrolabe"*: The program enforces 3 validation stages:
@@ -605,7 +605,7 @@ The narrative outlines several concrete technical requirements:
 
 ### 4.2. Architecture Analysis of Ouroboros VM (`nexus_core`)
 
-#### Binary Reconnaissance
+#### 4.2.1. Binary Reconnaissance
 Inspecting the executable `nexus_core`:
 ```bash
 $ file nexus_core
@@ -631,7 +631,7 @@ These messages reveal:
 - Cycle budget constraints: `112 <= cycles <= 128`.
 - Passing the checks avoids `HARMONIC FAULT` and triggers `[+] TELEMETRY STABILIZED. OVERWRITING SYSTEM MASTER KEY...`, prompting the server to print `flag.txt`.
 
-#### Main Execution Flow (Offset `0x1100`)
+#### 4.2.2. Main Execution Flow (Offset `0x1100`)
 1. **State Memory Allocation:** Allocates a 536-byte stack structure at `rsp+0x20`.
 2. **I/O Setup & Timeout:** Disables buffering via `setvbuf` and arms `alarm(45)`.
 3. **Dynamic Epoch Beacon Generation:**
@@ -645,7 +645,7 @@ These messages reveal:
    - Converts pairs of hex characters via `sscanf("%02x")` into byte array `MEM` (up to 512 bytes, starting at offset `0x1c`).
 5. **VM Dispatch:** Calls VM dispatcher at offset `0x13e0`.
 
-#### Ouroboros VM State Memory Layout
+#### 4.2.3. Ouroboros VM State Memory Layout
 Layout mapping of the 536-byte VM State structure:
 
 | Offset | Size | Field Name | Description | Initial Value |
@@ -666,7 +666,7 @@ Layout mapping of the 536-byte VM State structure:
 
 ### 4.3. Self-Modifying Bytecode Mechanism & Permutation Table
 
-#### Fetch - Decode - Execute Pipeline
+#### 4.3.1. Fetch - Decode - Execute Pipeline
 Each instruction spans exactly **4 bytes** in `MEM` at `PC`:
 1. **Fetch Parameters:**
    - `b0 = MEM[PC]`, `b1 = MEM[PC+1]`, `b2 = MEM[PC+2]`, `b3 = MEM[PC+3]`.
@@ -686,7 +686,7 @@ Each instruction spans exactly **4 bytes** in `MEM` at `PC`:
    $$\operatorname{swap}(P[R_0 \ \& \ 7], \ P[R_1 \ \& \ 7])$$
    Cycle checks verify: If `CYCLES > 128`, the VM triggers `[!] THERMAL DETONATION: Cycle budget breached.` and terminates.
 
-#### Ouroboros VM Instruction Set
+#### 4.3.2. Ouroboros VM Instruction Set
 
 | Opcode | Mnemonic | Syntax | Execution Semantics | Cycles |
 | :---: | :---: | :--- | :--- | :---: |
@@ -699,7 +699,7 @@ Each instruction spans exactly **4 bytes** in `MEM` at `PC`:
 | `0x7f` | **HALT**| `HALT` | Triggers 3-ring verification, stops VM | $+10$ |
 | `0xff` | **ILLEGAL**| N/A | Triggers `[!] ILLEGAL INSTRUCTION: Core purged.` | Terminated |
 
-#### Controlling Opcode Generation
+#### 4.3.3. Controlling Opcode Generation
 The table $P$ is always a permutation of the 8 distinct opcodes:
 $$\{0x10, 0x20, 0x30, 0x35, 0x40, 0x50, 0x7f, 0xff\}$$
 Therefore, regardless of permutations, **every valid opcode always exists at some index $\text{idx} \in [0, 7]$ within $P$**.  
@@ -756,7 +756,7 @@ The Astrolabe verification logic resides in the handler for opcode `0x7f` (offse
               Read & print flag.txt
 ```
 
-#### Ring 1: Quantum Decay Window & Beacon Normalization
+#### 4.4.1. Ring 1: Quantum Decay Window & Beacon Normalization
 1. **Cycle Window Verification:**
    ```asm
    1593: add eax, 0xa        ; cycles += 10
@@ -771,7 +771,7 @@ The Astrolabe verification logic resides in the handler for opcode `0x7f` (offse
    Reads `BEACON` from `state+0x12` and calculates 4-element array $T$:
    $$T_i = (R_i - \text{BEACON}) \pmod{65521}, \quad \forall i \in \{0, 1, 2, 3\}$$
 
-#### Ring 2: Nonlinear Waves & Coupled Lattice Recurrence
+#### 4.4.2. Ring 2: Nonlinear Waves & Coupled Lattice Recurrence
 1. **Nonlinear Wave Transformation $U$:**
    For each $T_j$ ($j = 0, 1, 2, 3$):
    - $v_j = (T_j \oplus 0x5aa5) \pmod{65521}$
@@ -810,7 +810,7 @@ The Astrolabe verification logic resides in the handler for opcode `0x7f` (offse
    X_3^2 + U_3 X_0 - X_2 \equiv 39941 \pmod{65521} & (4)
    \end{cases}$$
 
-#### Ring 3: Projective Coordinates / Elliptic Curve Horizon
+#### 4.4.3. Ring 3: Projective Coordinates / Elliptic Curve Horizon
 At offsets `0x187c - 0x1960`, the binary verifies:
 ```asm
 ; Check pair (X0, X1):
@@ -828,13 +828,13 @@ $$E: y^2 \equiv x^3 + 17x + 43 \pmod{65521}$$
 
 ### 4.5. Mathematical Modeling & Equation System Solver
 
-#### Critical Breakthrough
+#### 4.5.1. Critical Breakthrough
 The system of 6 equations is **completely independent of `BEACON`**.  
 The target values $T_0, T_1, T_2, T_3$ depend solely on static algebraic constants, remaining **invariant across all connection sessions**.  
 Given `BEACON`, the register targets are simply:
 $$R_i = (T_i + \text{BEACON}) \pmod{65521}$$
 
-#### Algebraic Reduction
+#### 4.5.2. Algebraic Reduction
 Substituting the Elliptic Curve relations directly into equations (2) and (4):
 - Substitute $X_1^2 = X_0^3 + 17X_0 + 43$ into $(2)$:
   $$(X_0^3 + 17X_0 + 43) + U_1 X_2 - X_0 \equiv 12506 \pmod{65521}$$
@@ -848,7 +848,7 @@ Substituting the Elliptic Curve relations directly into equations (2) and (4):
   Define polynomial $K'(X_2) = 39941 - (X_2^3 + 16X_2 + 43) \pmod{65521}$:
   $$U_3 \equiv K'(X_2) \cdot X_0^{-1} \pmod{65521}$$
 
-#### Search Pipeline:
+#### 4.5.3. Search Pipeline
 Fixing pair $(T_0, T_1)$:
 1. $U_0 = f(T_0)$ and $U_1 = f(T_1)$ are retrieved from precomputed lookup tables.
 2. $X_0 = (T_1 + U_0) \pmod{65521}$.
@@ -891,7 +891,7 @@ To satisfy all architectural constraints:
 
 ### 4.7. Full Exploit Source Code (C Solver & Python Exploit)
 
-#### 1. OpenMP C Solver (`solve.c`)
+#### 4.7.1. OpenMP C Solver (`solve.c`)
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -1004,7 +1004,7 @@ int main() {
 }
 ```
 
-#### 2. Remote Python Exploit (`solve_remote.py`)
+#### 4.7.2. Remote Python Exploit (`solve_remote.py`)
 ```python
 #!/usr/bin/env python3
 import re
@@ -1157,7 +1157,7 @@ if __name__ == "__main__":
 
 ### 4.8. Flag & Key Takeaways
 
-#### Server Execution Log:
+#### 4.8.1. Server Execution Log
 ```text
 [*] Connecting to challenge server 34.116.80.78:7654...
 === SECTOR 00: OUROBOROS SINGULARITY (INSANE) ===
@@ -1173,7 +1173,7 @@ CSSCTF{0ur0b0r0s_g00d_j0b_b01s_heh3_67}
 
 $$\mathbf{CSSCTF\{0ur0b0r0s\_g00d\_j0b\_b01s\_heh3\_67\}}$$
 
-#### Key Takeaways:
+#### 4.8.2. Key Takeaways
 1. **Synergy of VM Reverse Engineering and Cryptanalysis:** This challenge bridges low-level bytecode analysis of self-modifying architectures with advanced algebraic structures (Elliptic Curves, coupled circular recurrence).
 2. **Invariant Division via Multiplication Recognition:** Spotting $0x58862fdccdf01111$ as the modular inverse of prime $65521$ modulo $2^{64}$ allows converting complex compiled assembly sequences back into standard modular arithmetic constraints.
 3. **Cycle Budgeting in VM Exploitation:** When virtual machines mandate precise cycle bounds ($[112, 128]$), injecting neutral padding instructions (`LOADI R3, 0`) enables exact cycle control while preserving the internal opcode permutation state $P$.

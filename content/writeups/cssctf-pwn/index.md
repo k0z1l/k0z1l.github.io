@@ -25,7 +25,7 @@ showTableOfContents: true
 
 ---
 
-### 1.0. TL;DR & Exploitation Summary
+### 1.1. TL;DR & Exploitation Summary
 
 ```text
 1. Create ticket      -> malloc(0x28); struct *t;  t->fn = deny_access
@@ -45,7 +45,7 @@ Payload sent to `Edit`: exactly **0x28 = 40 bytes**.
 
 ---
 
-### 1.1. File Information & Security Mitigations
+### 1.2. File Information & Security Mitigations
 
 ```console
 $ file dockside_ticket
@@ -67,7 +67,7 @@ for GNU/Linux 3.2.0, not stripped
 
 ---
 
-### 1.2. Symbol Table (from `readelf -sW`)
+### 1.3. Symbol Table (from `readelf -sW`)
 
 | Address | Symbol Name | Description / Role |
 |---|---|---|
@@ -85,9 +85,9 @@ for GNU/Linux 3.2.0, not stripped
 
 ---
 
-### 1.3. Reverse Engineering & Function Analysis
+### 1.4. Reverse Engineering & Function Analysis
 
-#### 1.3.1. Structure `ticket`
+#### 1.4.1. Structure `ticket`
 `create_ticket` allocates `malloc(0x28)`:
 
 ```asm
@@ -114,7 +114,7 @@ struct ticket *active_ticket;   /* global pointer @ 0x404068                    
 
 Only two fields are initialized upon creation: `+0x00` (name) and `+0x20` (function pointer). The remaining intermediate bytes are uninitialized heap padding. However, because `edit_ticket` allows writing a full 40 bytes, all fields are fully controllable.
 
-#### 1.3.2. `create_ticket` (`0x401357`)
+#### 1.4.2. `create_ticket` (`0x401357`)
 
 ```c
 void create_ticket(void) {
@@ -128,7 +128,7 @@ void create_ticket(void) {
 
 - **Key Takeaway:** Only a **single** ticket may be allocated at any time. Because `active_ticket` is never reset to `NULL`, `malloc` is never invoked a second time $\Rightarrow$ double-free or tcache poisoning attacks cannot be triggered $\Rightarrow$ the exploitation path must leverage the dangling pointer directly.
 
-#### 1.3.3. `cancel_ticket` (`0x4013c3`) — The Vulnerability
+#### 1.4.3. `cancel_ticket` (`0x4013c3`) — The Vulnerability
 
 ```asm
 4013cb:  mov rax,[rip+0x2c96]     ; rax = active_ticket
@@ -156,7 +156,7 @@ void cancel_ticket(void) {
   - `active_ticket` points to a chunk that has been returned to the **0x30 tcache bin**.
   - The first 8 bytes of user data become `tcache->entries[1]` (`NULL` when the bin is empty).
 
-#### 1.3.4. `edit_ticket` (`0x401408`)
+#### 1.4.4. `edit_ticket` (`0x401408`)
 
 ```asm
 401410:  mov  rax,[rip+0x2c51]     ; rax = active_ticket (dangling pointer)
@@ -186,7 +186,7 @@ Why 0x28 bytes is ideal:
 - User space spans offsets `0x00 .. 0x27`; reaching `+0x20` requires only 40 bytes $\Rightarrow$ no out-of-bounds overflow is required; the `read` call is entirely standard.
 - `read` **does not append a terminating `\0`** and does not truncate on NUL bytes $\Rightarrow$ 64-bit addresses containing NUL bytes can be written intact—a capability not possible with `fgets` or `scanf("%s")`.
 
-#### 1.3.5. `use_ticket` (`0x401466`) — Trigger
+#### 1.4.5. `use_ticket` (`0x401466`) — Trigger
 
 ```asm
 40146e:  mov  rax,[rip+0x2bf3]     ; rax = active_ticket (dangling pointer)
@@ -208,7 +208,7 @@ void use_ticket(void) {
 
 - **Primitive:** A zero-argument function call to an **arbitrary address** supplied at offset `+0x20`.
 
-#### 1.3.6. Win Function: `open_gate` (`0x40125f`)
+#### 1.4.6. Win Function: `open_gate` (`0x40125f`)
 
 ```asm
 40125f <open_gate>:
@@ -222,7 +222,7 @@ void use_ticket(void) {
 
 ---
 
-### 1.4. Use-After-Free Vulnerability Analysis
+### 1.5. Use-After-Free Vulnerability Analysis
 
 | # | Exploitation Prerequisite | Present in Target? |
 |---|---|---|
@@ -236,7 +236,7 @@ No information leaks (libc/heap), canary bypasses, ASLR workarounds, or ROP chai
 
 ---
 
-### 1.5. Exploitation Primitive & Strategy
+### 1.6. Exploitation Primitive & Strategy
 
 ```text
 [+] Create  -> malloc(0x28)         active_ticket = 0x406xxx (heap after .bss)
@@ -251,9 +251,9 @@ No information leaks (libc/heap), canary bypasses, ASLR workarounds, or ROP chai
 
 ---
 
-### 1.6. Solution Methods & Exploit Scripts
+### 1.7. Solution Methods & Exploit Scripts
 
-#### Method 1: Python Exploit Script (Local & Remote)
+#### 1.7.1. Method 1: Python Exploit Script (Local & Remote)
 
 ```python
 #!/usr/bin/env python3
@@ -320,7 +320,7 @@ if __name__ == "__main__":
     main(host, port)
 ```
 
-#### Method 2: Bash One-Liner
+#### 1.7.2. Method 2: Bash One-Liner
 
 ```bash
 {
@@ -336,7 +336,7 @@ if __name__ == "__main__":
 
 ---
 
-### 1.7. Technical Pitfall: Stdio Buffering vs. `read(2)` Syscall
+### 1.8. Technical Pitfall: Stdio Buffering vs. `read(2)` Syscall
 
 - `main` reads menu options using `__isoc99_scanf("%d", &opt)`, which relies on glibc's internal `stdio` buffering mechanism.
 - The subsequent `getchar()` also reads directly from that stream buffer.
@@ -354,7 +354,7 @@ When the initial `scanf` executes, glibc reads an entire 4096-byte chunk from th
 
 ---
 
-### 1.8. Verification with GDB
+### 1.9. Verification with GDB
 
 ```console
 Breakpoint 1, 0x000000000040148b in use_ticket ()
@@ -370,7 +370,7 @@ after si: rip = 0x40125f  ==> open_gate
 
 ---
 
-### 1.9. Summary & Flag
+### 1.10. Summary & Flag
 
 | Field | Detail |
 |---|---|
@@ -392,7 +392,7 @@ after si: rip = 0x40125f  ==> open_gate
 
 ---
 
-### 2.0. TL;DR & Exploitation Summary
+### 2.1. TL;DR & Exploitation Summary
 
 ```text
 0. Receive address leak: [*] Report buffer allocated at: 0x7fff.... -> buf
@@ -425,7 +425,7 @@ Sample payload structure:
 
 ---
 
-### 2.1. File Information & Security Mitigations
+### 2.2. File Information & Security Mitigations
 
 ```console
 $ file chall
@@ -444,7 +444,7 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 
 ---
 
-### 2.2. Function Map & String Analysis
+### 2.3. Function Map & String Analysis
 
 | Address | Identified Name | Description / Role |
 |---|---|---|
@@ -456,9 +456,9 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 
 ---
 
-### 2.3. Annotated Disassembly
+### 2.4. Annotated Disassembly
 
-#### 2.3.1. `func_report` @ `0x40139a` (Address Leak Source)
+#### 2.4.1. `func_report` @ `0x40139a` (Address Leak Source)
 ```asm
 40139a: push rbp
 40139b: mov  rbp,rsp
@@ -473,7 +473,7 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 401418: ret                             ; <== Stack pivot executed here
 ```
 
-#### 2.3.2. `func_tag` @ `0x401348` (1-Byte Off-by-One Overflow)
+#### 2.4.2. `func_tag` @ `0x401348` (1-Byte Off-by-One Overflow)
 ```asm
 401348: push rbp
 401349: mov  rbp,rsp
@@ -485,7 +485,7 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 401398: leave ; ret
 ```
 
-#### 2.3.3. `func_auth` @ `0x401268` (Win Target)
+#### 2.4.3. `func_auth` @ `0x401268` (Win Target)
 ```asm
 401285: cmp DWORD PTR [rbp-0x64],0xdeadbeef ; Validate argument 1 (rdi)
 401292: cmp DWORD PTR [rbp-0x68],0xcafebabe ; Validate argument 2 (rsi)
@@ -497,7 +497,7 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 
 ---
 
-### 2.4. Stack Layout Analysis & Memory Offsets
+### 2.5. Stack Layout Analysis & Memory Offsets
 
 | Variable / Pointer | Calculation / Relative Offset |
 |---|---|
@@ -509,7 +509,7 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 
 ---
 
-### 2.5. The `leave` Instruction & 1-Byte Stack Pivot Technique
+### 2.6. The `leave` Instruction & 1-Byte Stack Pivot Technique
 
 When `func_report` executes its epilogue `leave`:
 ```asm
@@ -522,7 +522,7 @@ By computing `pivot = max(buf, block_base)`, the ROP chain is placed at the exac
 
 ---
 
-### 2.6. Finding ROP Gadgets
+### 2.7. Finding ROP Gadgets
 
 Two standard gadgets were identified in `.text`:
 - `0x40124d`: `pop rdi ; ret` $\rightarrow$ populates `0xdeadbeef`
@@ -530,7 +530,7 @@ Two standard gadgets were identified in `.text`:
 
 ---
 
-### 2.7. Technical Pitfall: Why Mid-Function Jumping to `win` Fails
+### 2.8. Technical Pitfall: Why Mid-Function Jumping to `win` Fails
 
 Attempting to jump directly to `0x40129f` (bypassing the `deadbeef` and `cafebabe` checks):
 - Skips the crucial instruction `mov QWORD PTR [rbp-0x58], rax` (which stores the opened `FILE*` pointer).
@@ -539,7 +539,7 @@ Attempting to jump directly to `0x40129f` (bypassing the `deadbeef` and `cafebab
 
 ---
 
-### 2.8. Complete Exploit Script (Local & Remote)
+### 2.9. Complete Exploit Script (Local & Remote)
 
 ```python
 #!/usr/bin/env python3
@@ -593,7 +593,7 @@ if __name__ == "__main__":
 
 ---
 
-### 2.9. Verification with GDB & Execution Transcript
+### 2.10. Verification with GDB & Execution Transcript
 
 ```console
 Breakpoint 2, 0x0000000000401417 in ?? ()
@@ -609,7 +609,7 @@ CSSCTF{Duh_m4t3_1_4m_sl33py}
 
 ---
 
-### 2.10. Summary & Flag
+### 2.11. Summary & Flag
 
 | Property | Detail |
 |---|---|

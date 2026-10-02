@@ -29,11 +29,11 @@ showTableOfContents: true
 
 ### 1.2. Cryptanalysis
 
-#### 1. Clue Analysis:
+#### 1.2.1. Clue Analysis
 - Challenge name: **Chrono** (Greek *Khronos*, meaning time).
 - Attached message: *"The time is always the key to unlock it"* $\rightarrow$ The digits of the timestamp `2026/09/21 14:35:07` serve as the decryption key.
 
-#### 2. Known-Plaintext Attack:
+#### 1.2.2. Known-Plaintext Attack
 The competition flag format always begins with the prefix `CSSCTF{...}`. Aligning this with the first 6 characters of the ciphertext `ESUITO{...}`:
 - Ciphertext ($C$): `E S U I T O`
 - Plaintext ($P$): `C S S C T F`
@@ -51,7 +51,7 @@ Computing the shift $\text{Shift}_i = (C_i - P_i) \pmod{26}$ over the Latin alph
 
 The derived shift sequence: `2, 0, 2, 6, 0, 9` matches the initial digits of the timestamp `20260921143507` perfectly.
 
-#### 3. Encryption Algorithm:
+#### 1.2.3. Encryption Algorithm
 - This is a periodic polyalphabetic shift cipher (**Vigenère Cipher / Polyalphabetic Shift**) keyed with the 14-digit timestamp sequence:
   $$K = [2, 0, 2, 6, 0, 9, 2, 1, 1, 4, 3, 5, 0, 7]$$
 - Only alphabetical characters ($a-z, A-Z$) undergo shifting; special characters (`{`, `}`, `_`) remain unaltered and **do not advance the key pointer**.
@@ -131,7 +131,7 @@ Sample ciphertexts at consecutive seconds:
 2026-09-30T07:07:57Z -> MXBHAQ{ym1_it8pw_t0q9pr2wa_9iegf_v6l0qt}
 ```
 
-#### Ciphertext Structure Analysis (Position-wise Invariance):
+#### 2.2.1. Ciphertext Structure Analysis
 Examining positional characteristics (fixed length of 40 characters) across the 60 samples:
 1. **Fixed Delimiters:** Braces `{` (index 6), `}` (index 39), and underscores `_` (indices 10, 16, 26, 32) **never change**.
 2. **Uppercase Characters:** The first 6 characters (indices 0..5) **are always uppercase** $\rightarrow$ corresponding to the prefix `CSSCTF`.
@@ -146,17 +146,17 @@ Examining positional characteristics (fixed length of 40 characters) across the 
 
 ### 2.3. The Clockwork Mechanism Analysis
 
-#### Step 1: Compute Shift from Prefix `CSSCTF`
+#### 2.3.1. Step 1: Compute Shift from Prefix `CSSCTF`
 Knowing the first 6 characters of the plaintext are always `CSSCTF`, the exact shift $S(t, p)$ at each second $t$ for positions $p \in [0, 5]$ can be computed:
 $$S(t, p) = (C[t][p] - \text{"CSSCTF"}[p]) \pmod{26}$$
 
-#### Step 2: Column Phase Offset Correlation ($\Delta t = 34$)
+#### 2.3.2. Step 2: Column Phase Offset Correlation ($\Delta t = 34$)
 Comparing the time-series shift of column $p$ with the subsequent column $p+1$ reveals a perfect synchronization law:
 $$S(t + 34, p + 1) = S(t, p)$$
 
 *Intuitive interpretation:* Transitioning to the next character in the ciphertext stream is equivalent to delaying the previous character's state by exactly **34 time steps (34 seconds)**.
 
-#### Step 3: Global Period $T = 77$ Seconds
+#### 2.3.3. Step 3: Global Period $T = 77$ Seconds
 Comparing two capture batches collected a few minutes apart (the initial capture and a subsequent live feed) and searching for identical shift vectors across time:
 - The system state repeats identically at time intervals:
   $$\Delta t_1 = 308 \text{ s}, \quad \Delta t_2 = 385 \text{ s}$$
@@ -642,7 +642,7 @@ $$\mathbf{CSSCTF\{tr4c3\_1nv4r14nc3\_4nd\_4c0ust1c\_sp3ctr4\_7f9b8c\}}$$
 
 This challenge belongs to **Multivariate Public Key Cryptography (MPKC)**. The system is designed by hybridizing a **Tame Transformation** with an **Unbalanced Oil and Vinegar (UOV)** signature/encryption layer.
 
-#### 1. System Parameters:
+#### 4.2.1. System Parameters
 ```python
 PARAMETERS = dict(p=17, n=32, m=34, t=16, s=4)
 ```
@@ -653,7 +653,7 @@ PARAMETERS = dict(p=17, n=32, m=34, t=16, s=4)
 - Additional Vinegar variable count: $s = 4$.
 - Oil variable count in UOV layer: $o = n - t - s = 32 - 16 - 4 = 12$.
 
-#### 2. Trapdoor Map Decomposition:
+#### 4.2.2. Trapdoor Map Decomposition
 The private key comprises two invertible affine maps $A_1 \in \mathbb{F}_{17}^{m \times m}, A_2 \in \mathbb{F}_{17}^{n \times n}$ and internal polynomials:
 1. **Input Affine Layer:**
    $$z = A_2 x + b_2 \in \mathbb{F}_{17}^{32}$$
@@ -887,7 +887,7 @@ Implemented in C (`solver.c`):
 
 ### 4.5. Complete Exploit Code (C & Python)
 
-#### 1. High-Performance C Solver (`solver.c`)
+#### 4.5.1. High-Performance C Solver (`solver.c`)
 
 ```c
 #include <stdio.h>
@@ -1012,7 +1012,7 @@ int main(int argc, char **argv) {
 }
 ```
 
-#### 2. End-to-End Decryption Script (`solve_all.py`)
+#### 4.5.2. End-to-End Decryption Script (`solve_all.py`)
 
 ```python
 #!/usr/bin/env python3

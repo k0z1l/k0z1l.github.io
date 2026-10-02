@@ -51,7 +51,7 @@ Extracting the directory hierarchy using Python's `ext4` library exposes the cri
 
 ### 1.3. True Timeline Reconstruction
 
-#### 1. Fabricated Evidence in `relay.log`
+#### 1.3.1. Fabricated Evidence in `relay.log`
 Initial triage attributed the key export to KAI-7 at `03:17` based on `/var/log/nexus/relay.log`:
 ```text
 2101-10-01T03:17:03+10:00 relay-core[1847]: WARN export request accepted principal=KAI-7 resource=emergency-core
@@ -59,7 +59,7 @@ Initial triage attributed the key export to KAI-7 at `03:17` based on `/var/log/
 ```
 The adversary planted or manipulated this application log entry to frame Administrator KAI-7.
 
-#### 2. KAI-7's Alibi in `auth.log`
+#### 1.3.2. KAI-7's Alibi in `auth.log`
 Cross-referencing authentication records in `/var/log/auth.log`:
 - **`02:52:11`**: Administrator `kai` logged in via SSH from IP `10.5.21.99`, assigned Session 4 (`New session 4 of user kai`).
 - **`02:55:01`**: `kai` checked service health: `sudo /bin/systemctl status nexus-relay`.
@@ -76,7 +76,7 @@ Cross-referencing authentication records in `/var/log/auth.log`:
   ```
 - **Conclusion:** KAI-7 disconnected more than 11 minutes prior to 03:17. This provides an absolute alibi.
 
-#### 3. Process Execution Traces in `audit.log`
+#### 1.3.3. Process Execution Traces in `audit.log`
 Linux Auditd captures immutable, kernel-level syscall records with precise Unix Epoch timestamps:
 1. `audit(4157542380)`: `kai` (uid=1001, auid=1001, session=4) executed `systemctl status nexus-relay`.
 2. `audit(4157543482)`: A shell (`sh`) was spawned by `uid=998 (svc-relay)` at `03:11:22`.
@@ -94,7 +94,7 @@ Linux Auditd captures immutable, kernel-level syscall records with precise Unix 
    Decoded proctitle hex: `touch -r /etc/machine-id /var/cache/nexus/.ekey-cache`.  
    *Adversary Intent:* Copy timestamps from `/etc/machine-id` onto `.ekey-cache` to conceal its creation time.
 
-#### 4. Session & Job Metadata in SQLite `metadata.db`
+#### 1.3.4. Session & Job Metadata in SQLite `metadata.db`
 Querying `/var/lib/nexus/metadata.db`:
 - **Table `sessions`:**
   - KAI-7's Session: `session_uuid = b7a1c8d9-23f4-4d8e-9c12-78d1f2a4b679` (terminated at `4157543141` $\approx$ `03:05:41`).
@@ -104,7 +104,7 @@ Querying `/var/lib/nexus/metadata.db`:
   - Created Timestamp: `created_at = 4157543568`.
   - Responsible Session: **`session_uuid = aab0c8b2-f8b1-4f11-9a72-6d8123a1005a`** (`svc-relay`).
 
-#### 5. Timeline Reconciliation Table (True Timeline vs. False Timeline)
+#### 1.3.5. Timeline Reconciliation Table (True Timeline vs. False Timeline)
 
 | Timestamp (UTC) | Epoch | Real Incident Event (True Timeline) | Evidentiary Source | Fabricated Narrative (False Timeline) |
 | :--- | :---: | :--- | :--- | :--- |
@@ -220,7 +220,7 @@ CSSCTF{kai_did_not_do_it}
 
 ### 2.2. Disk Image & Network Packet Reconnaissance (PCAP & Disk Recon)
 
-#### 1. Disk Image Analysis (`KBR17_relay.img`):
+#### 2.2.1. Disk Image Analysis (`KBR17_relay.img`)
 Examining MBR partition table at sector 0:
 - **Partition 0:** Starts at LBA `2048` (offset `1,048,576` bytes), 24 MB. **Linux Ext4** labeled `NEXUS_SYS`.
 - **Partition 1:** Starts at LBA `53248` (offset `27,262,976` bytes), 32 MB, type `0xda` (Non-FS raw data).
@@ -459,14 +459,14 @@ Analyzing the spectrogram and instantaneous frequency across both channels:
 
 ### 3.4. Bell 202 AFSK 1200 Baud Demodulation & UART 8N1 Frame Recovery
 
-#### 1. Matched Filter Demodulator:
+#### 3.4.1. Matched Filter Demodulator
 For each 40-sample window, orthogonal energy projections are calculated:
 $$E_{1200} = \left(\sum x[n] \sin(2\pi \cdot 1200 \cdot n / 48000)\right)^2 + \left(\sum x[n] \cos(2\pi \cdot 1200 \cdot n / 48000)\right)^2$$
 $$E_{2200} = \left(\sum x[n] \sin(2\pi \cdot 2200 \cdot n / 48000)\right)^2 + \left(\sum x[n] \cos(2\pi \cdot 2200 \cdot n / 48000)\right)^2$$
 - If $E_{1200} > E_{2200} \implies \text{Bit} = 1$ (Mark).
 - If $E_{2200} > E_{1200} \implies \text{Bit} = 0$ (Space).
 
-#### 2. Asynchronous UART 8N1 Framing:
+#### 3.4.2. Asynchronous UART 8N1 Framing
 The demodulated bitstream follows standard UART protocol:
 - Idle State: High level $1$ (Mark).
 - Start Bit: Low level $0$ (Space).
@@ -492,7 +492,7 @@ NXPKT|SESSION=NX-771|TYPE=DATA|SEQ=07|RETRY=0|LEN=1024|WIRECRC=3D924BBF|DATA=<ba
 NXPKT|SESSION=NX-771|TYPE=DATA|SEQ=06|RETRY=2|LEN=1024|WIRECRC=2A18C562|DATA=<base64>
 ```
 
-#### Forward Error Correction (RAID-4 / XOR Parity):
+#### 3.5.1. Forward Error Correction (RAID-4 / XOR Parity)
 Session `NX-771` comprises **8 data blocks** (1024 bytes each), divided into two parity groups:
 
 1. **Group A:**

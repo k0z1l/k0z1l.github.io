@@ -51,7 +51,7 @@ The main grid consists of **3 rows**, each containing **8 rectangular boxes** co
 * The 8 boxes in each row represent **8 bits** (1 ASCII byte), evaluated from the Most Significant Bit (MSB) on the left to the Least Significant Bit (LSB) on the right.
 * Each box encloses a pair of lamp circles $[A, B]$. By evaluating the AND logic operation on each pair within a box, we determine the value of the corresponding bit.
 
-##### **Row 1:**
+##### 1.2.2.1. Row 1
 * Box 0: `[●, ○]` $\rightarrow 1 \land 0 = \mathbf{0}$
 * Box 1: `[●, ●]` $\rightarrow 1 \land 1 = \mathbf{1}$
 * Box 2: `[●, ●]` $\rightarrow 1 \land 1 = \mathbf{1}$
@@ -63,7 +63,7 @@ The main grid consists of **3 rows**, each containing **8 rectangular boxes** co
 
 $\Rightarrow$ Binary sequence: `01100011`$_2 = 0\text{x}63 = 99 = \mathbf{'c'}$
 
-##### **Row 2:**
+##### 1.2.2.2. Row 2
 * Box 0: `[○, ●]` $\rightarrow 0 \land 1 = \mathbf{0}$
 * Box 1: `[●, ●]` $\rightarrow 1 \land 1 = \mathbf{1}$
 * Box 2: `[●, ●]` $\rightarrow 1 \land 1 = \mathbf{1}$
@@ -75,7 +75,7 @@ $\Rightarrow$ Binary sequence: `01100011`$_2 = 0\text{x}63 = 99 = \mathbf{'c'}$
 
 $\Rightarrow$ Binary sequence: `01110011`$_2 = 0\text{x}73 = 115 = \mathbf{'s'}$
 
-##### **Row 3:**
+##### 1.2.2.3. Row 3
 * Box 0: `[○, ○]` $\rightarrow 0 \land 0 = \mathbf{0}$
 * Box 1: `[●, ●]` $\rightarrow 1 \land 1 = \mathbf{1}$
 * Box 2: `[●, ●]` $\rightarrow 1 \land 1 = \mathbf{1}$
@@ -503,7 +503,7 @@ $$\mathbf{CSSCTF\{01010000010000010101001101010011\}}$$
 
 ---
 
-### 3.0. TL;DR
+### 3.1. TL;DR
 
 ```
 1. file prince_walk            -> ELF64 PIE, stripped, TUI game 80x24
@@ -525,7 +525,7 @@ $$\mathbf{CSSCTF\{01010000010000010101001101010011\}}$$
 
 ---
 
-### 3.1. File Information & Security Mitigations
+### 3.2. File Information & Security Mitigations
 
 ```console
 $ file prince_walk
@@ -560,7 +560,7 @@ $ ls -l prince_walk
 
 ---
 
-### 3.2. Recon via `strings` — Disclosing Challenge Mechanics
+### 3.3. Recon via `strings` — Disclosing Challenge Mechanics
 
 ```console
 $ strings -n 6 prince_walk
@@ -606,7 +606,7 @@ In the tail of `strings`, an extensive block of pseudorandom-looking data (`mH>3
 
 ---
 
-### 3.3. Function Map (Named by Behavioral Analysis)
+### 3.4. Function Map (Named by Behavioral Analysis)
 
 Locating `main` from `_start` (`lea rdi,[rip+0x7ef] # 1b4e` -> first argument to `__libc_start_main`):
 
@@ -638,9 +638,9 @@ Locating `main` from `_start` (`lea rdi,[rip+0x7ef] # 1b4e` -> first argument to
 
 ---
 
-### 3.4. Runtime Mechanics (Identifying Target Variables)
+### 3.5. Runtime Mechanics (Identifying Target Variables)
 
-#### 4.1 Global Variables Governing Game State
+#### 3.5.1. Global Variables Governing Game State
 
 `.data` (`0x17000`, 24 bytes) contains only three items:
 
@@ -674,7 +674,7 @@ And upon each WASD keystroke (after obstacle verification):
 
 -> **Modifying the two `int32` values at `base+0x17010` and `base+0x17014` instantly teleports the player anywhere.** The game maintains no encryption, hashing, or checksum protection on these variables.
 
-#### 4.2 Procedural World Generation — `world_get(x,y)` @ `0x21a2`
+#### 3.5.2. Procedural World Generation — `world_get(x,y)` @ `0x21a2`
 
 ```c
 char world_get(int64_t x, int64_t y) {
@@ -693,7 +693,7 @@ char world_get(int64_t x, int64_t y) {
 * The table `"......,,TT~#"` @ `0x4450` provides: **6 grass, 2 dirt, 2 trees, 1 water, 1 rock** => **1/6 of all tiles are impassable trees (`T`)**.
 * The player position is overlaid by `render()` with `'O'` (when `dx==0 && dy==0`), while the target is `'*'`.
 
-#### 4.3 Landmark Table (`.data.rel.ro` @ `0x16ba0`) — Where the Flag Resides
+#### 3.5.3. Landmark Table (`.data.rel.ro` @ `0x16ba0`) — Where the Flag Resides
 
 Each record occupies **`0x20` bytes**. There are **2 special records** (hardcoded for the beacon coordinates) and **7 standard coordinate records**:
 
@@ -726,7 +726,7 @@ Achievement array @ `0x16cc0` (`char*[10]`):
 4  The Origin                          9  PINCE Tutorial Failed Successfully
 ```
 
-#### 4.4 "Anti-Cheat" in `landmark_lookup` @ `0x29ca` — Walking Yields NO Flag
+#### 3.5.4. "Anti-Cheat" in `landmark_lookup` @ `0x29ca` — Walking Yields NO Flag
 
 ```c
 rec = NULL;
@@ -761,9 +761,9 @@ print_multiline(body);                                // Print up to 10 lines sp
 
 ---
 
-### 3.5. Flag Generator `gen_flag()` @ `0x2c52` — Detailed Analysis
+### 3.6. Flag Generator `gen_flag()` @ `0x2c52` — Detailed Analysis
 
-#### 5.1 Function Signature & Entry Gate
+#### 3.6.1. Function Signature & Entry Gate
 
 ```asm
 1750: lea rdx,[rbp-0x130]        ; 128-byte stack buffer in render()
@@ -792,7 +792,7 @@ Function prologue:
 
 -> The function **fails immediately at all other coordinates**; only `(999999, 999999)` activates computation (`0xF423F = 999999`).
 
-#### 5.2 Initialization: `state[16]` and `seed`
+#### 3.6.2. Initialization: `state[16]` and `seed`
 
 ```asm
 2cd5: for (i = 0; i <= 15; i++) {                        ; [rbp-0x1ac] = i
@@ -815,7 +815,7 @@ for (int i = 0; i < 16; i++)
 uint32_t seed = mix32( ((rol32(y, 19) + x)) ^ 0xA4093822 );
 ```
 
-#### 5.3 Main Loop: 8320 Iterations, Each Executing One "Opcode"
+#### 3.6.3. Main Loop: 8320 Iterations, Each Executing One "Opcode"
 
 ```asm
 2e05: [rbp-0x1a4] = 0     ; cnt (written byte count)
@@ -848,7 +848,7 @@ Lookup Table: Located at **`.rodata+0xA80` = `0x4a80`**, consisting of 8-byte en
 
 The magic division: `(t * 0xFC0FC0FD) >> 45` precisely implements `t / 8320`. Since `t <= 8320*217 + 3286 = 1,811,815 < 2^21`, the expression simplifies identically to `idx = t % 8320`.
 
-#### 5.4 Eight "Opcodes" (`switch (k1 & 0xFF)`)
+#### 3.6.4. Eight "Opcodes" (`switch (k1 & 0xFF)`)
 
 | `k1 & 0xFF` | Address | Operation | Notes |
 |---|---|---|---|
@@ -880,7 +880,7 @@ Branch `0x83` — The sole output channel:
 * Counter `cnt` tracks the emitted payload byte count.
 * Only 1 in 8 opcodes writes data, averaging ~1 byte per 65 iterations.
 
-#### 5.5 Final Verification & Result Packaging
+#### 3.6.5. Final Verification & Result Packaging
 
 ```asm
 326b: cmp [rbp-0x1a4],0x80 ; jne fail      ; must have collected EXACTLY 128 bytes
@@ -909,9 +909,9 @@ For the correct solution: $n = 72$, $	ext{chk} = 	ext{0x763CC96C}$, and recomput
 
 ---
 
-### 3.6. Solution Approaches
+### 3.7. Solution Approaches
 
-#### 6.1 Method 1 — "Intended Approach": Attach Debugger and Edit Memory
+#### 3.7.1. Method 1 — "Intended Approach": Attach Debugger and Edit Memory
 
 Run the game in a terminal ($\ge 58\times 24$), then execute:
 
@@ -964,7 +964,7 @@ ACHIEVEMENTS  1 / 10
 ...
 ```
 
-#### 6.2 Method 2 — Offline Emulation: Reimplementing `gen_flag()` in Python
+#### 3.7.2. Method 2 — Offline Emulation: Reimplementing `gen_flag()` in Python
 
 Complete solver script (`solve.py`):
 
@@ -1037,7 +1037,7 @@ CSSCTF{P12INC3_0R_P1NC3?}
 
 -> **Flag: `CSSCTF{P12INC3_0R_P1NC3?}`**
 
-#### 6.3 Method 3 — Direct In-Memory Invocation of `gen_flag()` via GDB
+#### 3.7.3. Method 3 — Direct In-Memory Invocation of `gen_flag()` via GDB
 
 Using `.bss` (writable, ~160 bytes) as an output buffer:
 
@@ -1060,7 +1060,7 @@ CSSCTF{P12INC3_0R_P1NC3?}"
 
 ---
 
-### 3.7. Verification & Cross-Referencing
+### 3.8. Verification & Cross-Referencing
 
 | Step | Method | Result |
 |---|---|---|
@@ -1102,7 +1102,7 @@ os.write(fd, b'q'); time.sleep(0.3); os.kill(pid, 9)
 
 ---
 
-### 3.8. Key Takeaways & Pitfalls
+### 3.9. Key Takeaways & Pitfalls
 
 1. **Section Alignment Offset:** `.data.rel.ro` differs by `0x1000` from its virtual address (`vaddr 0x16ba0` <-> `offset 0x15ba0`). Binary readers parsing tables must adjust file offsets accordingly.
 2. **Lookup Table Placement:** The 8320-entry table resides directly at `.rodata` offset `0x4a80` (`0x4a80 + 8320*8 = 0x14E80`). Although `strings` renders it as junk, it constitutes the execution microcode of `gen_flag()`.
@@ -1117,7 +1117,7 @@ os.write(fd, b'q'); time.sleep(0.3); os.kill(pid, 9)
 
 ---
 
-### 3.9. Appendices
+### 3.10. Appendices
 
 **A. Landmark / Achievement Strings in Memory:**
 
@@ -1168,7 +1168,7 @@ Overrides: `'O'` = player, `'*'` = beacon `(999999,999999)`, `','` = landmark si
 
 ---
 
-### 4.0. TL;DR
+### 4.1. TL;DR
 
 ```
 1. file flappy_board      -> ELF64 PIE, stripped, libX11 + libcurl, hardcoded server
@@ -1201,7 +1201,7 @@ Overrides: `'O'` = player, `'*'` = beacon `(999999,999999)`, `','` = landmark si
 
 ---
 
-### 4.1. File Information & Runtime Environment
+### 4.2. File Information & Runtime Environment
 
 ```console
 $ file flappy_board
@@ -1240,7 +1240,7 @@ Function `is_playing()` @ `0x2e93` returns `true` if and only if `state == 1 || 
 
 ---
 
-### 4.2. Function Map (Behavioral Analysis)
+### 4.3. Function Map (Behavioral Analysis)
 
 | Address | Function Name | Role & Implementation |
 |---|---|---|
@@ -1269,7 +1269,7 @@ Function `is_playing()` @ `0x2e93` returns `true` if and only if `state == 1 || 
 
 ---
 
-### 4.3. Global Memory Layout
+### 4.4. Global Memory Layout
 
 | Address | Type | Meaning |
 |---|---|---|
@@ -1311,7 +1311,7 @@ Function `is_playing()` @ `0x2e93` returns `true` if and only if `state == 1 || 
 
 ---
 
-### 4.4. Lifecycle of a Challenge Round
+### 4.5. Lifecycle of a Challenge Round
 
 ```
 [State 0] FLIGHT SCHOOL
@@ -1340,9 +1340,9 @@ Two critical rules emerge from this flow:
 
 ---
 
-### 4.5. Reverse Engineering the Physics Simulation (`0x6cfe`, `0x6c0f`, `0x6b88`, `0x6bc6`)
+### 4.6. Reverse Engineering the Physics Simulation (`0x6cfe`, `0x6c0f`, `0x6b88`, `0x6bc6`)
 
-#### 5.1 PRNG `0x6b88` — xorshift32
+#### 4.6.1. PRNG `0x6b88` — xorshift32
 
 ```c
 uint32_t rng(uint32_t *s) {
@@ -1352,7 +1352,7 @@ uint32_t rng(uint32_t *s) {
 }
 ```
 
-#### 5.2 Obstacle Opening Generation `0x6bc6` — `125 + rng() % 231`
+#### 4.6.2. Obstacle Opening Generation `0x6bc6` — `125 + rng() % 231`
 
 The compiler replaces `% 231` with an optimized multiplication sequence (`mul 0x1BB4A405 / shr 32 / sub / shr 1 / add / shr 7`). We replicate the exact integer arithmetic:
 
@@ -1365,7 +1365,7 @@ def rng_mod231(x):
     return (edx - (eax * 0xe7 & 0xFFFFFFFF)) & 0xFFFFFFFF
 ```
 
-#### 5.3 World Initialization `0x6c0f`
+#### 4.6.3. World Initialization `0x6c0f`
 
 ```c
 memset(world, 0, 0x54);
@@ -1378,7 +1378,7 @@ for (i = 0; i < 5; i++) {
 }
 ```
 
-#### 5.4 Physics Tick `0x6cfe`
+#### 4.6.4. Physics Tick `0x6cfe`
 
 ```c
 int world_step(World *w, int flap) {
@@ -1446,7 +1446,7 @@ int world_step(World *w, int flap) {
 
 ---
 
-### 4.6. HTTP Protocol Specification
+### 4.7. HTTP Protocol Specification
 
 | Endpoint | HTTP Method | Body Content | Response Format |
 |---|---|---|---|
@@ -1476,15 +1476,15 @@ Challenge round requirements scale dynamically:
 
 ---
 
-### 4.7. Solution Methodology
+### 4.8. Solution Methodology
 
-#### 7.1 Step 1 — Building the Simulator (`ctl.py`)
+#### 4.8.1. Step 1 — Building the Simulator (`ctl.py`)
 
 Port the physics routine from Section 5 directly into Python. Implement the control law:
 `aim = next_pipe.gapY + 38px`, triggering a flap when `y >= aim`.
 Validation across 300 random seeds for all 3 score tiers yielded a **100% success rate**, with completion ticks matching theory ($pprox 1196.6$ ticks for 10 points).
 
-#### 7.2 Step 2 — Validation via Numeric Oracle (`/api/practice/check`)
+#### 4.8.2. Step 2 — Validation via Numeric Oracle (`/api/practice/check`)
 
 Rather than guessing physics parameters, we use the server's practice evaluation endpoint as an oracle:
 
@@ -1506,7 +1506,7 @@ Oracle verification results across independent test runs:
 
 -> **The RNG sequence, pipe generation, collision thresholds, and scoring gates match the server implementation with bit-level precision.**
 
-#### 7.3 Step 3 — Validation via Live Client (`/proc/<pid>/mem`)
+#### 4.8.3. Step 3 — Validation via Live Client (`/proc/<pid>/mem`)
 
 To verify tick timing and replay formatting against the official binary:
 
@@ -1520,7 +1520,7 @@ mem.seek(BASE + 0x16f01); mem.write(b"") # Emulate flap keystroke
 
 Comparing trajectory vertical coordinates at ticks 300, 600, and 900 between live memory and the Python simulator demonstrated a **0.0 px discrepancy**, proving mathematical equivalence.
 
-#### 7.4 Step 4 — Complete Automated Solver
+#### 4.8.4. Step 4 — Complete Automated Solver
 
 Full solver implementation (`flappy_solver.py`):
 
@@ -1666,7 +1666,7 @@ Total replay computation time spanned $pprox 6483$ simulation ticks ($pprox 10
 
 ---
 
-### 4.8. Failed Approaches & Dead Ends (Post-Mortem)
+### 4.9. Failed Approaches & Dead Ends (Post-Mortem)
 
 Prior to discovering the `POST`/`GET` ambiguity on `/api/attempt`, submissions consistently failed with `Replay collides with an obstacle.` despite the practice oracle confirming 100% physics accuracy. The following failed hypotheses were systematically tested and eliminated:
 
@@ -1683,9 +1683,9 @@ The breakthrough arrived by observing that `/api/practice/check` accepted identi
 
 ---
 
-### 4.9. The Core Trap: `POST` vs `GET` on `/api/attempt`
+### 4.10. The Core Trap: `POST` vs `GET` on `/api/attempt`
 
-#### 9.1 Discovery via Logging Reverse Proxy
+#### 4.10.1. Discovery via Logging Reverse Proxy
 
 Because server-side packet captures were unavailable, we utilized the client's `--server` argument whitelist (`strcmp(url, "http://34.116.80.78:8765") == 0` or prefixes `https://`, `http://127.0.0.1:`, `http://localhost:`) to route official game client traffic through a local logging proxy.
 
@@ -1703,7 +1703,7 @@ Recorded traffic capture:
 [  27.77] <-- 200 round=2&seed=2635025733&...&target=20&wait_seconds=360
 ```
 
-#### 9.2 Disassembly Analysis
+#### 4.10.2. Disassembly Analysis
 
 Function `0x41ed` configures `CURLOPT_POSTFIELDS` **only when the body pointer is non-NULL**:
 
@@ -1726,7 +1726,7 @@ Switching the second query to a standard `GET` maintains session synchronization
 
 ---
 
-### 4.10. Final Verification & Results
+### 4.11. Final Verification & Results
 
 * Executing the solver across multiple independent runs with distinct seeds confirmed the static flag: `CSSCTF{birdddd}` (URL-decoded from `CSSCTF%7Bbirdddd%7D`).
 * The flag is issued directly by the challenge server upon clearing Round 3.
@@ -1737,7 +1737,7 @@ Switching the second query to a standard `GET` maintains session synchronization
 
 ---
 
-### 4.11. Key Takeaways & Pitfalls
+### 4.12. Key Takeaways & Pitfalls
 
 1. **Decouple Physics from Protocol:** In networked reverse engineering challenges, isolate the game engine from transport semantics. Physics models can be proven mathematically, whereas protocol bugs often hide behind misleading error strings.
 2. **Leverage Intermediate Oracles:** Endpoints like `/api/practice/check` serve as ground-truth evaluators to validate game simulation logic before tackling multi-round challenges.
@@ -1749,9 +1749,9 @@ Switching the second query to a standard `GET` maintains session synchronization
 
 ---
 
-### 4.12. Appendices
+### 4.13. Appendices
 
-#### 4.12.A. Quick Reproduction Commands
+#### 4.13.1. Quick Reproduction Commands
 
 ```console
 $ file flappy_board && strings -n 5 flappy_board | head -120
@@ -1760,7 +1760,7 @@ $ objdump -d -M intel flappy_board > fb.asm      # Inspect 0x6cfe / 0x6c0f / 0x6
 $ python3 flappy_solver.py                        # Solves all 3 rounds and extracts flag
 ```
 
-#### 4.12.B. Live Client Execution & Headless Capture
+#### 4.13.2. Live Client Execution & Headless Capture
 
 ```console
 $ Xvfb :99 -screen 0 1024x900x24 &
@@ -1769,14 +1769,14 @@ $ DISPLAY=:99 ./flappy_board --snapshot out.ppm    # Captures P6 screenshot of c
 $ DISPLAY=:99 ./flappy_board --server http://127.0.0.1:8123   # Routes traffic via debug proxy
 ```
 
-#### 4.12.C. Challenge Configuration Constants (`/api/attempt`)
+#### 4.13.3. Challenge Configuration Constants (`/api/attempt`)
 
 ```
 round=1  seed=<random u32>   remaining_seconds=1200  limit_seconds=1200
 target=10   wait_seconds=180      (Round 2: 20/360, Round 3: 30/600)
 ```
 
-#### 4.12.D. Attack Surface Analysis
+#### 4.13.4. Attack Surface Analysis
 
 * Snapshot functionality (`--snapshot`) extracts PPM buffers locally via `XGetImage` without network side effects.
 * Header formatting (`Authorization: Bearer %s`) utilizes `snprintf` bounded to 64 hexadecimal characters, preventing header injection.
