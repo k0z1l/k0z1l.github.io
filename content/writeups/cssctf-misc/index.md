@@ -41,16 +41,15 @@ showTableOfContents: true
    - [3.5. Modulo 6 Flag Extraction & Uniqueness Verification](#35-modulo-6-flag-extraction--uniqueness-verification)
    - [3.6. Annotated Exploit Script (Python)](#36-annotated-exploit-script-python-1)
    - [3.7. Flag](#37-flag)
-4. [Summary of A Star Trail Series](#4-summary-of-a-star-trail-series)
-5. [The Astrolabe Overwrite (Ouroboros Singularity)](#5-the-astrolabe-overwrite-ouroboros-singularity)
-   - [5.1. Challenge Description & Context](#51-challenge-description--context)
-   - [5.2. Architecture Analysis of Ouroboros VM (nexus_core)](#52-architecture-analysis-of-ouroboros-vm-nexus_core)
-   - [5.3. Self-Modifying Bytecode Mechanism & Permutation Table](#53-self-modifying-bytecode-mechanism--permutation-table)
-   - [5.4. Deciphering the Three Rings of the Astrolabe](#54-deciphering-the-three-rings-of-the-astrolabe)
-   - [5.5. Mathematical Modeling & Equation System Solver](#55-mathematical-modeling--equation-system-solver)
-   - [5.6. Payload Engineering & Cycle Budgeting](#56-payload-engineering--cycle-budgeting)
-   - [5.7. Full Exploit Source Code (C Solver & Python Exploit)](#57-full-exploit-source-code-c-solver--python-exploit)
-   - [5.8. Flag & Key Takeaways](#58-flag--key-takeaways)
+4. [The Astrolabe Overwrite (Ouroboros Singularity)](#4-the-astrolabe-overwrite-ouroboros-singularity)
+   - [4.1. Challenge Description & Context](#41-challenge-description--context)
+   - [4.2. Architecture Analysis of Ouroboros VM (nexus_core)](#42-architecture-analysis-of-ouroboros-vm-nexus_core)
+   - [4.3. Self-Modifying Bytecode Mechanism & Permutation Table](#43-self-modifying-bytecode-mechanism--permutation-table)
+   - [4.4. Deciphering the Three Rings of the Astrolabe](#44-deciphering-the-three-rings-of-the-astrolabe)
+   - [4.5. Mathematical Modeling & Equation System Solver](#45-mathematical-modeling--equation-system-solver)
+   - [4.6. Payload Engineering & Cycle Budgeting](#46-payload-engineering--cycle-budgeting)
+   - [4.7. Full Exploit Source Code (C Solver & Python Exploit)](#47-full-exploit-source-code-c-solver--python-exploit)
+   - [4.8. Flag & Key Takeaways](#48-flag--key-takeaways)
 
 ---
 
@@ -609,28 +608,10 @@ $$\mathbf{CSSCTF\{itr6G8jMTXbOjCmClmMElZxQLqSXqnf53z1Z73liVas3ypn5CJZ4ZGlqZo6Fkc
 
 ---
 
-## 4. Summary of A Star Trail Series
 
-| Criteria | A Star Trail 1 | A Star Trail 2 | A Star Trail 3 |
-| :--- | :--- | :--- | :--- |
-| **Graph Scale** | Small (13 vertices, 20 hand-drawn edges) | Large (10,000 vertices, 29,972 edges) | Very Large (25,000 vertices, 74,970 edges) |
-| **Link State** | Explicit travel days provided on image | Explicit Wikilinks `[[...]]` | Completely destroyed (`[CORRUPTED]`) |
-| **Reconstruction Method** | Manual reading from image | Regex extraction from Markdown files | **Delaunay Triangulation** from 2D coordinates |
-| **Edge Weight** | Travel days directly labeled | Euclidean distance | Euclidean distance |
-| **Pathfinding** | Dijkstra on small graph | Dijkstra / A* on 10,000-node graph | Dijkstra on 25,000-node Delaunay graph |
-| **Flag Generation** | First character of intermediate waypoints + days | Modulo 6 across all waypoints (readable English text) | Modulo 6 across all waypoints (196-char pseudo-random string) |
+## 4. The Astrolabe Overwrite (Ouroboros Singularity)
 
-**Key Takeaways:**
-1. **Series Correlation in CTF Challenges:** Multi-part challenges (Part 1 $\to$ Part 2 $\to$ Part 3) feature rigorous logical inheritance. The decoded flag of Part 2 directly revealed the exact mathematical algorithm needed to recover the corrupted data in Part 3.
-2. **Computational Geometry in Security Applications:** Delaunay triangulations and Voronoi diagrams extend beyond computer graphics into wireless sensor networks (WSN), geographic routing optimization, and modern algorithmic CTF puzzles.
-3. **Big Data Vectorization Performance:** Utilizing NumPy vectorization and SciPy's $\mathcal{O}(N \log N)$ Delaunay algorithm enables processing 25,000 coordinates and building nearly 75,000 edges in under one second, rather than quadratic or cubic brute force.
-4. **Solution Uniqueness Verification:** When graph pathfinding generates flags exceeding hundreds of characters, verifying shortest path uniqueness (`nx.all_shortest_paths`) guarantees unambiguous flag submission.
-
----
-
-## 5. The Astrolabe Overwrite (Ouroboros Singularity)
-
-### 5.1. Challenge Description & Context
+### 4.1. Challenge Description & Context
 
 > **Challenge Description:**  
 > *When "The Severance" hit in 2100, the Kuiper Relay wasn't abandoned. Instead, it was locked into a loop governed by the Council. To prevent manual takeover, the council's instruction consumes and rewrites its own memory.*  
@@ -658,7 +639,7 @@ The narrative outlines several concrete technical requirements:
 
 ---
 
-### 5.2. Architecture Analysis of Ouroboros VM (`nexus_core`)
+### 4.2. Architecture Analysis of Ouroboros VM (`nexus_core`)
 
 #### Binary Reconnaissance
 Inspecting the executable `nexus_core`:
@@ -719,7 +700,7 @@ Layout mapping of the 536-byte VM State structure:
 
 ---
 
-### 5.3. Self-Modifying Bytecode Mechanism & Permutation Table
+### 4.3. Self-Modifying Bytecode Mechanism & Permutation Table
 
 #### Fetch - Decode - Execute Pipeline
 Each instruction spans exactly **4 bytes** in `MEM` at `PC`:
@@ -764,7 +745,7 @@ Importantly, if we enforce $R_0 \equiv R_1 \pmod 8$ (e.g., keeping both equal to
 
 ---
 
-### 5.4. Deciphering the Three Rings of the Astrolabe
+### 4.4. Deciphering the Three Rings of the Astrolabe
 
 The Astrolabe verification logic resides in the handler for opcode `0x7f` (offsets `0x1590` to `0x1960`).
 
@@ -881,7 +862,7 @@ $$E: y^2 \equiv x^3 + 17x + 43 \pmod{65521}$$
 
 ---
 
-### 5.5. Mathematical Modeling & Equation System Solver
+### 4.5. Mathematical Modeling & Equation System Solver
 
 #### Critical Breakthrough
 The system of 6 equations is **completely independent of `BEACON`**.  
@@ -921,7 +902,7 @@ $$\mathbf{X = [37319, 30037, 44410, 40061]}$$
 
 ---
 
-### 5.6. Payload Engineering & Cycle Budgeting
+### 4.6. Payload Engineering & Cycle Budgeting
 
 To satisfy all architectural constraints:
 1. **Target Register States:**
@@ -944,7 +925,7 @@ To satisfy all architectural constraints:
 
 ---
 
-### 5.7. Full Exploit Source Code (C Solver & Python Exploit)
+### 4.7. Full Exploit Source Code (C Solver & Python Exploit)
 
 #### 1. OpenMP C Solver (`solve.c`)
 ```c
@@ -1210,7 +1191,7 @@ if __name__ == "__main__":
 
 ---
 
-### 5.8. Flag & Key Takeaways
+### 4.8. Flag & Key Takeaways
 
 #### Server Execution Log:
 ```text
