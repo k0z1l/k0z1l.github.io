@@ -11,9 +11,27 @@ showTableOfContents: true
 
 # [CSSCTF] Blockchain Challenges Writeup
 
+**Author:** k0z1l  
+**Category:** Blockchain (Solidity / EVM)  
+**Flag Format:** `CSSCTF{...}`  
+
+---
+
 ## Table of Contents
 1. [Gateway (Part 1)](#1-gateway-part-1)
+   - [1.1. Challenge Description & Contracts](#11-challenge-description--contracts)
+   - [1.2. Background Fundamentals](#12-background-fundamentals)
+   - [1.3. Analysis: The Three Doors and Solutions](#13-analysis-the-three-doors-and-solutions)
+   - [1.4. Practical Reconnaissance and Verification](#14-practical-reconnaissance-and-verification)
+   - [1.5. Exploitation Approaches](#15-exploitation-approaches)
+   - [1.6. Reproduction Commands & Flag Capture](#16-reproduction-commands--flag-capture)
 2. [Lottery (Part 2)](#2-lottery-part-2)
+   - [2.1. Challenge Description & Contracts](#21-challenge-description--contracts)
+   - [2.2. Core Principles & EVM Randomness Mechanics](#22-core-principles--evm-randomness-mechanics)
+   - [2.3. Instance Reconnaissance](#23-instance-reconnaissance)
+   - [2.4. Exploitation — Path A: Internal Keccak Recomputation](#24-exploitation--path-a-internal-keccak-recomputation)
+   - [2.5. Exploitation — Path B: Deploying Attack Contract via Python](#25-exploitation--path-b-deploying-attack-contract-via-python)
+   - [2.6. Verification & Flag Capture](#26-verification--flag-capture)
 
 ---
 
@@ -36,7 +54,7 @@ showTableOfContents: true
 
 ---
 
-### 1.1. Challenge Description
+### 1.1. Challenge Description & Contracts
 
 > "The reboot has awakened an abandoned UPDC checkpoint guarding access to the Quantum Nexus
 > Network. Its emergency gate still demands three proofs of clearance, but the officers who
@@ -45,7 +63,7 @@ showTableOfContents: true
 
 The narrative regarding the UPDC checkpoint, Quantum Nexus, and The Severance provides background lore. The core mechanics reside strictly in the **three doors** defined in the contract.
 
-### `Gate.sol`
+#### 1.1.1. `Gate.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -86,7 +104,7 @@ contract Gate {
 }
 ```
 
-### `Setup.sol`
+#### 1.1.2. `Setup.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -153,7 +171,7 @@ pw = keccak(text="gateway to the flag")            # Equivalent to encodePacked
 # pw.hex() = 90cd83d75da724f03cbd4c1bd73dbfca4325ab5c4930082484b6f6aa9234d70b
 ```
 
-### 2.5 Execution Environment
+#### 1.2.5. Execution Environment
 
 The target runs on **Anvil** (`web3_clientVersion` -> `anvil/v1.8.3`): transactions auto-mine immediately without block wait times. Each instance provides a dedicated EOA funded with 5,000 ETH, making gas limits negligible. Instances auto-terminate after 30 minutes.
 
@@ -177,7 +195,7 @@ The target runs on **Anvil** (`web3_clientVersion` -> `anvil/v1.8.3`): transacti
 
 ### 1.4. Practical Reconnaissance and Verification
 
-### 4.1 Instance Allocation
+#### 1.4.1. Instance Allocation
 
 ```
 $ nc 34.116.80.78 31337
@@ -198,7 +216,7 @@ setup contract: 0x...
 
 The automation script `gate_launch.py` (pure sockets) manages the workflow: if the server reports `An instance is already running!`, it selects action `2` (kill) before selecting `1` (launch), then extracts `uuid`, `rpc`, `private key`, and `setup` via regex into `/tmp/gate_cfg.json`.
 
-### 4.2 Inspecting On-Chain State
+#### 1.4.2. Inspecting On-Chain State
 
 ```
 [*] ticket : TEST
@@ -216,7 +234,7 @@ The automation script `gate_launch.py` (pure sockets) manages the workflow: if t
 
 The on-chain deployment matches the source code, and the password matches our offline computation.
 
-### 4.3 Storage Layout Trap: Misleading Source Comments
+#### 1.4.3. Storage Layout Trap: Misleading Source Comments
 
 `Gate.sol` includes the following comments:
 
@@ -265,9 +283,9 @@ Relying on the source comments and inspecting `eth_getStorageAt(gate, 4)` to che
 
 ---
 
-### 1.5. Exploitation
+### 1.5. Exploitation Approaches
 
-### 5.1 Path A — Single-Transaction Solve Across All Three Doors
+#### 1.5.1. Path A — Dedicated GateEnter Attack Contract
 
 `GateAttack.sol`:
 
@@ -322,7 +340,7 @@ Execution output:
     isSolved() : True
 ```
 
-### 5.2 Path B — Minimal Approach: Contract for Door 1 Only, EOA for Doors 2 and 3
+#### 1.5.2. Path B — Minimal Approach (Intermediary for Door 1 Only)
 
 `GateEnter.sol`:
 
@@ -353,7 +371,7 @@ Both paths succeed, demonstrating that only Door 1 actually restricts direct EOA
 
 ---
 
-### 1.6. Flag Capture
+### 1.6. Reproduction Commands & Flag Capture
 
 With `isSolved() == true`:
 
@@ -373,7 +391,7 @@ CSSCTF{CSS{B451C_BL0CKCH41N_5K1LL5}}
 
 ---
 
-### 1.7. Pitfalls, Common Errors, and Lessons Learned
+#### 1.6.1. Pitfalls & Common Errors
 
 **Challenge Traps:**
 
@@ -402,7 +420,7 @@ CSSCTF{CSS{B451C_BL0CKCH41N_5K1LL5}}
 
 ---
 
-### 1.8. Appendix — Reproduction Files and Commands
+#### 1.6.2. Appendix — Reproduction Files
 
 ```
 Downloads/CSSCTF/BLOCKCHAIN/
@@ -456,7 +474,7 @@ printf '3\n<TEAM_NAME>\n' | nc 34.116.80.78 31337
 
 ---
 
-### 2.1. Challenge Description
+### 2.1. Challenge Description & Contracts
 
 > "Beyond the checkpoint, a Beltway Bandits gambling terminal has resumed broadcasting:
 > *Ten wins in a row. One fortune. No second chances.* Once used to distribute stolen credits,
@@ -465,7 +483,7 @@ printf '3\n<TEAM_NAME>\n' | nc 34.116.80.78 31337
 
 The objective is simple: **win the lottery 10 consecutive times**.
 
-### `Lottery.sol`
+#### 2.1.1. `Lottery.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -510,7 +528,7 @@ contract Lottery {
 }
 ```
 
-### `Setup.sol`
+#### 2.1.2. `Setup.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -542,9 +560,9 @@ All three values are **invariant for all calls executed within the same block**.
 
 ---
 
-### 2.2. Core Principles and Fundamentals
+### 2.2. Core Principles & EVM Randomness Mechanics
 
-### 2.1 Block-Derived Randomness Is Deterministic to Smart Contracts
+#### 2.2.1. Block-Derived Randomness Is Deterministic to Smart Contracts
 
 In a transaction:
 
@@ -555,7 +573,7 @@ EOA ──tx──► Lottery.guess(guess_value)
 
 All input variables are fixed as soon as the block is created. If an attacker contract computes the identical expression within the same transaction, it receives the exact value that `guess()` will evaluate against.
 
-### 2.2 Why EOAs Cannot Precompute the Target
+#### 2.2.2. Why EOAs Cannot Precompute the Target
 
 When signing a transaction from an EOA, transaction fields must be committed before the block including it is mined. The upcoming block's timestamp and `prevrandao` are unknown in advance. Furthermore, under Anvil's automine mechanism (1 transaction per block), each new transaction is mined into a new block where `blockhash(n-1)`, `block.timestamp`, and `prevrandao` differ from the preceding block.
 
@@ -563,7 +581,7 @@ This was empirically verified (Section 5): computing a guess from head block dat
 
 **Critical Takeaway:** The "10 wins in a row" requirement restricts only EOAs. A smart contract can invoke `guess()` **10 times within a single transaction**. Because all 10 calls share the exact same block state, `random()` evaluates to the **identical value**, achieving a 10/10 streak.
 
-### 2.3 Mechanics of `abi.encodePacked(a, b, c)`
+#### 2.2.3. Mechanics of `abi.encodePacked(a, b, c)`
 
 `encodePacked` concatenates raw byte arrays without padding. With `bytes32` for `blockhash`, 32 bytes for `block.timestamp`, and 32 bytes for `block.difficulty`, the result is a 96-byte payload: `parentHash || ts || prevrandao`.
 
@@ -580,7 +598,7 @@ def target_of_block(parent_hash: bytes, ts: int, prevrandao: int) -> int:
 
 > **Note on Offline Verification:** To verify offline, extract the mined block: set `parent_hash` to the hash of block `n - 1`, `ts` to block `n`'s timestamp, and `prevrandao` to block `n`'s **`mixHash`**. Do not use the RPC `difficulty` field (see Section 2.4).
 
-### 2.4 `block.difficulty` on EVM Differs from RPC `difficulty`
+#### 2.2.4. `block.difficulty` on EVM Differs from RPC `difficulty`
 
 Following The Merge, EVM opcode `DIFFICULTY` (0x44) maps to `PREVRANDAO`. Compilers for Paris or newer emit the following notice:
 
@@ -602,7 +620,7 @@ Measured on-chain via `Probe.sol` (`eth_call`):
 
 The value perceived by the EVM is the block's `mixHash` (`prevrandao`). The `difficulty` field returned by `eth_getBlockByNumber` is legacy metadata (`0`), which yields incorrect results if used for offline calculations (`68` vs actual target `74`).
 
-### 2.5 Ten Consecutive Guesses in a Single Transaction
+#### 2.2.5. Ten Consecutive Guesses in a Single Transaction
 
 ```solidity
 for (uint256 i = 0; i < 10; i++) { lottery.guess(roll()); }
@@ -709,7 +727,7 @@ assert rc.status == 1
 
 ---
 
-### 2.5. Exploitation — Path B: Querying `lottery.random()` as an Oracle
+### 2.5. Exploitation — Path B: Deploying Attack Contract via Python
 
 Because `random()` is declared `public view`, an attacker contract can call the target contract directly to obtain the target number:
 
@@ -779,7 +797,7 @@ isSolved (after) = True
 [nc action 3] CSS{U5E_4_R4ND0M_FUNCT10N}
 ```
 
-While Path A and Path B executed in different blocks and produced different targets (`65` vs `87`), all 10 calls within each respective block evaluated to the identical number.
+### 2.5. Exploitation — Path B: Deploying Attack Contract via Python
 
 Submitted Flag:
 
@@ -861,3 +879,4 @@ printf '3\n<TEAM_NAME>\n' | nc 34.116.80.78 31338
 ---
 
 **Summary:** The `random()` function is deterministic because it relies on `blockhash(n-1) || timestamp || prevrandao`, which are invariant throughout a transaction. An attacker contract calling `guess()` 10 times in a single transaction reliably wins 10/10 rounds and registers as the winner.
+
