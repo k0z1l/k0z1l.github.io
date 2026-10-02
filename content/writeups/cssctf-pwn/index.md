@@ -17,41 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Dockside Ticket Office](#1-dockside-ticket-office)
-   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
-   - [1.1. File Information & Security Mitigations](#11-file-information--security-mitigations)
-   - [1.2. Symbol Table](#12-symbol-table)
-   - [1.3. Reverse Engineering & Function Analysis](#13-reverse-engineering--function-analysis)
-   - [1.4. Use-After-Free Vulnerability Analysis](#14-use-after-free-vulnerability-analysis)
-   - [1.5. Exploitation Primitive & Strategy](#15-exploitation-primitive--strategy)
-   - [1.6. Solution Methods & Exploit Scripts](#16-solution-methods--exploit-scripts)
-   - [1.7. Technical Pitfall: Stdio Buffering vs. `read(2)` Syscall](#17-technical-pitfall-stdio-buffering-vs-read2-syscall)
-   - [1.8. Verification with GDB](#18-verification-with-gdb)
-   - [1.9. Summary & Flag](#19-summary--flag)
-2. [Maintenance Log](#2-maintenance-log)
-   - [2.0. TL;DR & Exploitation Summary](#20-tldr--exploitation-summary)
-   - [2.1. File Information & Security Mitigations](#21-file-information--security-mitigations)
-   - [2.2. Function Map & String Analysis](#22-function-map--string-analysis)
-   - [2.3. Annotated Disassembly](#23-annotated-disassembly)
-   - [2.4. Stack Layout Analysis & Memory Offsets](#24-stack-layout-analysis--memory-offsets)
-   - [2.5. The `leave` Instruction & 1-Byte Stack Pivot Technique](#25-the-leave-instruction--1-byte-stack-pivot-technique)
-   - [2.6. Finding ROP Gadgets](#26-finding-rop-gadgets)
-   - [2.7. Technical Pitfall: Why Mid-Function Jumping to `win` Fails](#27-technical-pitfall-why-mid-function-jumping-to-win-fails)
-   - [2.8. Complete Exploit Script (Local & Remote)](#28-complete-exploit-script-local--remote)
-   - [2.9. Verification with GDB & Execution Transcript](#29-verification-with-gdb--execution-transcript)
-   - [2.10. Summary & Flag](#210-summary--flag)
-3. [Kuiper Belt Relay Core](#3-kuiper-belt-relay-core)
-   - [3.1. Challenge Description & Provided Assets](#31-challenge-description--provided-assets)
-   - [3.2. Source Code & Vulnerability Analysis](#32-source-code--vulnerability-analysis)
-   - [3.3. Stack Memory Layout & Ret2win Technique](#33-stack-memory-layout--ret2win-technique)
-   - [3.4. Target Discovery Method](#34-target-discovery-method)
-   - [3.5. Complete Exploit Code (Python / Pwntools)](#35-complete-exploit-code-python--pwntools)
-   - [3.6. Execution Results & Flag](#36-execution-results--flag)
-   - [3.7. Remediation](#37-remediation)
-
----
-
 ## 1. Dockside Ticket Office
 
 > **Flag:** `CSSCTF{us3_4ft3r_fr33_d0cks1d3}`  

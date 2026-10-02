@@ -17,21 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Server Juice](#1-server-juice)
-   - [1.1. Description & Hints](#11-description--hints)
-   - [1.2. Investigation & Solution](#12-investigation--solution)
-2. [Dead Faction Servers](#2-dead-faction-servers)
-   - [2.1. Description & Clues](#21-description--clues)
-   - [2.2. Investigation & Solution](#22-investigation--solution)
-     - [2.2.1. Inspect the GitHub Profile](#221-inspect-the-github-profile)
-     - [2.2.2. Identify and Discard Decoys](#222-identify-and-discard-decoys)
-     - [2.2.3. Locate Part 1 (Git Commit History)](#223-locate-part-1-git-commit-history)
-     - [2.2.4. Locate Part 2 (Hidden Experimental Branch)](#224-locate-part-2-hidden-experimental-branch)
-     - [2.2.5. Assemble the Flag](#225-assemble-the-flag)
-
----
-
 ## 1. Server Juice
 
 > **Flag:** `CSSCTF{premiumreserve}`  

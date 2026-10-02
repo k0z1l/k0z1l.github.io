@@ -17,23 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [After Hours](#1-after-hours)
-   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
-   - [1.1. Challenge Overview and Approach](#11-challenge-overview-and-approach)
-   - [1.2. Reconnaissance: HTML, JS, and Config](#12-reconnaissance-html-js-and-config)
-   - [1.3. Endpoint Enumeration and Framework Fingerprinting](#13-endpoint-enumeration-and-framework-fingerprinting)
-   - [1.4. Analyzing the `/api/chat` API](#14-analyzing-the-apichat-api)
-   - [1.5. Probing Morgan's Policy (Refusal Leakage)](#15-probing-morgans-policy-refusal-leakage)
-   - [1.6. Testing Classic Prompt Injection (Failure Analysis)](#16-testing-classic-prompt-injection-failure-analysis)
-   - [1.7. Exploitation: Satisfying the Policy via Roleplay](#17-exploitation-satisfying-the-policy-via-roleplay)
-   - [1.8. Flag and Verification](#18-flag-and-verification)
-   - [1.9. Vulnerability Analysis (Root Cause)](#19-vulnerability-analysis-root-cause)
-   - [1.10. Defense and Remediation](#110-defense-and-remediation)
-   - [1.11. Appendices](#111-appendices)
-
----
-
 ## 1. After Hours
 
 > **Flag:** `CSSCTF{n0_b4dg3_just_4_g00d_st0ry}`  

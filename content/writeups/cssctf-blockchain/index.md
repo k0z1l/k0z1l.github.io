@@ -17,24 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Gateway (Part 1)](#1-gateway-part-1)
-   - [1.1. Challenge Description & Contracts](#11-challenge-description--contracts)
-   - [1.2. Background Fundamentals](#12-background-fundamentals)
-   - [1.3. Analysis: The Three Doors and Solutions](#13-analysis-the-three-doors-and-solutions)
-   - [1.4. Practical Reconnaissance and Verification](#14-practical-reconnaissance-and-verification)
-   - [1.5. Exploitation Approaches](#15-exploitation-approaches)
-   - [1.6. Reproduction Commands & Flag Capture](#16-reproduction-commands--flag-capture)
-2. [Lottery (Part 2)](#2-lottery-part-2)
-   - [2.1. Challenge Description & Contracts](#21-challenge-description--contracts)
-   - [2.2. Core Principles & EVM Randomness Mechanics](#22-core-principles--evm-randomness-mechanics)
-   - [2.3. Instance Reconnaissance](#23-instance-reconnaissance)
-   - [2.4. Exploitation — Path A: Internal Keccak Recomputation](#24-exploitation--path-a-internal-keccak-recomputation)
-   - [2.5. Exploitation — Path B: Deploying Attack Contract via Python](#25-exploitation--path-b-deploying-attack-contract-via-python)
-   - [2.6. Verification & Flag Capture](#26-verification--flag-capture)
-
----
-
 ## 1. Gateway (Part 1)
 
 > This document covers **two CSS CTF blockchain challenges** (each maintaining dedicated numbered sections):

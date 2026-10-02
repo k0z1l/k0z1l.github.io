@@ -17,45 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Chrono I](#1-chrono-i)
-   - [1.1. Challenge Description & Given Data](#11-challenge-description--given-data)
-   - [1.2. Cryptanalysis](#12-cryptanalysis)
-   - [1.3. Annotated Exploit Script (Python)](#13-annotated-exploit-script-python)
-   - [1.4. Flag](#14-flag)
-2. [Chrono II](#2-chrono-ii)
-   - [2.1. Challenge Description & Context](#21-challenge-description--context)
-   - [2.2. Data Reconnaissance & Sample Collection](#22-data-reconnaissance--sample-collection)
-   - [2.3. The Clockwork Mechanism Analysis](#23-the-clockwork-mechanism-analysis)
-   - [2.4. Keystream Reconstruction](#24-keystream-reconstruction)
-   - [2.5. Annotated Exploit Script (Python)](#25-annotated-exploit-script-python)
-   - [2.6. Flag](#26-flag)
-3. [Chimera Vault](#3-chimera-vault)
-   - [3.1. Challenge Description & Context](#31-challenge-description--context)
-   - [3.2. Architecture & Security Model of Chimera Vault](#32-architecture--security-model-of-chimera-vault)
-   - [3.3. Cryptanalysis & Stage Vulnerabilities](#33-cryptanalysis--stage-vulnerabilities)
-     - [3.3.1. Phase 1: Acoustic Carrier Synchronization (Digital Audio Demodulation)](#331-phase-1-acoustic-carrier-synchronization-digital-audio-demodulation)
-     - [3.3.2. Phase 2: Non-Commutative Matrix Drift Telemetry (Matrix Trace Invariant)](#332-phase-2-non-commutative-matrix-drift-telemetry-matrix-trace-invariant)
-     - [3.3.3. Phase 3: Resonant Knapsack Intercept (Merkle-Hellman Cryptanalysis)](#333-phase-3-resonant-knapsack-intercept-merkle-hellman-cryptanalysis)
-   - [3.4. End-to-End Exploit Pipeline](#34-end-to-end-exploit-pipeline)
-   - [3.5. Full Exploit Script (Python)](#35-full-exploit-script-python)
-   - [3.6. Flag](#36-flag)
-4. [Severed Symmetry](#4-severed-symmetry)
-   - [4.1. Challenge Description & Context](#41-challenge-description--context)
-   - [4.2. Architecture & Algebraic Structure of the Cryptosystem](#42-architecture--algebraic-structure-of-the-cryptosystem)
-   - [4.3. Cryptanalysis & 5-Stage Exploit Pipeline](#43-cryptanalysis--5-stage-exploit-pipeline)
-     - [4.3.1. Stage 1: Left Nullspace Degree Elimination](#431-stage-1-left-nullspace-degree-elimination)
-     - [4.3.2. Stage 2: Subspace Isolation via Degree-4 Gradients](#432-stage-2-subspace-isolation-via-degree-4-gradients)
-     - [4.3.3. Stage 3: Linearization of Variable u & Degree Collapse](#433-stage-3-linearization-of-variable-u--degree-collapse)
-     - [4.3.4. Stage 4: Breaking UOV Symmetry - Oil Subspace Recovery (Kipnis-Shamir Kernel Attack)](#434-stage-4-breaking-uov-symmetry---oil-subspace-recovery-kipnis-shamir-kernel-attack)
-     - [4.3.5. Stage 5: Vinegar Exhaustion & High-Speed Gaussian Elimination (High-Performance C Solver)](#435-stage-5-vinegar-exhaustion--high-speed-gaussian-elimination-high-performance-c-solver)
-   - [4.4. End-to-End Exploit Pipeline](#44-end-to-end-exploit-pipeline-1)
-   - [4.5. Complete Exploit Code (C & Python)](#45-complete-exploit-code-c--python)
-   - [4.6. Flag](#46-flag)
-5. [Summary & Key Takeaways](#5-summary--key-takeaways)
-
----
-
 ## 1. Chrono I
 
 ### 1.1. Challenge Description & Given Data

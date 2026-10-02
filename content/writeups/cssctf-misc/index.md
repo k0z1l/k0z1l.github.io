@@ -17,42 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [A Star Trail 1](#1-a-star-trail-1)
-   - [1.1. Challenge Description & Given Problem](#11-challenge-description--given-problem)
-   - [1.2. Graph Modeling from Star Map](#12-graph-modeling-from-star-map)
-   - [1.3. Optimal Pathfinding Algorithm (Dijkstra / A*)](#13-optimal-pathfinding-algorithm-dijkstra--a)
-   - [1.4. Flag Generation Rules & Format Pitfall Analysis](#14-flag-generation-rules--format-pitfall-analysis)
-   - [1.5. Annotated Exploit Script (Python)](#15-annotated-exploit-script-python)
-   - [1.6. Flag](#16-flag)
-2. [A Star Trail 2](#2-a-star-trail-2)
-   - [2.1. Challenge Description & Context](#21-challenge-description--context)
-   - [2.2. Reconnaissance of 10,000 Celestial Bodies](#22-reconnaissance-of-10000-celestial-bodies)
-   - [2.3. Computational Geometry Graph Modeling (Delaunay & Voronoi)](#23-computational-geometry-graph-modeling-delaunay--voronoi)
-   - [2.4. Shortest Path & Modulo 6 Rotation Rule](#24-shortest-path--modulo-6-rotation-rule)
-   - [2.5. Decoding the Hidden Message in the Flag String](#25-decoding-the-hidden-message-in-the-flag-string)
-   - [2.6. Annotated Exploit Script (Python)](#26-annotated-exploit-script-python)
-   - [2.7. Flag](#27-flag)
-3. [A Star Trail 3](#3-a-star-trail-3)
-   - [3.1. Challenge Description & Data Corruption Context](#31-challenge-description--data-corruption-context)
-   - [3.2. Reconnaissance of 25,000 Disconnected Celestial Bodies ([CORRUPTED])](#32-reconnaissance-of-25000-disconnected-celestial-bodies-corrupted)
-   - [3.3. Clue Analysis & Graph Reconstruction via Delaunay Triangulation](#33-clue-analysis--graph-reconstruction-via-delaunay-triangulation)
-   - [3.4. Graph Modeling & Shortest Path Finding (Dijkstra)](#34-graph-modeling--shortest-path-finding-dijkstra)
-   - [3.5. Modulo 6 Flag Extraction & Uniqueness Verification](#35-modulo-6-flag-extraction--uniqueness-verification)
-   - [3.6. Annotated Exploit Script (Python)](#36-annotated-exploit-script-python-1)
-   - [3.7. Flag](#37-flag)
-4. [The Astrolabe Overwrite (Ouroboros Singularity)](#4-the-astrolabe-overwrite-ouroboros-singularity)
-   - [4.1. Challenge Description & Context](#41-challenge-description--context)
-   - [4.2. Architecture Analysis of Ouroboros VM (nexus_core)](#42-architecture-analysis-of-ouroboros-vm-nexus_core)
-   - [4.3. Self-Modifying Bytecode Mechanism & Permutation Table](#43-self-modifying-bytecode-mechanism--permutation-table)
-   - [4.4. Deciphering the Three Rings of the Astrolabe](#44-deciphering-the-three-rings-of-the-astrolabe)
-   - [4.5. Mathematical Modeling & Equation System Solver](#45-mathematical-modeling--equation-system-solver)
-   - [4.6. Payload Engineering & Cycle Budgeting](#46-payload-engineering--cycle-budgeting)
-   - [4.7. Full Exploit Source Code (C Solver & Python Exploit)](#47-full-exploit-source-code-c-solver--python-exploit)
-   - [4.8. Flag & Key Takeaways](#48-flag--key-takeaways)
-
----
-
 ## 1. A Star Trail 1
 
 ### 1.1. Challenge Description & Given Problem

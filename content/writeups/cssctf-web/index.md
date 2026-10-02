@@ -17,21 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Secret Supernovas](#1-secret-supernovas)
-   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
-   - [1.1. Challenge Description & Overview](#11-challenge-description--overview)
-   - [1.2. Reconnaissance](#12-reconnaissance)
-   - [1.3. Authentication and Session Analysis](#13-authentication-and-session-analysis)
-   - [1.4. JavaScript Bundle Analysis](#14-javascript-bundle-analysis)
-   - [1.5. GraphQL Exploitation & Flag Capture](#15-graphql-exploitation--flag-capture)
-   - [1.6. Attack Flowchart](#16-attack-flowchart)
-   - [1.7. Vulnerability Analysis & Remediation](#17-vulnerability-analysis--remediation)
-   - [1.8. Complete Exploit Script](#18-complete-exploit-script)
-   - [1.9. Key Takeaways](#19-key-takeaways)
-
----
-
 ## 1. Secret Supernovas
 
 > **Flag:** `CSSCTF{we_l000ve_grafs}`  

@@ -13,47 +13,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Challenge 1: Lamp Drill (Warm-up)](#1-challenge-1-lamp-drill-warm-up)
-   - [1.1. Challenge Information](#11-challenge-information)
-   - [1.2. Detailed Analysis](#12-detailed-analysis)
-   - [1.3. Automated Decoder Script (Python)](#13-automated-decoder-script-python)
-   - [1.4. Result & Flag](#14-result--flag)
-2. [Challenge 2: Silicon Snare (Hardware RE / SAT Solving)](#2-challenge-2-silicon-snare-hardware-re--sat-solving)
-   - [2.1. Challenge Information](#21-challenge-information)
-   - [2.2. Circuit Architecture Analysis](#22-circuit-architecture-analysis)
-   - [2.3. Wire Untangling Technique](#23-wire-untangling-technique)
-   - [2.4. Boolean Modeling and Solving with Z3](#24-boolean-modeling-and-solving-with-z3)
-   - [2.5. Solving Results](#25-solving-results)
-   - [2.6. Flag](#26-flag)
-3. [Challenge 3: PRINCE WALK (RE / "PINCE Int32 memory-editing practice")](#3-challenge-3-prince-walk-re--pince-int32-memory-editing-practice)
-   - [3.0. TL;DR](#30-tldr)
-   - [3.1. File Information & Security Mitigations](#31-file-information--security-mitigations)
-   - [3.2. Recon via strings — Disclosing Challenge Mechanics](#32-recon-via-strings--disclosing-challenge-mechanics)
-   - [3.3. Function Map (Named by Behavioral Analysis)](#33-function-map-named-by-behavioral-analysis)
-   - [3.4. Runtime Mechanics (Identifying Target Variables)](#34-runtime-mechanics-identifying-target-variables)
-   - [3.5. Flag Generator gen_flag() @ 0x2c52 — Detailed Analysis](#35-flag-generator-gen_flag--0x2c52--detailed-analysis)
-   - [3.6. Solution Approaches](#36-solution-approaches)
-   - [3.7. Verification & Cross-Referencing](#37-verification--cross-referencing)
-   - [3.8. Key Takeaways & Pitfalls](#38-key-takeaways--pitfalls)
-   - [3.9. Appendices](#39-appendices)
-4. [Challenge 4: FLAPPY BOARD (RE / Client-Server, Replay Validation)](#4-challenge-4-flappy-board-re--client-server-replay-validation)
-   - [4.0. TL;DR](#40-tldr)
-   - [4.1. File Information & Runtime Environment](#41-file-information--runtime-environment)
-   - [4.2. Function Map (Behavioral Analysis)](#42-function-map-behavioral-analysis)
-   - [4.3. Global Memory Layout](#43-global-memory-layout)
-   - [4.4. Lifecycle of a Challenge Round](#44-lifecycle-of-a-challenge-round)
-   - [4.5. Reverse Engineering the Physics Simulation (0x6cfe, 0x6c0f, 0x6b88, 0x6bc6)](#45-reverse-engineering-the-physics-simulation-0x6cfe-0x6c0f-0x6b88-0x6bc6)
-   - [4.6. HTTP Protocol Specification](#46-http-protocol-specification)
-   - [4.7. Solution Methodology](#47-solution-methodology)
-   - [4.8. Failed Approaches & Dead Ends (Post-Mortem)](#48-failed-approaches--dead-ends-post-mortem)
-   - [4.9. The Core Trap: POST vs GET on /api/attempt](#49-the-core-trap-post-vs-get-on-apiattempt)
-   - [4.10. Final Verification & Results](#410-final-verification--results)
-   - [4.11. Key Takeaways & Pitfalls](#411-key-takeaways--pitfalls)
-   - [4.12. Appendices](#412-appendices)
-
----
-
 ## 1. Challenge 1: Lamp Drill (Warm-up)
 
 ### 1.1. Challenge Information

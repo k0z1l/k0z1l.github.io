@@ -17,51 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [The False Timeline](#1-the-false-timeline)
-   - [1.1. Challenge Description & Scenario](#11-challenge-description--scenario)
-   - [1.2. Initial Reconnaissance & Ext4 Filesystem Analysis](#12-initial-reconnaissance--ext4-filesystem-analysis)
-   - [1.3. True Timeline Reconstruction](#13-true-timeline-reconstruction)
-   - [1.4. Recovery & Decryption of Emergency Access Key (`.ekey-cache`)](#14-recovery--decryption-of-emergency-access-key-ekey-cache)
-   - [1.5. Annotated Solution Script (Python)](#15-annotated-solution-script-python)
-   - [1.6. Flag](#16-flag)
-2. [Signal Fracture](#2-signal-fracture)
-   - [2.1. Challenge Description & Scenario](#21-challenge-description--scenario)
-   - [2.2. Disk Image & Network Packet Reconnaissance (PCAP & Disk Recon)](#22-disk-image--network-packet-reconnaissance-pcap--disk-recon)
-   - [2.3. Dissecting the `NXFR` Fragmentation Architecture](#23-dissecting-the-nxfr-fragmentation-architecture)
-   - [2.4. Recovery and Integrity Verification of 8 Fragments (Fragment Carving)](#24-recovery-and-integrity-verification-of-8-fragments-fragment-carving)
-   - [2.5. Archive Reconstruction and Flag Extraction](#25-archive-reconstruction-and-flag-extraction)
-   - [2.6. Annotated Solution Script (Python)](#26-annotated-solution-script-python)
-   - [2.7. Flag](#27-flag)
-3. [Ghost Frequency](#3-ghost-frequency)
-   - [3.1. Challenge Description & Scenario](#31-challenge-description--scenario)
-   - [3.2. Blackbox Audio Reconnaissance (`KBR17_blackbox.wav`)](#32-blackbox-audio-reconnaissance-kbr17_blackboxwav)
-   - [3.3. Nature of the "Ghost Frequency" (1536 Hz vs. Bell 202 AFSK)](#33-nature-of-the-ghost-frequency-1536-hz-vs-bell-202-afsk)
-   - [3.4. Bell 202 AFSK 1200 Baud Demodulation & UART 8N1 Frame Recovery](#34-bell-202-afsk-1200-baud-demodulation--uart-8n1-frame-recovery)
-   - [3.5. Dissecting `NXPKT` & Forward Error Correction (RAID-4 / XOR Parity)](#35-dissecting-nxpkt--forward-error-correction-raid-4--xor-parity)
-   - [3.6. Raw DEFLATE Stream Decompression & Flag Extraction](#36-raw-deflate-stream-decompression--flag-extraction)
-   - [3.7. Annotated Solution Script (Python)](#37-annotated-solution-script-python)
-   - [3.8. Flag](#38-flag)
-4. [Echoes of the Relay](#4-echoes-of-the-relay)
-   - [4.1. Challenge Analysis & Investigative Strategy](#41-challenge-analysis--investigative-strategy)
-   - [4.2. Step 1: Disk Image Identification](#42-step-1--disk-image-identification)
-   - [4.3. Step 2: Filesystem Metadata Inspection](#43-step-2--filesystem-metadata-inspection)
-   - [4.4. Step 3: Directory Tree Enumeration](#44-step-3--directory-tree-enumeration)
-   - [4.5. Step 4: Identifying Deleted Inodes (`lsdel`)](#45-step-4--identifying-deleted-inodes-lsdel)
-   - [4.6. Step 5: Direct Carving of Residual Data Blocks](#46-step-5--direct-carving-of-residual-data-blocks)
-   - [4.7. Step 6: Extracting PNG Image from Filesystem](#47-step-6--extracting-png-image-from-filesystem)
-   - [4.8. Step 7: PNG Chunk Structure Analysis](#48-step-7--png-chunk-structure-analysis)
-   - [4.9. Step 8: ZIP Archive Analysis & Decryption](#49-step-8--zip-archive-analysis--decryption)
-   - [4.10. Step 9: Flag Retrieval](#410-step-9--flag-retrieval)
-   - [4.11. Flag](#411-flag)
-   - [4.12. Attack Chain Summary](#412-attack-chain-summary)
-   - [4.13. Key Forensic Takeaways](#413-key-forensic-takeaways)
-   - [4.14. Quick Command Cheat-Sheet](#414-quick-command-cheat-sheet)
-   - [4.15. Appendix: Offsets & Reference Values](#415-appendix--offsets--reference-values)
-5. [Summary & Key Takeaways](#5-summary--key-takeaways)
-
----
-
 ## 1. The False Timeline
 
 ### 1.1. Challenge Description & Scenario

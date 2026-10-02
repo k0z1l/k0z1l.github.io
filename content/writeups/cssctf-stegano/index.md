@@ -17,20 +17,6 @@ showTableOfContents: true
 
 ---
 
-## Table of Contents
-1. [Colour Shift](#1-colour-shift)
-   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
-   - [1.1. Challenge Description & Clue Analysis](#11-challenge-description--clue-analysis)
-   - [1.2. Initial File Analysis & Metadata Inspection](#12-initial-file-analysis--metadata-inspection)
-   - [1.3. Color Channel & Bit Plane Statistical Analysis](#13-color-channel--bit-plane-statistical-analysis)
-   - [1.4. Channel Difference Technique & Flag Discovery](#14-channel-difference-technique--flag-discovery)
-   - [1.5. Analysis Diagram](#15-analysis-diagram)
-   - [1.6. Complete Exploit Script](#16-complete-exploit-script)
-   - [1.7. Steganography Mechanism Analysis](#17-steganography-mechanism-analysis)
-   - [1.8. Key Takeaways & Methodology](#18-key-takeaways--methodology)
-
----
-
 ## 1. Colour Shift
 
 > **Flag:** `CSSCTF{SHINE_ON}`  
