@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] PWN / Binary Exploitation Challenges Writeup'
+title: "[CSSCTF] PWN / Binary Exploitation"
 date: '2026-10-02'
 description: In-depth writeups for Binary Exploitation (PWN) challenges in CSSCTF 2026, covering Use-After-Free, 1-byte Stack Pivoting, and Ret2win.
 categories: [CSSCTF, Pwn]

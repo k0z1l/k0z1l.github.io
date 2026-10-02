@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] OSINT Challenges Write-up: Return of Nexus'
+title: "[CSSCTF] OSINT"
 date: '2026-10-02'
 description: 'Write-up for the Open Source Intelligence (OSINT, SOCMINT, Git Forensics) challenges in CSSCTF: Return of Nexus.'
 categories: [CSSCTF, OSINT]

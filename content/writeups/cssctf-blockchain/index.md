@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] Blockchain: Gateway & Lottery'
+title: "[CSSCTF] Blockchain"
 date: '2026-10-02'
 description: Comprehensive writeup for the Blockchain challenges (Gateway & Lottery) in CSSCTF — EVM storage layout, tx.origin bypass, and block-variable pseudo-randomness.
 categories: [CSSCTF, Blockchain]

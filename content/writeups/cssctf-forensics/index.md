@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] Digital Forensics: Nexus Series'
+title: "[CSSCTF] Digital Forensics"
 date: '2026-10-02'
 description: In-depth technical writeups for the Nexus Series Digital Forensics challenges in CSSCTF 2026 (Audio DSP Demodulation, Disk Carving, PCAP Analysis, Linux Artifacts).
 categories: [CSSCTF, Forensics]

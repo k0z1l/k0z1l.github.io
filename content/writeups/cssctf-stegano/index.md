@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] Steganography: Colour Shift'
+title: "[CSSCTF] Steganography"
 date: '2026-10-02'
 description: 'Write-up for the "Colour Shift" Steganography challenge in CSSCTF - analyzing BMP image channel data and extracting the hidden flag.'
 categories: [CSSCTF, Steganography]

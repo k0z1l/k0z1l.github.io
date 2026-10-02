@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] Web Exploitation: Secret Supernovas'
+title: "[CSSCTF] Web Exploitation"
 date: '2026-10-02'
 description: 'Write-up for the "Secret Supernovas" Web challenge in CSSCTF - exploiting GraphQL API authorization flaws (BOPLA) to extract sensitive data.'
 categories: [CSSCTF, Web]

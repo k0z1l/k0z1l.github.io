@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] MISC Challenges Writeup Collection'
+title: "[CSSCTF] Miscellaneous"
 date: '2026-10-02'
 description: Comprehensive writeups for diverse MISC challenges in CSSCTF spanning Graph Theory, Computational Geometry, and Custom VM Reverse Engineering.
 categories: [CSSCTF, Misc]

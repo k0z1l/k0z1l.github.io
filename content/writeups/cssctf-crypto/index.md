@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] Cryptography Challenges Writeup'
+title: "[CSSCTF] Cryptography"
 date: '2026-10-02'
 description: In-depth writeups and cryptanalysis of Cryptography challenges in CSSCTF.
 categories: [CSSCTF, Cryptography]

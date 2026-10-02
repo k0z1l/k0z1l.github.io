@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] Reverse Engineering Challenges Writeup'
+title: "[CSSCTF] Reverse Engineering"
 date: '2026-10-02'
 description: 'Comprehensive writeup and solutions for the Reverse Engineering challenges in CSSCTF: Lamp Drill, Silicon Snare, PRINCE WALK, and FLAPPY BOARD.'
 categories: [CSSCTF, Reverse Engineering]

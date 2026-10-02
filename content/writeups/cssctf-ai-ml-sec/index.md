@@ -1,5 +1,5 @@
 ---
-title: '[CSSCTF] AI/ML Security: After Hours'
+title: "[CSSCTF] AI/ML Security"
 date: '2026-10-02'
 description: Writeup for the AI/ML Security challenge "After Hours" from CSSCTF — chatbot authorization bypass and social engineering techniques.
 categories: [CSSCTF, AI/ML Security]
