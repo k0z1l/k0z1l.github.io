@@ -1,16 +1,15 @@
 ---
 title: '[CSSCTF] Steganography: Colour Shift'
 date: '2026-10-02'
-description: Writeup thử thách Steganography "Colour Shift" trong giải CSSCTF - phân
-  tích ảnh BMP và trích xuất flag.
+description: 'Write-up for the "Colour Shift" Steganography challenge in CSSCTF - analyzing BMP image channel data and extracting the hidden flag.'
 categories: [CSSCTF, Steganography]
 tags: [cssctf, steganography, image-analysis, bmp]
-series: [CSSCTF 2026]
+series: ['CSSCTF 2026']
 showAuthor: false
 showTableOfContents: true
 ---
 
-# 🌈 CTF Write-up: Colour Shift
+# CTF Write-up: Colour Shift
 
 **Competition:** CSSCTF  
 **Category:** Steganography  
@@ -21,48 +20,48 @@ showTableOfContents: true
 
 ---
 
-## 📋 Mô tả Challenge
+## Challenge Description
 
 > In 1666 Issac Newton split light into their composite wavelengths. Can you?
 >
 > Flag format: CSSCTF{...}
 
-Hint cực kỳ quan trọng: Newton năm 1666 dùng **lăng kính** để phân tách ánh sáng trắng thành **các bước sóng màu sắc khác nhau** (đỏ, cam, vàng, lục, lam, chàm, tím — tức là phổ RGB). Đây là gợi ý trực tiếp để **tách/phân tích các kênh màu** (R, G, B) của ảnh.
+The challenge clue references Isaac Newton's 1666 experiment using a **prism** to split white light into its **composite wavelengths** (red, orange, yellow, green, blue, indigo, violet — the RGB visible spectrum). This points directly toward **splitting and analyzing the image's individual color channels** (R, G, B).
 
 ---
 
-## 🔍 Bước 1: Phân tích file ban đầu
+## Step 1: Initial File Analysis
 
-### 1.1 Kiểm tra BMP header
+### 1.1 BMP Header Inspection
 
 ```python
 with open('colorshiftctf.bmp', 'rb') as f:
     header = f.read(54)
 
-# Kết quả:
-# Signature:    BM  (hợp lệ)
+# Result:
+# Signature:    BM  (valid)
 # File size:    1,083,738 bytes
-# Pixel offset: 138 (DIB header mở rộng = 124 bytes)
+# Pixel offset: 138 (extended DIB header = 124 bytes)
 # Width:        599 pixels
 # Height:       602 pixels
-# Bit depth:    24-bit (RGB, không có alpha)
-# Compression:  0 (không nén - BI_RGB)
+# Bit depth:    24-bit (RGB, no alpha channel)
+# Compression:  0 (uncompressed - BI_RGB)
 ```
 
-File là BMP 24-bit chuẩn, kích thước 599×602 pixels. Không có compression — mỗi pixel lưu trực tiếp giá trị R, G, B.
+The file is a standard uncompressed 24-bit BMP image with dimensions of 599×602 pixels. Without compression, each pixel directly stores its raw R, G, and B channel bytes.
 
-### 1.2 Nhận diện ảnh gốc
+### 1.2 Identifying the Source Image
 
-Mở ảnh ra (hoặc quan sát kênh màu) thấy ngay đây là bìa album **"The Dark Side of the Moon" (1973) của Pink Floyd** — hình ảnh ánh sáng trắng đi qua lăng kính và tách thành quang phổ cầu vồng.
+Inspecting the image reveals that it is the album cover of **Pink Floyd's "The Dark Side of the Moon" (1973)** — depicting white light refracting through a triangular prism and dispersing into a rainbow spectrum.
 
 > [!NOTE]
-> Đây không phải ngẫu nhiên! Album này kết nối trực tiếp với hint về Newton và ánh sáng. Pink Floyd cũng có bài nổi tiếng **"Shine On You Crazy Diamond"** — chính là flag!
+> This thematic selection aligns directly with Newton's light dispersion experiment. Pink Floyd also recorded the track **"Shine On You Crazy Diamond"**, hinting at the eventual flag string.
 
 ---
 
-## 🔬 Bước 2: Phân tích kênh màu
+## Step 2: Color Channel Analysis
 
-### 2.1 Thống kê từng kênh
+### 2.1 Per-Channel Statistics
 
 ```python
 from PIL import Image
@@ -77,15 +76,15 @@ print(f"B: min={arr[:,:,2].min()}, max={arr[:,:,2].max()}, unique={len(np.unique
 ```
 
 ```
-R: min=0, max=255, unique=256  ← toàn range
-G: min=0, max=240, unique=236  ← thiếu một số giá trị
-B: min=0, max=215, unique=215  ← range hẹp hơn, ít unique values hơn!
+R: min=0, max=255, unique=256  <- full range
+G: min=0, max=240, unique=236  <- missing some values
+B: min=0, max=215, unique=215  <- narrower range, fewer unique values
 ```
 
 > [!IMPORTANT]
-> Kênh **B (Blue)** có max chỉ là 215 và chỉ 215 giá trị unique — khác biệt rõ so với R và G. Đây là dấu hiệu kênh B đã bị **can thiệp/modify**.
+> The **Blue (B)** channel has a maximum value of only 215 and contains only 215 unique values — diverging notably from R and G. This discrepancy suggests the Blue channel was selectively modified.
 
-### 2.2 Phân tích bit planes
+### 2.2 Bit Plane Analysis
 
 ```python
 for i, ch in enumerate(['R','G','B']):
@@ -96,82 +95,80 @@ for i, ch in enumerate(['R','G','B']):
 ```
 
 ```
-R bit0: mean=0.5228  ← ~50/50 random noise (bình thường cho ảnh tự nhiên)
-R bit4: mean=0.1159  ← thấp hơn, phù hợp với ảnh tối
+R bit0: mean=0.5228  <- ~50/50 distribution (typical for natural imagery)
+R bit4: mean=0.1159  <- lower ratio, consistent with dark regions
 ...
-B bit5: mean=0.6891  ← ⚠️ Cao bất thường!
-B bit6: mean=0.0337  ← thấp đột ngột
+B bit5: mean=0.6891  <- Abnormally high!
+B bit6: mean=0.0337  <- abrupt drop
 ```
 
-Bit plane 5 của kênh B có tỷ lệ cao bất thường → dữ liệu ẩn có thể nằm ở đây.
+Bit plane 5 of the Blue channel exhibits an abnormally high mean ratio, indicating the presence of hidden embedded data.
 
 ---
 
-## 🎯 Bước 3: Kỹ thuật tìm flag — Channel Difference
+## Step 3: Flag Discovery Technique — Channel Difference
 
-### 3.1 Lý thuyết
+### 3.1 Concept
 
-Kỹ thuật **Channel Difference** (hay Color Plane Subtraction): lấy hiệu tuyệt đối giữa hai kênh màu. Nếu một kênh được modify để nhúng thông tin ẩn, sự khác biệt giữa nó và kênh gốc sẽ lộ ra dữ liệu ẩn.
-
-Newton "split light" → ta cũng split ảnh thành từng wavelength (kênh) rồi so sánh!
+The **Channel Difference** technique (color plane subtraction) calculates the absolute difference between two color channels. If one channel was altered to embed data while another serves as an unmodified baseline, subtraction exposes the discrepancies:
 
 ```
 diff(R, B) = |R_pixel - B_pixel|
 ```
 
-Đối với ảnh tự nhiên (không có stego), R và B thường tương quan tốt ở vùng tối. Nếu B bị modify nhỏ (nhúng text), diff sẽ cao ở vùng có text.
+In natural, unmodified images, R and B channels correlate closely across dark backgrounds. When subtle modifications are applied to B, computing the absolute difference elevates the contrast around altered pixel regions.
 
-### 3.2 Thực hiện
+### 3.2 Implementation
 
 ```python
 diff_rb = np.abs(arr[:,:,0].astype(int) - arr[:,:,2].astype(int)).astype(np.uint8)
 diff_image = Image.fromarray(diff_rb)
 
-# Tăng contrast mạnh để làm nổi bật sự khác biệt
+# Apply high contrast enhancement to bring out subtle variations
 from PIL import ImageEnhance
 enhanced = ImageEnhance.Contrast(diff_image).enhance(50.0)
 enhanced.save('diff_RB_enhanced.png')
 ```
 
-### 3.3 Kết quả
+### 3.3 Result
 
-Ảnh diff_RB sau khi tăng contrast hiển thị rõ ràng dòng chữ:
-
-```
-CSSCTF{SHINE_ON}
-```
-
-Chữ xuất hiện ở vùng **phía dưới-trái** của ảnh (khoảng 2/3 chiều cao), trên nền tối của ảnh Dark Side of the Moon.
-
----
-
-## 🏆 Flag
+The contrast-enhanced differential image clearly exposes the hidden text:
 
 ```
 CSSCTF{SHINE_ON}
 ```
 
-**Ý nghĩa flag:** "Shine On" là tham chiếu đến bài hát **"Shine On You Crazy Diamond"** của Pink Floyd (từ album *Wish You Were Here*, 1975) — một tribute cho Syd Barrett. Kết hợp hoàn hảo với hình ảnh bìa album Dark Side of the Moon.
+The flag is positioned across the **lower-left region** of the image (approximately two-thirds down), against the dark backdrop.
 
 ---
 
-## 📊 Sơ đồ phân tích
+## Flag
+
+```
+CSSCTF{SHINE_ON}
+```
+
+**Context:** "Shine On" references the Pink Floyd track **"Shine On You Crazy Diamond"** from the 1975 album *Wish You Were Here*, maintaining the thematic link with *The Dark Side of the Moon*.
+
+---
+
+## Analysis Diagram
 
 ```
 colorshiftctf.bmp (BMP 24-bit, 599x602)
         |
-        +--> Kênh R (Red)   ─────────────┐
-        |                                 ├─ |R - B| = diff_RB
-        +--> Kênh G (Green)              │   (tăng contrast ×50)
-        |                                 │              │
-        +--> Kênh B (Blue) ──────────────┘              ▼
-             [MODIFIED - chứa text ẩn]         FLAG lộ diện!
-                                            CSSCTF{SHINE_ON}
+        +--> R Channel (Red)   ─────────────┐
+        |                                    ├─ |R - B| = diff_RB
+        +--> G Channel (Green)              │   (contrast enhanced x50)
+        |                                    │              │
+        +--> B Channel (Blue) ──────────────┘              v
+             [MODIFIED - hidden text payload]         Flag Revealed
+                                                    CSSCTF{SHINE_ON}
 ```
 
 ---
 
-## 🛠️ Script khai thác hoàn chỉnh
+## Complete Exploit Script
 
 ```python
 #!/usr/bin/env python3
@@ -184,19 +181,19 @@ Flag: CSSCTF{SHINE_ON}
 from PIL import Image, ImageEnhance
 import numpy as np
 
-# === Bước 1: Đọc file ===
+# === Step 1: Read image ===
 img = Image.open('colorshiftctf.bmp')
 arr = np.array(img)
 
 print(f"[*] Image: {img.size[0]}x{img.size[1]}, mode={img.mode}")
 
-# === Bước 2: Phân tích từng kênh ===
+# === Step 2: Analyze individual channels ===
 for i, ch in enumerate(['R', 'G', 'B']):
     channel = arr[:, :, i]
     print(f"[*] Channel {ch}: min={channel.min()}, max={channel.max()}, "
           f"unique_values={len(np.unique(channel))}")
 
-# === Bước 3: Tách từng kênh ra ảnh riêng ===
+# === Step 3: Extract individual channels to separate images ===
 r_img = Image.fromarray(arr[:, :, 0], 'L')  # Red
 g_img = Image.fromarray(arr[:, :, 1], 'L')  # Green
 b_img = Image.fromarray(arr[:, :, 2], 'L')  # Blue
@@ -206,28 +203,28 @@ g_img.save('channel_G.png')
 b_img.save('channel_B.png')
 print("[+] Saved individual channel images")
 
-# === Bước 4: Tính channel difference (Newton's wavelength split) ===
-# |R - B| để phát hiện modification trong kênh B
+# === Step 4: Compute channel difference (Newton's wavelength split) ===
+# |R - B| to expose modifications in the Blue channel
 diff_rb = np.abs(arr[:, :, 0].astype(int) - arr[:, :, 2].astype(int)).astype(np.uint8)
 diff_image = Image.fromarray(diff_rb)
 
 print(f"[*] diff_RB stats: min={diff_rb.min()}, max={diff_rb.max()}, "
       f"mean={diff_rb.mean():.2f}")
 
-# === Bước 5: Tăng contrast để lộ hidden text ===
+# === Step 5: Increase contrast to reveal hidden text ===
 enhanced = ImageEnhance.Contrast(diff_image).enhance(50.0)
 enhanced.save('flag_revealed.png')
-print("[+] Saved flag_revealed.png — open this to see the flag!")
+print("[+] Saved flag_revealed.png - inspect to read the flag")
 
-# === Bonus: Zoom vào vùng text ===
+# === Bonus: Crop into text region ===
 h, w = arr.shape[:2]
-# Text ở khoảng 60-75% chiều cao
+# Text is located around 60-75% vertical offset
 text_region = diff_rb[int(h*0.60):int(h*0.80), :]
 text_img = Image.fromarray(text_region)
 text_enhanced = ImageEnhance.Contrast(text_img).enhance(30)
 text_big = text_enhanced.resize((w * 3, int(h * 0.20) * 3), Image.LANCZOS)
 text_big.save('flag_text_zoom.png')
-print("[+] Saved flag_text_zoom.png — zoomed in on the flag text")
+print("[+] Saved flag_text_zoom.png - magnified view of the flag region")
 
 print("\n" + "="*50)
 print("FLAG: CSSCTF{SHINE_ON}")
@@ -240,11 +237,11 @@ print("="*50)
 [*] Image: 599x602, mode=RGB
 [*] Channel R: min=0, max=255, unique_values=256
 [*] Channel G: min=0, max=240, unique_values=236
-[*] Channel B: min=0, max=215, unique_values=215   ← Suspicious!
+[*] Channel B: min=0, max=215, unique_values=215   <- Suspicious!
 [+] Saved individual channel images
 [*] diff_RB stats: min=0, max=243, mean=29.54
-[+] Saved flag_revealed.png — open this to see the flag!
-[+] Saved flag_text_zoom.png — zoomed in on the flag text
+[+] Saved flag_revealed.png - inspect to read the flag
+[+] Saved flag_text_zoom.png - magnified view of the flag region
 
 ==================================================
 FLAG: CSSCTF{SHINE_ON}
@@ -253,49 +250,49 @@ FLAG: CSSCTF{SHINE_ON}
 
 ---
 
-## 🧠 Phân tích kỹ thuật ẩn giấu
+## Steganography Mechanism Analysis
 
-### Cách thức nhúng (ước đoán)
+### Embedding Methodology
 
-Text được nhúng vào ảnh bằng cách **modify kênh Blue** tại các pixel tương ứng với vị trí các ký tự của flag:
+Text was embedded by adjusting the Blue channel values on pixels tracing the characters:
 
 ```
 B_modified[x, y] = B_original[x, y] + delta
 
-Với delta nhỏ (≈ 20-50) → không thể thấy bằng mắt thường
-Nhưng diff = |R - B_modified| ≠ |R - B_original| → phát hiện được
+With a small delta (approx. 20-50), changes remain imperceptible to the naked eye.
+However, diff = |R - B_modified| != |R - B_original|, making it easily detectable via channel subtraction.
 ```
 
-Kỹ thuật này gọi là **Color Channel Steganography** — khác với LSB (Least Significant Bit) thông thường ở chỗ:
-- LSB: thay đổi bit cuối (±1), rất nhỏ
-- Color Channel: thay đổi cả block pixel (±20-50), tạo ra pattern nhìn thấy khi diff channels
+This technique functions as **Color Channel Steganography**, distinct from standard Least Significant Bit (LSB) manipulation:
+- **LSB Steganography:** Alters the least significant bit (+/-1), which is visually imperceptible.
+- **Color Channel Steganography:** Modifies whole pixel values (+/-20-50), generating perceptible outlines when computing inter-channel differences.
 
-### Tại sao R và B?
+### Rationale for R vs B Selection
 
-- Ảnh Dark Side of the Moon có tông màu **lạnh, tối** → R ≈ B ở hầu hết pixels
-- Khi nhúng text vào B → delta tạo ra sự khác biệt rõ ràng so với R
-- Nếu nhúng vào G, diff_RG hoặc diff_GB cũng sẽ lộ, nhưng ít rõ hơn do G thường sáng hơn
+- *The Dark Side of the Moon* cover predominantly features dark, neutral black tones where R ≈ B across most pixels.
+- Tampering with B introduces a pronounced contrast offset relative to R.
+- Applying alterations to G could also be uncovered through `|R - G|` or `|G - B|`, but green values generally carry higher perceptual sensitivity in human vision, making blue the preferred carrier.
 
 ---
 
-## 📚 Bài học rút ra
+## Key Takeaways
 
-| Bước | Kỹ thuật | Công cụ |
-|------|----------|---------|
-| Đọc metadata | BMP header parsing | Python `struct`, `PIL` |
-| Nhận diện context | Image recognition | Quan sát bằng mắt |
-| Phân tích thống kê | Channel statistics, bit planes | NumPy |
-| Tách kênh màu | RGB channel split | PIL `Image.fromarray` |
+| Step | Technique | Tools |
+|------|-----------|-------|
+| Inspect metadata | BMP header parsing | Python `struct`, `PIL` |
+| Context identification | Image recognition | Visual inspection |
+| Statistical analysis | Channel statistics, bit planes | NumPy |
+| Channel separation | RGB channel split | PIL `Image.fromarray` |
 | Channel difference | `\|R - B\|` | NumPy `np.abs` |
-| Tăng contrast | Reveal hidden text | PIL `ImageEnhance.Contrast` |
+| Contrast enhancement | Highlight hidden text | PIL `ImageEnhance.Contrast` |
 
 > [!TIP]
-> Khi gặp bài stego với ảnh màu, **luôn thử**:
-> 1. Tách kênh R, G, B riêng lẻ
-> 2. XOR từng cặp kênh
-> 3. Lấy hiệu `|R-G|`, `|R-B|`, `|G-B|`
-> 4. Phân tích từng bit plane (0-7)
-> 5. Đọc metadata/EXIF
+> When approaching color image steganography challenges:
+> 1. Separate individual R, G, and B channels.
+> 2. Test XOR combinations across channel pairs.
+> 3. Compute absolute channel differences: `|R - G|`, `|R - B|`, `|G - B|`.
+> 4. Inspect individual bit planes (0 through 7).
+> 5. Review file metadata and EXIF tags.
 
 > [!NOTE]
-> Hint trong đề bài luôn là chìa khóa! *"Newton split light into composite wavelengths"* → tách kênh màu. *"Dark Side of the Moon"* album art → ánh sáng + lăng kính + màu sắc. *"Shine On"* (Pink Floyd) → flag text.
+> Challenge descriptions often provide valuable hints. *"Newton split light into composite wavelengths"* indicated channel decomposition, while the Pink Floyd artwork pointed toward *"Shine On"* as the hidden flag.

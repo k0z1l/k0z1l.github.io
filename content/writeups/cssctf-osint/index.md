@@ -1,23 +1,22 @@
 ---
 title: '[CSSCTF] OSINT Challenges Write-up: Return of Nexus'
 date: '2026-10-02'
-description: 'Writeup các thử thách Open Source Intelligence (OSINT, SOCMINT, Git
-  Forensics) trong CSSCTF: Return of Nexus.'
+description: 'Write-up for the Open Source Intelligence (OSINT, SOCMINT, Git Forensics) challenges in CSSCTF: Return of Nexus.'
 categories: [CSSCTF, OSINT]
 tags: [cssctf, osint, socmint, git-forensics, recon]
-series: [CSSCTF 2026]
+series: ['CSSCTF 2026']
 showAuthor: false
 showTableOfContents: true
 ---
 
-# 🌐 OSINT Challenges Write-up
+# OSINT Challenges Write-up
 
-**Cuộc thi:** CSS CTF 2026: Return of Nexus  
-**Danh mục:** OSINT (Open-Source Intelligence / SOCMINT / Git Forensics)  
+**Competition:** CSS CTF 2026: Return of Nexus  
+**Category:** OSINT (Open-Source Intelligence / SOCMINT / Git Forensics)  
 
 ---
 
-## 📑 Mục lục
+## Table of Contents
 1. [Challenge 1: Server Juice](#1-server-juice)
 2. [Challenge 2: Dead Faction Servers](#2-dead-faction-servers)
 
@@ -25,11 +24,11 @@ showTableOfContents: true
 
 # 1. Server Juice
 
-* **Danh mục:** OSINT (SOCMINT / Social Media)
+* **Category:** OSINT (SOCMINT / Social Media)
 * **Flag:** `CSSCTF{premiumreserve}`
-* **Độ khó:** Easy / Medium
+* **Difficulty:** Easy / Medium
 
-### 📋 Mô tả & Gợi ý
+### Description & Hints
 > *"If you want to appease the algorithm (and maybe get a head start on future hints), consider keeping us on your radar by following."*  
 > **Flag Format:** `CSSCTF{...}`
 
@@ -37,78 +36,80 @@ showTableOfContents: true
 > `instagram.com/cybersecuritysydney`  
 > `Have a scroll...`
 
-### 🔍 Quá trình điều tra & Giải pháp
-1. **Xác định kênh mạng xã hội mục tiêu:**
-   - Kênh Instagram chính thức của BTC: `https://www.instagram.com/cybersecuritysydney` (Cybersecurity Society Sydney - CSS).
-2. **Khai thác gợi ý "Have a scroll...":**
-   - Cuộn xuống các bài viết cũ hơn (khoảng 27 tuần trước, ngày 22 tháng 3) có tiêu đề **"General Meeting 01!"**.
-3. **Phân tích hình ảnh bài đăng:**
-   - Đồ họa hiển thị màn hình tin nhắn chat giả lập:
+### Investigation & Solution
+1. **Identify the target social media channel:**
+   - Official Instagram handle of the organizers: `https://www.instagram.com/cybersecuritysydney` (Cybersecurity Society Sydney - CSS).
+2. **Follow the "Have a scroll..." clue:**
+   - Scrolling down past earlier posts (approx. 27 weeks prior, March 22nd) leads to a post titled **"General Meeting 01!"**.
+3. **Analyze the post imagery:**
+   - The graphic displays a simulated messaging chat screen:
      > *- Someone tapped the cooling pipes at the local AI data centre...*  
      > *- u seriously care more about a club than the **premium reserve**??*  
      > *- come for the **server juiceeee***
-   - Tên bài bắt nguồn từ meme "nước ép máy chủ / server juice" (nước làm mát data centre).
-4. **Trích xuất Flag:**
-   - Trong phần bình luận của bài viết, người dùng `harrysalvesen` đã để lại bình luận chứa flag:
+   - The challenge name originates from the "server juice" meme (data centre cooling fluid).
+4. **Extract the Flag:**
+   - In the comments section of the post, user `harrysalvesen` posted a comment containing the flag:
      `CSSCTF{premiumreserve}`
 
 ---
 
 # 2. Dead Faction Servers
 
-* **Danh mục:** OSINT / Git Forensics
+* **Category:** OSINT / Git Forensics
 * **Starting Trace:** `bobdev508`
 * **Flag:** `CSSCTF{u_g0t_130d_508}`
-* **Độ khó:** Medium
+* **Difficulty:** Medium
 
-### 📋 Mô tả
+### Description
 > *"The old faction that ran Sector 9 didn't leave one trail — they left several, and most of them are decoys. Whoever built this infrastructure knew someone would come looking eventually, and buried the real access key across two separate locations, split in half, one piece scrambled beyond plain sight.*  
 > *Your recon has already surfaced their handle and at least one archived project. Don't trust the first thing you find — Sector 9's engineers were paranoid, and paranoid engineers plant false leads.*  
 > *Starting trace: bobdev508 Flag Format: CSSCTF{...}"*
 
-### 🔍 Quá trình điều tra & Giải pháp
+### Investigation & Solution
 
-#### Bước 1: Khám phá Profile GitHub
-- Truy cập GitHub profile: `https://github.com/bobdev508` (Bob Martinez).
-- Rà soát các repository qua GitHub API:
+#### Step 1: Inspect the GitHub Profile
+- Navigate to the GitHub profile: `https://github.com/bobdev508` (Bob Martinez).
+- Enumerate the public repositories via the GitHub interface / API:
   - `dashboard-app`
   - `decoy-project`
 
-#### Bước 2: Bỏ qua các bẫy giả (Decoys)
-- `dashboard-app/app.py`: `DEBUG_TOKEN = "CTF{n0t_qu1t3_1t}"`
-- `dashboard-app/utils.py`: `# CTF{4ls0_n0t_r34l}`
-- `decoy-project/old_config.txt`: `temp_key=CTF{th1s_1s_n0t_th3_r34l_fl4g}`
-- Các chuỗi trên đều là decoy do "Sector 9 engineers" cố tình cài cắm để đánh lạc hướng.
+#### Step 2: Identify and Discard Decoys
+- Inspecting the code reveals multiple bait strings planted to distract solvers:
+  - `dashboard-app/app.py`: `DEBUG_TOKEN = "CTF{n0t_qu1t3_1t}"`
+  - `dashboard-app/utils.py`: `# CTF{4ls0_n0t_r34l}`
+  - `decoy-project/old_config.txt`: `temp_key=CTF{th1s_1s_n0t_th3_r34l_fl4g}`
+- These correspond to the paranoid false leads mentioned in the prompt.
 
-#### Bước 3: Tìm Mảnh 1 (Base64 trong Git Commit History)
-- Kiểm tra commit log của repo `dashboard-app`:
-  - Thấy commit `99291d3`: *"Remove committed secrets, oops"*
-  - Commit trước đó `be82c69`: *"Add local env file"*
-- Truy cập cây thư mục của commit `be82c69`:
-  - Phát hiện file `.env.local` bị xóa:
+#### Step 3: Locate Part 1 (Base64 in Git Commit History)
+- Examine the commit log of repository `dashboard-app`:
+  - Notice commit `99291d3`: *"Remove committed secrets, oops"*
+  - The preceding commit `be82c69`: *"Add local env file"*
+- Inspect the commit tree and diff for `be82c69`:
+  - Identify the deleted `.env.local` file:
     ```bash
     SECRET_PART=Q1NTQ1RGe3VfZzA=
     ```
-  - Giải mã Base64:
+  - Decode Base64:
     ```python
     import base64
     base64.b64decode('Q1NTQ1RGe3VfZzA=').decode()
     # Output: CSSCTF{u_g0
     ```
-- **Mảnh 1:** `CSSCTF{u_g0`
+- **Part 1:** `CSSCTF{u_g0`
 
-#### Bước 4: Tìm Mảnh 2 (Nhánh ẩn experimental)
-- Kiểm tra danh sách nhánh qua API `/branches`:
-  - Nhánh 1: `main`
-  - Nhánh 2: `experimental/auth-rework`
-- Truy cập nhánh `experimental/auth-rework`, phát hiện file `auth_notes.md`:
+#### Step 4: Locate Part 2 (Hidden Experimental Branch)
+- Check the branch list via the repository branches endpoint or UI:
+  - Branch 1: `main`
+  - Branch 2: `experimental/auth-rework`
+- Inspect branch `experimental/auth-rework` and locate `auth_notes.md`:
   ```markdown
   # Auth rework notes (WIP, don't merge yet)
   Reminder to self — temp bypass code for local testing only,
   remove before merging:
   bypass_suffix = "t_130d_508}"
   ```
-- **Mảnh 2:** `t_130d_508}`
+- **Part 2:** `t_130d_508}`
 
-#### Bước 5: Ghép Flag
-- `CSSCTF{u_g0` + `t_130d_508}` = `CSSCTF{u_g0t_130d_508}`
+#### Step 5: Assemble the Flag
+- Concatenating Part 1 and Part 2:
+  `CSSCTF{u_g0` + `t_130d_508}` = `CSSCTF{u_g0t_130d_508}`
