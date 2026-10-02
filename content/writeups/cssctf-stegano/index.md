@@ -9,18 +9,51 @@ showAuthor: false
 showTableOfContents: true
 ---
 
-# CTF Write-up: Colour Shift
+# [CSSCTF] Steganography Challenges Writeup
 
-**Competition:** CSSCTF  
+**Author:** k0z1l  
 **Category:** Steganography  
-**Challenge Name:** Colour Shift  
-**Flag:** `CSSCTF{SHINE_ON}`  
-**Difficulty:** Easy-Medium  
-**File:** `colorshiftctf.bmp` (1,083,738 bytes)
+**Flag Format:** `CSSCTF{...}`  
 
 ---
 
-## Challenge Description
+## Table of Contents
+1. [Colour Shift](#1-colour-shift)
+   - [1.0. TL;DR & Exploitation Summary](#10-tldr--exploitation-summary)
+   - [1.1. Challenge Description & Clue Analysis](#11-challenge-description--clue-analysis)
+   - [1.2. Initial File Analysis & Metadata Inspection](#12-initial-file-analysis--metadata-inspection)
+   - [1.3. Color Channel & Bit Plane Statistical Analysis](#13-color-channel--bit-plane-statistical-analysis)
+   - [1.4. Channel Difference Technique & Flag Discovery](#14-channel-difference-technique--flag-discovery)
+   - [1.5. Analysis Diagram](#15-analysis-diagram)
+   - [1.6. Complete Exploit Script](#16-complete-exploit-script)
+   - [1.7. Steganography Mechanism Analysis](#17-steganography-mechanism-analysis)
+   - [1.8. Key Takeaways & Methodology](#18-key-takeaways--methodology)
+
+---
+
+## 1. Colour Shift
+
+> **Flag:** `CSSCTF{SHINE_ON}`  
+> **Difficulty:** Easy-Medium  
+> **Category:** Steganography / Image Processing  
+> **File:** `colorshiftctf.bmp` (1,083,738 bytes)  
+> **Technique:** RGB Channel Differential Steganography (`|R - B|`)  
+
+---
+
+### 1.0. TL;DR & Exploitation Summary
+
+```text
+1. Clue Decoding     -> Newton 1666 prism light splitting experiment points to decomposing the RGB color spectrum.
+2. Artwork Context   -> The image is Pink Floyd's "The Dark Side of the Moon" (famous for Newton prism cover art).
+3. Channel Anomaly   -> Inspecting color distributions reveals the Blue (B) channel has an abnormal max of 215 and anomalous bit plane 5 distribution.
+4. Differential DSP  -> Computing absolute difference |R - B| eliminates background black pixels and sharply outlines modified blue pixels.
+5. Contrast Boost    -> Increasing contrast 50x exposes the clear text flag in the lower-left dark backdrop: CSSCTF{SHINE_ON}.
+```
+
+---
+
+### 1.1. Challenge Description & Clue Analysis
 
 > In 1666 Issac Newton split light into their composite wavelengths. Can you?
 >
@@ -30,9 +63,9 @@ The challenge clue references Isaac Newton's 1666 experiment using a **prism** t
 
 ---
 
-## Step 1: Initial File Analysis
+### 1.2. Initial File Analysis & Metadata Inspection
 
-### 1.1 BMP Header Inspection
+#### 1.2.1. BMP Header Inspection
 
 ```python
 with open('colorshiftctf.bmp', 'rb') as f:
@@ -50,7 +83,7 @@ with open('colorshiftctf.bmp', 'rb') as f:
 
 The file is a standard uncompressed 24-bit BMP image with dimensions of 599×602 pixels. Without compression, each pixel directly stores its raw R, G, and B channel bytes.
 
-### 1.2 Identifying the Source Image
+#### 1.2.2. Identifying the Source Image
 
 Inspecting the image reveals that it is the album cover of **Pink Floyd's "The Dark Side of the Moon" (1973)** — depicting white light refracting through a triangular prism and dispersing into a rainbow spectrum.
 
@@ -59,9 +92,9 @@ Inspecting the image reveals that it is the album cover of **Pink Floyd's "The D
 
 ---
 
-## Step 2: Color Channel Analysis
+### 1.3. Color Channel & Bit Plane Statistical Analysis
 
-### 2.1 Per-Channel Statistics
+#### 1.3.1. Per-Channel Statistics
 
 ```python
 from PIL import Image
@@ -84,7 +117,7 @@ B: min=0, max=215, unique=215  <- narrower range, fewer unique values
 > [!IMPORTANT]
 > The **Blue (B)** channel has a maximum value of only 215 and contains only 215 unique values — diverging notably from R and G. This discrepancy suggests the Blue channel was selectively modified.
 
-### 2.2 Bit Plane Analysis
+#### 1.3.2. Bit Plane Analysis
 
 ```python
 for i, ch in enumerate(['R','G','B']):
@@ -106,9 +139,9 @@ Bit plane 5 of the Blue channel exhibits an abnormally high mean ratio, indicati
 
 ---
 
-## Step 3: Flag Discovery Technique — Channel Difference
+### 1.4. Channel Difference Technique & Flag Discovery
 
-### 3.1 Concept
+#### 1.4.1. Concept
 
 The **Channel Difference** technique (color plane subtraction) calculates the absolute difference between two color channels. If one channel was altered to embed data while another serves as an unmodified baseline, subtraction exposes the discrepancies:
 
@@ -118,7 +151,7 @@ diff(R, B) = |R_pixel - B_pixel|
 
 In natural, unmodified images, R and B channels correlate closely across dark backgrounds. When subtle modifications are applied to B, computing the absolute difference elevates the contrast around altered pixel regions.
 
-### 3.2 Implementation
+#### 1.4.2. Implementation
 
 ```python
 diff_rb = np.abs(arr[:,:,0].astype(int) - arr[:,:,2].astype(int)).astype(np.uint8)
@@ -130,7 +163,7 @@ enhanced = ImageEnhance.Contrast(diff_image).enhance(50.0)
 enhanced.save('diff_RB_enhanced.png')
 ```
 
-### 3.3 Result
+#### 1.4.3. Result & Flag Extraction
 
 The contrast-enhanced differential image clearly exposes the hidden text:
 
@@ -142,17 +175,14 @@ The flag is positioned across the **lower-left region** of the image (approximat
 
 ---
 
-## Flag
+> **Captured Flag:** `CSSCTF{SHINE_ON}`
 
-```
-CSSCTF{SHINE_ON}
-```
 
 **Context:** "Shine On" references the Pink Floyd track **"Shine On You Crazy Diamond"** from the 1975 album *Wish You Were Here*, maintaining the thematic link with *The Dark Side of the Moon*.
 
 ---
 
-## Analysis Diagram
+### 1.5. Analysis Diagram
 
 ```
 colorshiftctf.bmp (BMP 24-bit, 599x602)
@@ -168,7 +198,7 @@ colorshiftctf.bmp (BMP 24-bit, 599x602)
 
 ---
 
-## Complete Exploit Script
+### 1.6. Complete Exploit Script
 
 ```python
 #!/usr/bin/env python3
@@ -250,9 +280,9 @@ FLAG: CSSCTF{SHINE_ON}
 
 ---
 
-## Steganography Mechanism Analysis
+### 1.7. Steganography Mechanism Analysis
 
-### Embedding Methodology
+#### 1.7.1. Embedding Methodology
 
 Text was embedded by adjusting the Blue channel values on pixels tracing the characters:
 
@@ -267,7 +297,7 @@ This technique functions as **Color Channel Steganography**, distinct from stand
 - **LSB Steganography:** Alters the least significant bit (+/-1), which is visually imperceptible.
 - **Color Channel Steganography:** Modifies whole pixel values (+/-20-50), generating perceptible outlines when computing inter-channel differences.
 
-### Rationale for R vs B Selection
+#### 1.7.2. Rationale for R vs B Selection
 
 - *The Dark Side of the Moon* cover predominantly features dark, neutral black tones where R ≈ B across most pixels.
 - Tampering with B introduces a pronounced contrast offset relative to R.
@@ -275,7 +305,7 @@ This technique functions as **Color Channel Steganography**, distinct from stand
 
 ---
 
-## Key Takeaways
+### 1.8. Key Takeaways & Methodology
 
 | Step | Technique | Tools |
 |------|-----------|-------|
@@ -296,3 +326,4 @@ This technique functions as **Color Channel Steganography**, distinct from stand
 
 > [!NOTE]
 > Challenge descriptions often provide valuable hints. *"Newton split light into composite wavelengths"* indicated channel decomposition, while the Pink Floyd artwork pointed toward *"Shine On"* as the hidden flag.
+
