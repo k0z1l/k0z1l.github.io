@@ -148,7 +148,7 @@ Examining positional characteristics (fixed length of 40 characters) across the 
 
 #### 2.3.1. Step 1: Compute Shift from Prefix `CSSCTF`
 Knowing the first 6 characters of the plaintext are always `CSSCTF`, the exact shift $S(t, p)$ at each second $t$ for positions $p \in [0, 5]$ can be computed:
-$$S(t, p) = (C[t][p] - \text{"CSSCTF"}[p]) \pmod{26}$$
+$$S(t, p) = (C[t][p] - P_{\text{CSSCTF}}[p]) \pmod{26}$$
 
 #### 2.3.2. Step 2: Column Phase Offset Correlation ($\Delta t = 34$)
 Comparing the time-series shift of column $p$ with the subsequent column $p+1$ reveals a perfect synchronization law:
@@ -176,9 +176,9 @@ For each timestamp $t$ and character position $p$ (alphanumeric characters only,
    $$\text{key\_index} = (t - 34 \times p) \pmod{77}$$
 2. Retrieve the corresponding shift value from the key array: $\text{shift} = K[\text{key\_index}]$
 3. Decrypt accordingly:
-   - Uppercase letter: $(C - \text{'A'} - \text{shift}) \pmod{26} + \text{'A'}$
-   - Lowercase letter: $(C - \text{'a'} - \text{shift}) \pmod{26} + \text{'a'}$
-   - Digit: $(C - \text{'0'} - \text{shift}) \pmod{10} + \text{'0'}$
+   - **Uppercase letter (`A-Z`):** `(ord(C) - ord('A') - shift) % 26 + ord('A')`
+   - **Lowercase letter (`a-z`):** `(ord(C) - ord('a') - shift) % 26 + ord('a')`
+   - **Digit (`0-9`):** `(ord(C) - ord('0') - shift) % 10 + ord('0')`
 
 Testing decryption across all 77 states produces **the exact same unique plaintext** with 0 discrepancies.
 

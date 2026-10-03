@@ -47,6 +47,7 @@ logo = "logo.png"
   showWordCount = true
   showReadingTime = true
   showTags = false
+  math = true
 
 [list]
   showTableOfContents = false
