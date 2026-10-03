@@ -103,7 +103,7 @@ print(f"[+] Flag: {flag}")
 ```
 
 ### 1.4. Flag
-$$\mathbf{CSSCTF\{every\_second\_hides\_a\_secret\}}$$
+> **Captured Flag:** `CSSCTF{every_second_hides_a_secret}`
 
 ---
 
@@ -272,7 +272,7 @@ print(f"[+] Successfully decrypted Flag: {flag}")
 ```
 
 ### 2.6. Flag
-$$\mathbf{CSSCTF\{th3\_cl0ck\_r3m3mb3rs\_3very\_s3c0nd\}}$$
+> **Captured Flag:** `CSSCTF{th3_cl0ck_r3m3mb3rs_3very_s3c0nd}`
 
 ---
 
@@ -623,7 +623,7 @@ if __name__ == "__main__":
 
 ### 3.6. Flag
 
-$$\mathbf{CSSCTF\{tr4c3\_1nv4r14nc3\_4nd\_4c0ust1c\_sp3ctr4\_7f9b8c\}}$$
+> **Captured Flag:** `CSSCTF{tr4c3_1nv4r14nc3_4nd_4c0ust1c_sp3ctr4_7f9b8c}`
 
 ---
 
@@ -1220,7 +1220,7 @@ print("=" * 48 + "\n")
 
 ### 4.6. Flag
 
-$$\mathbf{CSSCTF\{P35T0\_5CH3M3\_4TT4CK2026\}}$$
+> **Captured Flag:** `CSSCTF{P35T0_5CH3M3_4TT4CK2026}`
 
 *(Flag Meaning: **PESTO Scheme Attack** - PESTO is a culinary pun referencing pesto sauce (oil and vinegar blended with herbs), symbolizing the hybridization between the Tame triangular transformation layer and the Unbalanced Oil and Vinegar (UOV) layer).*
 

@@ -161,7 +161,8 @@ print(f"[+] Correct Flag: {flag}")
 ```
 
 ### 1.6. Flag
-$$\mathbf{CSSCTF\{P1JT-21.0\}}$$
+
+> **Captured Flag:** `CSSCTF{P1JT-21.0}`
 
 ---
 
@@ -341,7 +342,9 @@ print(f"[+] Final Flag (136 characters): {flag}")
 ```
 
 ### 2.7. Flag
-$$\mathbf{CSSCTF\{STARmaPdElAUNaYTriaNGulATioNDIjKStrAVoRonoiGrAPHSdetERmiNaNTcolineaRALGOrITHmSLeEandsCHAcHTERTANgEnTSmErGECirCuMcIrcLEcOnVEXhuLLgeOMeTRy\}}$$
+
+> **Captured Flag:**  
+> `CSSCTF{STARmaPdElAUNaYTriaNGulATioNDIjKStrAVoRonoiGrAPHSdetERmiNaNTcolineaRALGOrITHmSLeEandsCHAcHTERTANgEnTSmErGECirCuMcIrcLEcOnVEXhuLLgeOMeTRy}`
 
 ---
 
@@ -568,7 +571,9 @@ print("=" * 80)
 ```
 
 ### 3.7. Flag
-$$\mathbf{CSSCTF\{itr6G8jMTXbOjCmClmMElZxQLqSXqnf53z1Z73liVas3ypn5CJZ4ZGlqZo6Fkc2onoJ6vx5SLfqqEyBotfjpxskQknpUgK9VMfBsFqzc0iEHDbMvv1hwXAo4U1NaimtTt9esb6mskMdUkbgBAjg3TTS1UeTSvf7LFZR0Vxf8KOgkzxHmvO0ifOFaVnwNgwUqpeo9\}}$$
+
+> **Captured Flag:**  
+> `CSSCTF{itr6G8jMTXbOjCmClmMElZxQLqSXqnf53z1Z73liVas3ypn5CJZ4ZGlqZo6Fkc2onoJ6vx5SLfqqEyBotfjpxskQknpUgK9VMfBsFqzc0iEHDbMvv1hwXAo4U1NaimtTt9esb6mskMdUkbgBAjg3TTS1UeTSvf7LFZR0Vxf8KOgkzxHmvO0ifOFaVnwNgwUqpeo9}`
 
 ---
 
@@ -1171,7 +1176,7 @@ Transmitting raw telemetry vector (hex max 512 bytes):
 CSSCTF{0ur0b0r0s_g00d_j0b_b01s_heh3_67}
 ```
 
-$$\mathbf{CSSCTF\{0ur0b0r0s\_g00d\_j0b\_b01s\_heh3\_67\}}$$
+> **Captured Flag:** `CSSCTF{0ur0b0r0s_g00d_j0b_b01s_heh3_67}`
 
 #### 4.8.2. Key Takeaways
 1. **Synergy of VM Reverse Engineering and Cryptanalysis:** This challenge bridges low-level bytecode analysis of self-modifying architectures with advanced algebraic structures (Elliptic Curves, coupled circular recurrence).

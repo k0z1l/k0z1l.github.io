@@ -16,3 +16,26 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#060305">
+<style>
+/* Prevent long flags, strings, and tokens from overflowing across Table of Contents */
+article, .prose {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.prose code,
+.prose blockquote,
+.prose p,
+.prose li {
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+/* Ensure KaTeX block formulas never overflow the container */
+.katex-display {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin;
+}
+</style>
