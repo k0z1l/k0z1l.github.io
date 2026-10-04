@@ -43,5 +43,6 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **11** | [Response queue poisoning via H2.TE request smuggling](lab-11-HTTP%20request%20smuggling-response%20queue%20poisoning%20via%20H2.TE%20request%20smuggling/) | Practitioner | Exploiting H2.TE HTTP/2 downgrading to poison the FIFO response queue and capture admin sessions |
 | **12** | [H2.CL request smuggling](lab-12-HTTP%20request%20smuggling-H2.CL%20request%20smuggling/) | Practitioner | Exploiting H2.CL downgrading and on-site path redirection to hijack script imports and execute XSS |
 | **13** | [HTTP/2 request smuggling via CRLF injection](lab-13-HTTP%20request%20smuggling-H2%20request%20smuggling%20via%20CRLF%20injection/) | Practitioner | Injecting CRLF into HTTP/2 headers to synthesize Transfer-Encoding: chunked and capture sessions |
+| **14** | [HTTP/2 request splitting via CRLF injection](lab-14-HTTP%20request%20smuggling-H2%20request%20splitting%20via%20CRLF%20injection/) | Practitioner | Weaponizing header CRLF injection to split bodyless GET requests and poison response queues |
 
 *Upcoming challenges will be continuously documented here.*
