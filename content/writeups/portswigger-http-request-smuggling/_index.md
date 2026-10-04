@@ -47,5 +47,7 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **15** | [CL.0 request smuggling](lab-15-HTTP%20request%20smuggling-CL.0%20request%20smuggling/) | Practitioner | Exploiting static asset handlers that ignore Content-Length to bypass perimeter admin controls |
 | **16** | [Exploiting HTTP request smuggling to perform web cache poisoning](lab-16-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20poisoning/) | Expert | Chaining CL.TE smuggling with open redirection to poison the front-end cache and deliver persistent XSS |
 | **17** | [Exploiting HTTP request smuggling to perform web cache deception](lab-17-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20deception/) | Expert | Exploiting CL.TE smuggling and static cache heuristics to capture victim account data into the public cache |
+| **18** | [Bypassing access controls via HTTP/2 request tunnelling](lab-18-HTTP%20request%20smuggling-bypassing%20access%20controls%20via%20H2%20request%20tunnelling/) | Expert | HTTP/2 downgrading and header name CRLF injection to leak internal auth headers and tunnel admin requests |
 
 *Upcoming challenges will be continuously documented here.*
+
