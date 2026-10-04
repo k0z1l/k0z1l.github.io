@@ -45,5 +45,6 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **13** | [HTTP/2 request smuggling via CRLF injection](lab-13-HTTP%20request%20smuggling-H2%20request%20smuggling%20via%20CRLF%20injection/) | Practitioner | Injecting CRLF into HTTP/2 headers to synthesize Transfer-Encoding: chunked and capture sessions |
 | **14** | [HTTP/2 request splitting via CRLF injection](lab-14-HTTP%20request%20smuggling-H2%20request%20splitting%20via%20CRLF%20injection/) | Practitioner | Weaponizing header CRLF injection to split bodyless GET requests and poison response queues |
 | **15** | [CL.0 request smuggling](lab-15-HTTP%20request%20smuggling-CL.0%20request%20smuggling/) | Practitioner | Exploiting static asset handlers that ignore Content-Length to bypass perimeter admin controls |
+| **16** | [Exploiting HTTP request smuggling to perform web cache poisoning](lab-16-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20poisoning/) | Expert | Chaining CL.TE smuggling with open redirection to poison the front-end cache and deliver persistent XSS |
 
 *Upcoming challenges will be continuously documented here.*
