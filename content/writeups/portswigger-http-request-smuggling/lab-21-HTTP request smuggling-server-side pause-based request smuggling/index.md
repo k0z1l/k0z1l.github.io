@@ -227,6 +227,18 @@ def handleResponse(req, interesting):
     table.add(req)
 ```
 
+#### Detailed Breakdown of the Turbo Intruder Script:
+* **`def queueRequests(target, wordlists)`**: The primary entry-point function invoked by Turbo Intruder to schedule and dispatch network requests.
+* **`endpoint=target.endpoint`**: Automatically binds the socket target (scheme, host, and port) to the target application extracted from Burp Repeater.
+* **`concurrentConnections=1`**: **Critical parameter.** Restricts Turbo Intruder to establishing strictly **one single TCP connection**. This guarantees that all bytes are transmitted over the exact same socket, preventing the tool from spawning secondary connections that would mask or disrupt socket desynchronization.
+* **`requestsPerConnection=500`**: Configures the Keep-Alive pool to permit up to 500 sequential request-response cycles across this single socket without premature client-side teardown.
+* **`pipeline=False`**: Disables HTTP pipelining on the client side, ensuring standard serialized request/response handling.
+* **`engine=Engine.THREADED`**: Explicitly selects the classic multi-threaded socket engine. As analyzed in Section 2.3, the default `Engine.AUTO` manages socket pools dynamically and throws a runtime exception if `concurrentConnections=1` is specified manually.
+* **`pauseMarker=['\r\n\r\n']`**: Directs the low-level byte-streaming engine to inspect the outgoing data stream. When it detects the empty line sequence (`\r\n\r\n`) indicating the end of the outer request headers, it halts socket transmission immediately before writing the request body.
+* **`pauseTime=61000`**: Freezes socket transmission for exactly **61,000 milliseconds (61 seconds)**. Because Apache's `RequestReadTimeout body=60` directive terminates body reads after 60 seconds, this 61-second delay forces Apache's body timeout to expire, triggering the desynchronization flaw while keeping the socket open.
+* **`engine.queue(target.req)`**: Queues the follow-up request to read and display the subsequent response arriving on the same socket stream.
+* **`def handleResponse(req, interesting)` & `table.add(req)`**: Callback executed whenever a response is received from the server. `table.add(req)` displays each completed HTTP transaction as a row in the Turbo Intruder results table for inspection.
+
 ---
 
 ### 3.3. Phase 3: Probing for Desynchronization & Access Control Verification
