@@ -49,7 +49,9 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **17** | [Exploiting HTTP request smuggling to perform web cache deception](lab-17-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20deception/) | Expert | Exploiting CL.TE smuggling and static cache heuristics to capture victim account data into the public cache |
 | **18** | [Bypassing access controls via HTTP/2 request tunnelling](lab-18-HTTP%20request%20smuggling-bypassing%20access%20controls%20via%20H2%20request%20tunnelling/) | Expert | HTTP/2 downgrading and header name CRLF injection to leak internal auth headers and tunnel admin requests |
 | **19** | [Web cache poisoning via HTTP/2 request tunnelling](lab-19-HTTP%20request%20smuggling-web%20cache%20poisoning%20via%20H2%20request%20tunnelling/) | Expert | CRLF injection in :path pseudo-header to tunnel redirect responses via HEAD requests and poison the front-end cache |
+| **20** | [Client-side desync](lab-20-HTTP%20request%20smuggling-client-side%20desync/) | Expert | Exploiting browser connection pooling and server-side CL.0 to hijack persistent Keep-Alive sockets and steal session cookies |
 
 *Upcoming challenges will be continuously documented here.*
+
 
 
