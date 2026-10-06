@@ -18,30 +18,30 @@ HTTP Request Smuggling is one of the most structurally complex, high-impact vuln
 
 The table below catalogs all 22 challenges, tracking the evolution of HTTP Request Smuggling from classic HTTP/1.1 boundary desynchronization to modern browser-powered desync and 0.CL double-desync attacks:
 
-| Lab | Challenge Name | Level | Attack Generation | Primary Exploit Technique & Vector |
+| <span style="white-space: nowrap">Lab</span> | Challenge Name | <span style="white-space: nowrap">Level</span> | <span style="white-space: nowrap">Attack Generation</span> | Primary Exploit Technique & Vector |
 | :---: | :--- | :---: | :---: | :--- |
-| **01** | [HTTP request smuggling, basic CL.TE vulnerability](lab-01-HTTP%20request%20smuggling-basic%20CL.TE%20vulnerability/) | Practitioner | Gen 1: Classic HTTP/1.1 | Front-end relies on `Content-Length`, Back-end relies on `Transfer-Encoding`, mutating subsequent victim requests into `GPOST` |
-| **02** | [HTTP request smuggling, basic TE.CL vulnerability](lab-02-HTTP%20request%20smuggling-basic%20TE.CL%20vulnerability/) | Practitioner | Gen 1: Classic HTTP/1.1 | Front-end processes chunked stream, Back-end processes byte length, leaving unread chunk fragments to corrupt incoming traffic |
-| **03** | [HTTP request smuggling, obfuscating the TE header](lab-03-HTTP%20request%20smuggling-obfuscating%20the%20TE%20header/) | Practitioner | Gen 1: Classic HTTP/1.1 | TE.TE parser divergence via header obfuscation (`Transfer-Encoding: xchunked`, whitespace, duplicate headers) |
-| **04** | [HTTP request smuggling, confirming a CL.TE vulnerability via differential responses](lab-04-HTTP%20request%20smuggling-confirming%20a%20CL.TE%20vulnerability%20via%20differential%20responses/) | Practitioner | Gen 1: Classic HTTP/1.1 | Non-destructive validation of CL.TE desync by inducing a forced `404 Not Found` response on secondary requests |
-| **05** | [HTTP request smuggling, confirming a TE.CL vulnerability via differential responses](lab-05-HTTP%20request%20smuggling-confirming%20a%20TE.CL%20vulnerability%20via%20differential%20responses/) | Practitioner | Gen 1: Classic HTTP/1.1 | Non-destructive validation of TE.CL desync by inducing a forced `404 Not Found` response on secondary requests |
-| **06** | [HTTP request smuggling, bypassing front-end security controls, CL.TE vulnerability](lab-06-HTTP%20request%20smuggling-bypassing%20front-end%20security%20controls,%20CL.TE%20vulnerability/) | Practitioner | Gen 1: Classic HTTP/1.1 | Weaponizing CL.TE smuggling to bypass perimeter `/admin` blocks and forge `Host: localhost` headers |
-| **07** | [HTTP request smuggling, bypassing front-end security controls, TE.CL vulnerability](lab-07-HTTP%20request%20smuggling-bypassing%20front-end%20security%20controls,%20TE.CL%20vulnerability/) | Practitioner | Gen 1: Classic HTTP/1.1 | Weaponizing TE.CL smuggling to bypass perimeter `/admin` blocks and forge `Host: localhost` headers |
-| **08** | [HTTP request smuggling, revealing front-end request rewriting](lab-08-HTTP%20request%20smuggling-revealing%20front-end%20request%20rewriting/) | Practitioner | Gen 1: Classic HTTP/1.1 | Exfiltrating internal proxy headers (`X-Gkxtgp-Ip`) by reflecting them into search parameter response sinks |
-| **09** | [HTTP request smuggling, capturing other users' requests](lab-09-HTTP%20request%20smuggling-capturing%20other%20users%20requests/) | Practitioner | Gen 1: Classic HTTP/1.1 | Exfiltrating victim credentials and session cookies by appending unread request bodies to public blog comment sinks |
-| **10** | [HTTP request smuggling, delivering reflected XSS](lab-10-HTTP%20request%20smuggling-delivering%20reflected%20XSS/) | Practitioner | Gen 1: Classic HTTP/1.1 | Chaining request smuggling with unexploitable `User-Agent` reflected XSS to achieve zero-click client-side code execution |
-| **11** | [Response queue poisoning via H2.TE request smuggling](lab-11-HTTP%20request%20smuggling-response%20queue%20poisoning%20via%20H2.TE%20request%20smuggling/) | Practitioner | Gen 2: HTTP/2 Downgrade | Exploiting H2.TE downgrading to poison the back-end FIFO response queue and steal administrative credentials |
-| **12** | [H2.CL request smuggling](lab-12-HTTP%20request%20smuggling-H2.CL%20request%20smuggling/) | Practitioner | Gen 2: HTTP/2 Downgrade | Weaponizing H2.CL downgrading and on-site redirect heuristics to hijack script imports and deliver stored XSS |
-| **13** | [HTTP/2 request smuggling via CRLF injection](lab-13-HTTP%20request%20smuggling-H2%20request%20smuggling%20via%20CRLF%20injection/) | Practitioner | Gen 2: HTTP/2 Downgrade | Injecting CRLF into HTTP/2 binary header values to synthesize downstream `Transfer-Encoding: chunked` headers |
-| **14** | [HTTP/2 request splitting via CRLF injection](lab-14-HTTP%20request%20smuggling-H2%20request%20splitting%20via%20CRLF%20injection/) | Practitioner | Gen 2: HTTP/2 Downgrade | Injecting double CRLF (`\r\n\r\n`) to split bodyless GET requests into two distinct HTTP/1.1 transactions, poisoning queues |
-| **15** | [CL.0 request smuggling](lab-15-HTTP%20request%20smuggling-CL.0%20request%20smuggling/) | Practitioner | Gen 4: Next-Gen State Desync | Exploiting back-end endpoints that ignore `Content-Length` on static assets to bypass perimeter admin access controls |
-| **16** | [Exploiting HTTP request smuggling to perform web cache poisoning](lab-16-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20poisoning/) | Expert | Gen 3: Advanced Caching | Chaining CL.TE smuggling with open redirection to poison the front-end static cache and execute persistent XSS |
-| **17** | [Exploiting HTTP request smuggling to perform web cache deception](lab-17-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20deception/) | Expert | Gen 3: Advanced Caching | Inducing static caching heuristics on private authenticated responses (`/my-account`) to exfiltrate victim API keys |
-| **18** | [Bypassing access controls via HTTP/2 request tunnelling](lab-18-HTTP%20request%20smuggling-bypassing%20access%20controls%20via%20H2%20request%20tunnelling/) | Expert | Gen 3: Request Tunnelling | Leaking internal client auth headers via reflection sinks, then tunnelling privileged `HEAD /login` admin requests |
-| **19** | [Web cache poisoning via HTTP/2 request tunnelling](lab-19-HTTP%20request%20smuggling-web%20cache%20poisoning%20via%20H2%20request%20tunnelling/) | Expert | Gen 3: Request Tunnelling | Injecting CRLF into `:path` to tunnel a padded unencoded redirect via `HEAD`, poisoning the homepage cache with XSS |
-| **20** | [Client-side desync](lab-20-HTTP%20request%20smuggling-client-side%20desync/) | Expert | Gen 4: Browser-Powered CSD | Weaponizing browser connection pooling and server-side CL.0 via cross-origin fetch to exfiltrate victim session cookies |
-| **21** | [Server-side pause-based request smuggling](lab-21-HTTP%20request%20smuggling-server-side%20pause-based%20request%20smuggling/) | Expert | Gen 4: Pause-Based Desync | Exploiting Apache `mod_reqtimeout` body timeouts on directory redirects via Turbo Intruder byte-pause streaming |
-| **22** | [0.CL request smuggling](lab-22-HTTP%20request%20smuggling-0.CL%20request%20smuggling/) | Expert | Gen 4: Double-Desync Endgame | Defeating upstream deadlocks via Early-Response Gadgets & whitespace obfuscation to execute a Double-Desync pipeline |
+| <span style="white-space: nowrap">**1**</span> | [HTTP request smuggling, basic CL.TE vulnerability](lab-01-HTTP%20request%20smuggling-basic%20CL.TE%20vulnerability/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Front-end relies on `Content-Length`, Back-end relies on `Transfer-Encoding`, mutating subsequent victim requests into `GPOST` |
+| <span style="white-space: nowrap">**2**</span> | [HTTP request smuggling, basic TE.CL vulnerability](lab-02-HTTP%20request%20smuggling-basic%20TE.CL%20vulnerability/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Front-end processes chunked stream, Back-end processes byte length, leaving unread chunk fragments to corrupt incoming traffic |
+| <span style="white-space: nowrap">**3**</span> | [HTTP request smuggling, obfuscating the TE header](lab-03-HTTP%20request%20smuggling-obfuscating%20the%20TE%20header/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | TE.TE parser divergence via header obfuscation (`Transfer-Encoding: xchunked`, whitespace, duplicate headers) |
+| <span style="white-space: nowrap">**4**</span> | [HTTP request smuggling, confirming a CL.TE vulnerability via differential responses](lab-04-HTTP%20request%20smuggling-confirming%20a%20CL.TE%20vulnerability%20via%20differential%20responses/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Non-destructive validation of CL.TE desync by inducing a forced `404 Not Found` response on secondary requests |
+| <span style="white-space: nowrap">**5**</span> | [HTTP request smuggling, confirming a TE.CL vulnerability via differential responses](lab-05-HTTP%20request%20smuggling-confirming%20a%20TE.CL%20vulnerability%20via%20differential%20responses/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Non-destructive validation of TE.CL desync by inducing a forced `404 Not Found` response on secondary requests |
+| <span style="white-space: nowrap">**6**</span> | [HTTP request smuggling, bypassing front-end security controls, CL.TE vulnerability](lab-06-HTTP%20request%20smuggling-bypassing%20front-end%20security%20controls,%20CL.TE%20vulnerability/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Weaponizing CL.TE smuggling to bypass perimeter `/admin` blocks and forge `Host: localhost` headers |
+| <span style="white-space: nowrap">**7**</span> | [HTTP request smuggling, bypassing front-end security controls, TE.CL vulnerability](lab-07-HTTP%20request%20smuggling-bypassing%20front-end%20security%20controls,%20TE.CL%20vulnerability/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Weaponizing TE.CL smuggling to bypass perimeter `/admin` blocks and forge `Host: localhost` headers |
+| <span style="white-space: nowrap">**8**</span> | [HTTP request smuggling, revealing front-end request rewriting](lab-08-HTTP%20request%20smuggling-revealing%20front-end%20request%20rewriting/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Exfiltrating internal proxy headers (`X-Gkxtgp-Ip`) by reflecting them into search parameter response sinks |
+| <span style="white-space: nowrap">**9**</span> | [HTTP request smuggling, capturing other users' requests](lab-09-HTTP%20request%20smuggling-capturing%20other%20users%20requests/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Exfiltrating victim credentials and session cookies by appending unread request bodies to public blog comment sinks |
+| <span style="white-space: nowrap">**10**</span> | [HTTP request smuggling, delivering reflected XSS](lab-10-HTTP%20request%20smuggling-delivering%20reflected%20XSS/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 1: Classic HTTP/1.1</span> | Chaining request smuggling with unexploitable `User-Agent` reflected XSS to achieve zero-click client-side code execution |
+| <span style="white-space: nowrap">**11**</span> | [Response queue poisoning via H2.TE request smuggling](lab-11-HTTP%20request%20smuggling-response%20queue%20poisoning%20via%20H2.TE%20request%20smuggling/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 2: HTTP/2 Downgrade</span> | Exploiting H2.TE downgrading to poison the back-end FIFO response queue and steal administrative credentials |
+| <span style="white-space: nowrap">**12**</span> | [H2.CL request smuggling](lab-12-HTTP%20request%20smuggling-H2.CL%20request%20smuggling/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 2: HTTP/2 Downgrade</span> | Weaponizing H2.CL downgrading and on-site redirect heuristics to hijack script imports and deliver stored XSS |
+| <span style="white-space: nowrap">**13**</span> | [HTTP/2 request smuggling via CRLF injection](lab-13-HTTP%20request%20smuggling-H2%20request%20smuggling%20via%20CRLF%20injection/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 2: HTTP/2 Downgrade</span> | Injecting CRLF into HTTP/2 binary header values to synthesize downstream `Transfer-Encoding: chunked` headers |
+| <span style="white-space: nowrap">**14**</span> | [HTTP/2 request splitting via CRLF injection](lab-14-HTTP%20request%20smuggling-H2%20request%20splitting%20via%20CRLF%20injection/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 2: HTTP/2 Downgrade</span> | Injecting double CRLF (`\r\n\r\n`) to split bodyless GET requests into two distinct HTTP/1.1 transactions, poisoning queues |
+| <span style="white-space: nowrap">**15**</span> | [CL.0 request smuggling](lab-15-HTTP%20request%20smuggling-CL.0%20request%20smuggling/) | <span style="white-space: nowrap">Practitioner</span> | <span style="white-space: nowrap">Gen 4: Next-Gen State Desync</span> | Exploiting back-end endpoints that ignore `Content-Length` on static assets to bypass perimeter admin access controls |
+| <span style="white-space: nowrap">**16**</span> | [Exploiting HTTP request smuggling to perform web cache poisoning](lab-16-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20poisoning/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 3: Advanced Caching</span> | Chaining CL.TE smuggling with open redirection to poison the front-end static cache and execute persistent XSS |
+| <span style="white-space: nowrap">**17**</span> | [Exploiting HTTP request smuggling to perform web cache deception](lab-17-HTTP%20request%20smuggling-exploiting%20HTTP%20request%20smuggling%20to%20perform%20web%20cache%20deception/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 3: Advanced Caching</span> | Inducing static caching heuristics on private authenticated responses (`/my-account`) to exfiltrate victim API keys |
+| <span style="white-space: nowrap">**18**</span> | [Bypassing access controls via HTTP/2 request tunnelling](lab-18-HTTP%20request%20smuggling-bypassing%20access%20controls%20via%20H2%20request%20tunnelling/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 3: Request Tunnelling</span> | Leaking internal client auth headers via reflection sinks, then tunnelling privileged `HEAD /login` admin requests |
+| <span style="white-space: nowrap">**19**</span> | [Web cache poisoning via HTTP/2 request tunnelling](lab-19-HTTP%20request%20smuggling-web%20cache%20poisoning%20via%20H2%20request%20tunnelling/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 3: Request Tunnelling</span> | Injecting CRLF into `:path` to tunnel a padded unencoded redirect via `HEAD`, poisoning the homepage cache with XSS |
+| <span style="white-space: nowrap">**20**</span> | [Client-side desync](lab-20-HTTP%20request%20smuggling-client-side%20desync/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 4: Browser-Powered CSD</span> | Weaponizing browser connection pooling and server-side CL.0 via cross-origin fetch to exfiltrate victim session cookies |
+| <span style="white-space: nowrap">**21**</span> | [Server-side pause-based request smuggling](lab-21-HTTP%20request%20smuggling-server-side%20pause-based%20request%20smuggling/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 4: Pause-Based Desync</span> | Exploiting Apache `mod_reqtimeout` body timeouts on directory redirects via Turbo Intruder byte-pause streaming |
+| <span style="white-space: nowrap">**22**</span> | [0.CL request smuggling](lab-22-HTTP%20request%20smuggling-0.CL%20request%20smuggling/) | <span style="white-space: nowrap">Expert</span> | <span style="white-space: nowrap">Gen 4: Double-Desync Endgame</span> | Defeating upstream deadlocks via Early-Response Gadgets & whitespace obfuscation to execute a Double-Desync pipeline |
 
 ---
 
@@ -75,9 +75,9 @@ Under RFC 7230 §3.3.3 and RFC 9112 §6.1, the standards committee recognized th
 > *"If a message is received with both a Transfer-Encoding and a Content-Length header field, the Transfer-Encoding overrides the Content-Length."*
 
 In reality, web server developers prioritize performance, backwards compatibility, and legacy resilience over strict standard adherence:
-* **CL.TE Topology (Labs 01, 04, 06):** The edge proxy prioritizes `Content-Length` (or lacks chunked processing on incoming client streams), while the backend complies with RFC and evaluates `Transfer-Encoding: chunked`.
-* **TE.CL Topology (Labs 02, 05, 07):** The edge proxy evaluates `Transfer-Encoding: chunked`, while the backend ignores chunked encoding (due to reverse proxy misconfiguration or legacy web server defaults) and evaluates `Content-Length`.
-* **TE.TE Header Obfuscation (Lab 03):** Both servers ostensibly support `Transfer-Encoding: chunked`. However, by injecting subtle non-compliances (e.g., `Transfer-Encoding: xchunked`, whitespace before the colon `Transfer-Encoding : chunked`, duplicate headers, or tab characters), an attacker forces one parser to reject the header while the other accepts it, deliberately degrading the connection into either CL.TE or TE.CL.
+* **CL.TE Topology (Labs 1, 4, 6):** The edge proxy prioritizes `Content-Length` (or lacks chunked processing on incoming client streams), while the backend complies with RFC and evaluates `Transfer-Encoding: chunked`.
+* **TE.CL Topology (Labs 2, 5, 7):** The edge proxy evaluates `Transfer-Encoding: chunked`, while the backend ignores chunked encoding (due to reverse proxy misconfiguration or legacy web server defaults) and evaluates `Content-Length`.
+* **TE.TE Header Obfuscation (Lab 3):** Both servers ostensibly support `Transfer-Encoding: chunked`. However, by injecting subtle non-compliances (e.g., `Transfer-Encoding: xchunked`, whitespace before the colon `Transfer-Encoding : chunked`, duplicate headers, or tab characters), an attacker forces one parser to reject the header while the other accepts it, deliberately degrading the connection into either CL.TE or TE.CL.
 
 ### 1.3 Protocol Downgrading Impedance Mismatch (Labs 11–14, 18–19)
 The industry's transition toward HTTP/2 introduced a critical architectural vulnerability: **Protocol Downgrading**.
@@ -85,9 +85,9 @@ The industry's transition toward HTTP/2 introduced a critical architectural vuln
 * **The Downgrade Semantic Gap:** Edge proxies frequently negotiate HTTP/2 with client browsers but downgrade incoming traffic to HTTP/1.1 cleartext streams when forwarding to internal microservices. During this translation, binary header fields are serialized into ASCII lines: `Header-Name: Header-Value\r\n`.
 * **The Root Cause:** If the edge proxy fails to sanitize control characters (`0x0D`, `0x0A`, `0x00`) in HTTP/2 headers or pseudo-headers (such as `:path`), literal CRLF bytes are injected into the downstream HTTP/1.1 stream. This allows adversaries to synthesize illegal framing headers (`H2.TE` in Lab 11, `H2.CL` in Lab 12), split bodyless GET requests into distinct HTTP/1.1 transactions (`HTTP/2 Request Splitting` in Lab 14), or tunnel privileged requests inside dedicated connections (`Request Tunnelling` in Labs 18 and 19).
 
-### 1.4 The Connection Reuse Paradox (Labs 09, 11, 20)
+### 1.4 The Connection Reuse Paradox (Labs 9, 11, 20)
 To maximize throughput and eliminate TCP/TLS handshake latency, reverse proxies maintain long-lived **Keep-Alive connection pools** to backend application servers. Multiple independent requests from completely unrelated external users are multiplexed sequentially across the same shared TCP socket.
-* **Shared Blast Radius:** When an attacker desynchronizes a shared backend socket, the residual request prefix remains queued in the socket buffer. The next client whose request is routed over that socket is completely compromised—their request line is mutated, their session credentials are leaked into public comment sinks (Lab 09), or their private responses are misrouted to the attacker via FIFO response queue poisoning (Lab 11).
+* **Shared Blast Radius:** When an attacker desynchronizes a shared backend socket, the residual request prefix remains queued in the socket buffer. The next client whose request is routed over that socket is completely compromised—their request line is mutated, their session credentials are leaked into public comment sinks (Lab 9), or their private responses are misrouted to the attacker via FIFO response queue poisoning (Lab 11).
 * **The 1:1 Fallacy Disproven:** Modern research (Labs 18–20) disproved the common misconception that disabling connection pooling between users prevents request smuggling:
   * In **Request Tunnelling (Labs 18, 19)**, attackers tunnel unauthorized requests down their *own* dedicated 1:1 socket, using `HEAD` requests to consume responses.
   * In **Client-Side Desync (Lab 20)**, the attack occurs entirely between the *victim's browser* and the target server over the browser's own connection pool.
@@ -212,13 +212,13 @@ The 22 labs in this series represent the most comprehensive compendium of HTTP r
 
 ```text
 ========================================================================================
-                          MASTER ATTACK TAXONOMY (LABS 01 - 22)
+                          MASTER ATTACK TAXONOMY (LABS 1 - 22)
 ========================================================================================
 ```
 
-### Generation 1: Classic HTTP/1.1 Boundary Desync (Labs 01–10)
+### Generation 1: Classic HTTP/1.1 Boundary Desync (Labs 1–10)
 
-#### Lab 01: Basic CL.TE Vulnerability
+#### Lab 1: Basic CL.TE Vulnerability
 * **Mechanics:** Front-end uses `Content-Length: 6`; Back-end uses `Transfer-Encoding: chunked`.
 * **Payload Structure:**
   ```http
@@ -233,7 +233,7 @@ The 22 labs in this series represent the most comprehensive compendium of HTTP r
   ```
 * **Impact:** The back-end terminates at `0\r\n\r\n`. Character `G` lingers in the TCP buffer. The next incoming request (`POST /`) is mutated into `GPOST /`, triggering a `403 Forbidden` ("Unrecognized method GPOST").
 
-#### Lab 02: Basic TE.CL Vulnerability
+#### Lab 2: Basic TE.CL Vulnerability
 * **Mechanics:** Front-end uses `Transfer-Encoding: chunked`; Back-end uses `Content-Length: 4`.
 * **Payload Structure:**
   ```http
@@ -253,24 +253,24 @@ The 22 labs in this series represent the most comprehensive compendium of HTTP r
   ```
 * **Impact:** Front-end forwards chunk `5a` (90 bytes). Back-end reads only 4 bytes (`5a\r\n`), leaving `GPOST / HTTP/1.1...` in the socket buffer to corrupt the subsequent request.
 
-#### Lab 03: Obfuscating the TE Header (TE.TE)
+#### Lab 3: Obfuscating the TE Header (TE.TE)
 * **Mechanics:** Both servers support chunked encoding, but diverge when presented with duplicate or obfuscated headers.
 * **Obfuscation Techniques Tested:** `Transfer-Encoding: xchunked`, `Transfer-Encoding : chunked`, duplicate headers (`Transfer-Encoding: chunked` followed by `Transfer-Encoding: cow`), and line-folding.
 * **Exploit:** Duplicating the header causes the back-end to discard chunked processing and fall back to `Content-Length`, degrading the system into an exploitable TE.CL flaw.
 
-#### Labs 04 & 05: Confirming CL.TE and TE.CL via Differential Responses
+#### Labs 4 & 5: Confirming CL.TE and TE.CL via Differential Responses
 * **Mechanics:** Smuggling a complete request line targeting a non-existent route (`GET /404 HTTP/1.1\r\nFoo: x`).
 * **Impact:** Proves desynchronization non-destructively: Request 1 returns `200 OK`, while Request 2 returns `404 Not Found` across the same connection.
 
-#### Labs 06 & 07: Bypassing Front-End Security Controls (CL.TE & TE.CL)
+#### Labs 6 & 7: Bypassing Front-End Security Controls (CL.TE & TE.CL)
 * **Mechanics:** Front-end blocks `/admin` based on URL path inspection.
 * **Exploit:** An authorized `POST /` request conceals an inner `GET /admin/delete?username=carlos HTTP/1.1` request with `Host: localhost`. The front-end perimeter evaluates only the outer request, while the back-end executes the privileged administrative command.
 
-#### Lab 08: Revealing Front-End Request Rewriting
+#### Lab 8: Revealing Front-End Request Rewriting
 * **Mechanics:** The front-end validates client IP via an internal header (`X-Gkxtgp-Ip: <client-ip>`). External requests supplying this header are stripped or overwritten.
 * **Exploit:** Smuggling an unclosed `POST /` request targeting the blog's search feature (`search=test`) with an inflated `Content-Length: 300`. The back-end consumes the front-end's internally rewritten headers as the parameter value for `search`, reflecting the secret header name and value in the HTML response. The discovered header is then forged in a subsequent smuggled request to access `/admin`.
 
-#### Lab 09: Capturing Other Users' Requests
+#### Lab 9: Capturing Other Users' Requests
 * **Mechanics:** Weaponizing an application storage sink (the blog comment section).
 * **Exploit:** Smuggling a `POST /post/comment` request with an inflated `Content-Length: 800`, leaving the `comment=` parameter open-ended at the end of the body. When an innocent victim visits the site on the same TCP connection, their entire incoming HTTP request—including sensitive session cookies (`session=...`) and authorization tokens—is appended to `comment=` and saved permanently in the public database.
 
