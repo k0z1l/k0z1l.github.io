@@ -51,8 +51,10 @@ Each writeup in this series adheres to a rigorous four-part framework:
 | **19** | [Web cache poisoning via HTTP/2 request tunnelling](lab-19-HTTP%20request%20smuggling-web%20cache%20poisoning%20via%20H2%20request%20tunnelling/) | Expert | CRLF injection in :path pseudo-header to tunnel redirect responses via HEAD requests and poison the front-end cache |
 | **20** | [Client-side desync](lab-20-HTTP%20request%20smuggling-client-side%20desync/) | Expert | Exploiting browser connection pooling and server-side CL.0 to hijack persistent Keep-Alive sockets and steal session cookies |
 | **21** | [Server-side pause-based request smuggling](lab-21-HTTP%20request%20smuggling-server-side%20pause-based%20request%20smuggling/) | Expert | Exploiting Apache mod_reqtimeout and directory redirects via Turbo Intruder byte-pause streaming to induce CL.0 desync |
+| **22** | [0.CL request smuggling](lab-22-HTTP%20request%20smuggling-0.CL%20request%20smuggling/) | Expert | Bypassing upstream deadlocks via Early-Response Gadgets & Double-Desync pipelines to poison sockets with reflected XSS |
 
 *Upcoming challenges will be continuously documented here.*
+
 
 
 
