@@ -17,17 +17,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#060305">
 <style>
-/* Prevent long flags, strings, and tokens from overflowing across Table of Contents */
+/* Prevent long flags, strings, and tokens from overflowing while keeping normal words intact */
 article, .prose {
   overflow-wrap: break-word;
-  word-break: break-word;
+  word-break: normal;
 }
 
-.prose code,
-.prose blockquote,
 .prose p,
-.prose li {
-  overflow-wrap: anywhere;
+.prose li,
+.prose blockquote {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+}
+
+.prose code {
+  overflow-wrap: break-word;
   word-break: break-all;
 }
 
